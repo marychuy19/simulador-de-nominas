@@ -11,6 +11,8 @@ use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NominaController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,22 @@ Route::middleware(['auth'])->group(function () {
             // ✅ Página: resources/js/Pages/Alumno/Recibo.vue
             Route::get('/recibo', [AlumnoController::class, 'recibo'])
                 ->name('recibo');
+
+              Route::get('/nomina/diaria', [NominaController::class, 'diaria'])
+        ->name('nomina.diaria');
+
+    Route::get('/nomina/semanal', [NominaController::class, 'semanal'])
+        ->name('nomina.semanal');
+
+    Route::get('/nomina/decena', [NominaController::class, 'decena'])
+        ->name('nomina.decena');
+
+    Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])
+        ->name('nomina.quincenal');
+
+    Route::get('/nomina/mensual', [NominaController::class, 'mensual'])
+        ->name('nomina.mensual');
+
         });
 
     /*
