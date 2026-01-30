@@ -4,11 +4,6 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 
 /* =============================
-   CONTROL MODAL
-============================= */
-const showTarifaModal = ref(false)
-
-/* =============================
    DATOS GENERALES
 ============================= */
 const empresa = ref('')
@@ -17,12 +12,12 @@ const empleado = ref('')
 /* =============================
    SALARIO
 ============================= */
-const salarioMensual = ref(15000)
+const salarioMensualBruto = ref(15000)
 const diasMes = ref(15)
 
 const salarioDiario = computed(() => {
   if (diasMes.value <= 0) return 0
-  return salarioMensual.value / diasMes.value
+  return salarioMensualBruto.value / diasMes.value
 })
 
 /* =============================
@@ -41,13 +36,8 @@ const tablaISR = [
   { li: 4667.14, ls: 14001.38, cuota: 1217.42, porcentaje: 34.00 },
 ]
 
-/* =============================
-   CÁLCULO ISR
-============================= */
 const filaISR = computed(() =>
-  tablaISR.find(f =>
-    salarioDiario.value >= f.li && salarioDiario.value <= f.ls
-  )
+  tablaISR.find(f => salarioDiario.value >= f.li && salarioDiario.value <= f.ls)
 )
 
 const excedente = computed(() =>
@@ -62,202 +52,124 @@ const isrDeterminado = computed(() =>
 )
 
 /* =============================
-   SUBSIDIO AL EMPLEO (DINÁMICO)
+   SUBSIDIO AL EMPLEO
 ============================= */
 const uma = ref(117.31)
 const porcentajeSubsidio = ref(15)
 const topeSubsidio = ref(535.65)
 
-const subsidioDiario = computed(() =>
+const umaDiaria = computed(() =>
   uma.value * (porcentajeSubsidio.value / 100)
 )
 
 const subsidioAplicable = computed(() =>
-  Math.min(subsidioDiario.value, topeSubsidio.value)
+  Math.min(umaDiaria.value, topeSubsidio.value)
 )
 
 /* =============================
-   ISR A RETENER
+   ISR FINAL
 ============================= */
-const isrRetener = computed(() =>
-  Math.max(isrDeterminado.value - subsidioAplicable.value, 0)
-)
+const isrRetener = computed(() => {
+  const diario = Math.max(isrDeterminado.value - subsidioAplicable.value, 0)
+  return diario * diasMes.value
+})
 </script>
 
 <template>
-  <Head title="Nómina diaria" />
+  <Head title="Cálculo de Nómina" />
 
   <AuthenticatedLayout>
-    <div class="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-10">
-      <div class="max-w-6xl mx-auto space-y-8">
+    <div class="max-w-5xl mx-auto p-6 space-y-6">
 
-        <!-- HEADER -->
-        <div class="bg-white rounded-xl shadow p-6">
-          <h1 class="text-2xl font-bold text-blue-900">
-            Cálculo de Nómina Diaria – ISR y Subsidio 2026
-          </h1>
-          <p class="text-gray-600 mt-1">
-            Cálculo de nómina con desglose paso a paso para fines educativos
-          </p>
-        </div>
-
-        <!-- DATOS GENERALES -->
-        <div class="bg-white p-6 rounded-xl shadow grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="font-semibold">Nombre de la empresa</label>
-            <input v-model="empresa" class="input" />
-          </div>
-          <div>
-            <label class="font-semibold">Nombre del empleado</label>
-            <input v-model="empleado" class="input" />
-          </div>
-        </div>
-
-        <!-- SALARIO -->
-        <div class="bg-white p-6 rounded-xl shadow">
-          <h2 class="font-bold text-lg text-blue-800">
-            Determinación del salario diario
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div>
-              <label>Salario mensual bruto</label>
-              <input v-model.number="salarioMensual" type="number" class="input mt-1" />
-            </div>
-            <div>
-              <label>Días del mes</label>
-              <input v-model.number="diasMes" type="number" class="input mt-1" />
-            </div>
-          </div>
-
-          <div class="mt-4 bg-blue-50 p-4 rounded-lg">
-            <p class="font-semibold">
-              Salario diario = Salario mensual ÷ Días del mes
-            </p>
-            <p class="text-2xl font-bold text-blue-900">
-              ${{ salarioDiario.toFixed(2) }}
-            </p>
-          </div>
-        </div>
-
-        <!-- ISR -->
-        <div class="bg-white p-6 rounded-xl shadow">
-          <div class="flex justify-between items-center">
-            <h2 class="font-bold text-lg text-red-700">
-              Cálculo del ISR diario
-            </h2>
-            <button
-              @click="showTarifaModal = true"
-              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-            >
-              Tarifa de salario
-            </button>
-          </div>
-
-          <table class="w-full mt-4 border text-sm">
-            <tr><td class="td">Base ISR</td><td class="td">${{ salarioDiario.toFixed(2) }}</td></tr>
-            <tr><td class="td">Límite inferior</td><td class="td">${{ filaISR?.li ?? 0 }}</td></tr>
-            <tr><td class="td">Excedente</td><td class="td">${{ excedente.toFixed(2) }}</td></tr>
-            <tr><td class="td">Porcentaje</td><td class="td">{{ filaISR?.porcentaje ?? 0 }}%</td></tr>
-            <tr><td class="td">Cuota fija</td><td class="td">${{ filaISR?.cuota ?? 0 }}</td></tr>
-            <tr class="font-bold bg-red-50">
-              <td class="td">ISR determinado</td>
-              <td class="td">${{ isrDeterminado.toFixed(2) }}</td>
-            </tr>
-          </table>
-        </div>
-
-        <!-- SUBSIDIO (FUNCIONAL) -->
-        <div class="bg-white p-6 rounded-xl shadow">
-          <h2 class="font-bold text-lg text-blue-700">
-            Subsidio para el empleo
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div>
-              <label class="font-semibold">UMA</label>
-              <input v-model.number="uma" type="number" step="0.01" class="input mt-1" />
-            </div>
-            <div>
-              <label class="font-semibold">% Subsidio</label>
-              <input v-model.number="porcentajeSubsidio" type="number" step="0.01" class="input mt-1" />
-            </div>
-            <div>
-              <label class="font-semibold">Tope subsidio</label>
-              <input v-model.number="topeSubsidio" type="number" step="0.01" class="input mt-1" />
-            </div>
-          </div>
-
-          <table class="w-full mt-4 border text-sm">
-            <tr><td class="td">Subsidio diario</td><td class="td">${{ subsidioDiario.toFixed(2) }}</td></tr>
-            <tr class="font-bold bg-blue-50">
-              <td class="td">Subsidio aplicable</td>
-              <td class="td">${{ subsidioAplicable.toFixed(2) }}</td>
-            </tr>
-          </table>
-        </div>
-
-        <!-- RESULTADO -->
-        <div class="bg-indigo-600 text-white p-6 rounded-xl shadow text-center">
-          <h2 class="font-bold text-xl">ISR a retener</h2>
-          <p class="text-4xl font-bold mt-2">
-            ${{ isrRetener.toFixed(2) }}
-          </p>
-        </div>
-
+      <!-- DATOS GENERALES -->
+      <div class="grid grid-cols-2 gap-4">
+        <input v-model="empresa" class="input bg-gray-200" placeholder="Nombre de la empresa" />
+        <input v-model="empleado" class="input bg-gray-200" placeholder="Nombre del empleado" />
       </div>
-    </div>
 
-    <!-- MODAL TARIFA ISR -->
-    <div
-      v-if="showTarifaModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white w-full max-w-5xl rounded-xl p-6 max-h-[90vh] overflow-auto">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-blue-900">
-            Tarifa ISR Diario 2026
-          </h2>
-          <button @click="showTarifaModal = false" class="text-red-600 font-bold">X</button>
+      <!-- DETERMINACIÓN SALARIO -->
+      <div class="border rounded-xl overflow-hidden">
+        <div class="bg-green-200 text-center font-bold py-2">
+          DETERMINACIÓN DEL SALARIO DIARIO
         </div>
 
-        <table class="w-full border text-sm text-center">
-          <thead class="bg-gray-100 font-bold">
-            <tr>
-              <th class="td">Límite inferior</th>
-              <th class="td">Límite superior</th>
-              <th class="td">Cuota fija</th>
-              <th class="td">% excedente</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="(fila, i) in tablaISR"
-              :key="i"
-              :class="fila === filaISR ? 'bg-yellow-100 font-bold' : ''"
-            >
-              <td class="td">{{ fila.li }}</td>
-              <td class="td">{{ fila.ls }}</td>
-              <td class="td">{{ fila.cuota }}</td>
-              <td class="td">{{ fila.porcentaje }}%</td>
-            </tr>
-          </tbody>
+        <table class="w-full border text-sm">
+          <tr>
+            <td class="td">SALARIO MENSUAL BRUTO</td>
+            <td class="td">
+              $ <input v-model.number="salarioMensualBruto" type="number" class="input inline w-32" />
+            </td>
+          </tr>
+          <tr>
+            <td class="td">(/) DÍAS DEL MES</td>
+            <td class="td">
+              <input v-model.number="diasMes" type="number" class="input inline w-24" />
+            </td>
+          </tr>
+          <tr class="font-bold">
+            <td class="td">SALARIO DIARIO</td>
+            <td class="td">$ {{ salarioDiario.toFixed(2) }}</td>
+          </tr>
         </table>
       </div>
-    </div>
 
+      <!-- ISR Y SUBSIDIO -->
+      <div class="grid grid-cols-2 gap-6">
+
+        <!-- ISR -->
+        <div>
+          <div class="bg-blue-700 text-white text-center font-bold py-1">
+            CÁLCULO DEL ISR
+          </div>
+          <table class="w-full border text-sm">
+            <tr><td class="td">Base ISR</td><td class="td">$ {{ salarioDiario.toFixed(2) }}</td></tr>
+            <tr><td class="td">Límite inferior</td><td class="td">$ {{ filaISR?.li ?? 0 }}</td></tr>
+            <tr><td class="td">Excedente</td><td class="td">$ {{ excedente.toFixed(2) }}</td></tr>
+            <tr><td class="td">% ISR</td><td class="td">{{ filaISR?.porcentaje ?? 0 }} %</td></tr>
+            <tr><td class="td">Cuota fija</td><td class="td">$ {{ filaISR?.cuota ?? 0 }}</td></tr>
+            <tr class="font-bold bg-gray-100">
+              <td class="td">ISR determinado</td>
+              <td class="td">$ {{ isrDeterminado.toFixed(2) }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <!-- SUBSIDIO -->
+        <div>
+          <div class="bg-blue-500 text-white text-center font-bold py-1">
+            SUBSIDIO PARA EL EMPLEO
+          </div>
+          <table class="w-full border text-sm">
+            <tr><td class="td">UMA 2026</td><td class="td">$ {{ uma }}</td></tr>
+            <tr><td class="td">% Subsidio</td><td class="td">{{ porcentajeSubsidio }} %</td></tr>
+            <tr><td class="td">UMA diaria</td><td class="td">$ {{ umaDiaria.toFixed(2) }}</td></tr>
+            <tr><td class="td">Tope subsidio</td><td class="td">$ {{ topeSubsidio }}</td></tr>
+            <tr class="font-bold bg-gray-100">
+              <td class="td">Subsidio aplicable</td>
+              <td class="td">$ {{ subsidioAplicable.toFixed(2) }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- RESULTADO -->
+      <div class="text-center bg-indigo-700 text-white p-6 rounded-xl">
+        <p class="text-lg font-semibold">ISR A RETENER</p>
+        <p class="text-4xl font-bold mt-2">$ {{ isrRetener.toFixed(2) }}</p>
+      </div>
+
+    </div>
   </AuthenticatedLayout>
 </template>
 
 <style scoped>
 .input {
-  width: 100%;
-  padding: 0.6rem;
-  border-radius: 0.75rem;
-  border: 1px solid #d1d5db;
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
 }
 .td {
-  border: 1px solid #d1d5db;
-  padding: 0.5rem;
+  border: 1px solid #ccc;
+  padding: 0.4rem;
 }
 </style>

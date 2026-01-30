@@ -175,8 +175,10 @@ const guardarEmpleado = () => {
             v-model="empresaForm.periodo_pago"
           >
             <option value="">Periodo de pago</option>
+            <option value="quincenal">Diario</option>
             <option value="semanal">Semanal</option>
             <option value="quincenal">Quincenal</option>
+            <option value="quincenal">10 dias</option>   
             <option value="mensual">Mensual</option>
           </select>
 
@@ -270,6 +272,8 @@ const guardarEmpleado = () => {
             <option value="">Periodo de salario</option>
             <option value="diario">Diario</option>
             <option value="semanal">Semanal</option>
+             <option value="semanal">10 dias</option>
+              <option value="semanal">Quincenal</option>
             <option value="mensual">Mensual</option>
           </select>
 
