@@ -82,7 +82,7 @@ const deleteUser = (user) => {
 
   <AuthenticatedLayout>
     <div
-      class="py-10 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen"
+      class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen"
     >
       <div class="max-w-7xl mx-auto px-6 space-y-8">
 

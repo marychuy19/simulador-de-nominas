@@ -12,23 +12,24 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // ✅ ALUMNO: tu dashboard con modales (empresas/empleados)
+        // ✅ ALUMNO
         if ($user->role === 'alumno') {
             return Inertia::render('Dashboard', [
-                'empresas' => Empresa::withCount('empleados')
+                'empresas' => Empresa::with('empleados') // 🔥 AQUÍ ESTABA EL ERROR
+                    ->withCount('empleados')
                     ->orderBy('nombre_razon_social')
                     ->get(),
             ]);
         }
 
-        // ✅ ADMIN: otro dashboard distinto
+        // ✅ ADMIN
         if ($user->role === 'administrador' || $user->is_admin) {
             return Inertia::render('Dashboard', [
-                'empresas' => Empresa::withCount('empleados')
+                'empresas' => Empresa::with('empleados') // 🔥 AQUÍ TAMBIÉN
+                    ->withCount('empleados')
                     ->orderBy('nombre_razon_social')
                     ->get(),
 
-                // opcional: si admin quiere ver empleados también
                 'empleados' => Empleado::with('empresa')
                     ->latest()
                     ->get(),

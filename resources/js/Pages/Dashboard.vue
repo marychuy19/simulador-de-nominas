@@ -1,19 +1,27 @@
 <script setup>
-import { ref } from 'vue'
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
-import { Head, useForm } from '@inertiajs/vue3'
-import { usePage } from '@inertiajs/vue3'
-
+import { Head, useForm, usePage } from '@inertiajs/vue3'
 
 /* PROPS */
 const { props } = usePage()
 const empresas = computed(() => props.empresas ?? [])
 
-
 /* MODALES */
 const showEmpresaModal = ref(false)
 const showEmpleadoModal = ref(false)
+
+/* =========================
+   EMPRESA SELECCIONADA
+========================= */
+const empresaSeleccionada = ref(null)
+
+const seleccionarEmpresa = (empresa) => {
+  empresaSeleccionada.value =
+    empresaSeleccionada.value?.id === empresa.id
+      ? null
+      : empresa
+}
 
 /* =========================
    FORM EMPRESA
@@ -26,7 +34,6 @@ const empresaForm = useForm({
   periodo_pago: '',
   registro_patronal: '',
 })
-
 
 const guardarEmpresa = () => {
   empresaForm.post(route('empresas.store'), {
@@ -41,7 +48,7 @@ const guardarEmpresa = () => {
    FORM EMPLEADO
 ========================= */
 const empleadoForm = useForm({
-   empresa_id: '',  
+  empresa_id: '',
   nombre_completo: '',
   identificacion: '',
   puesto: '',
@@ -75,8 +82,8 @@ const guardarEmpleado = () => {
     </template>
 
     <!-- CONTENIDO -->
-    <div class="py-10 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 min-h-screen">
-      <div class="max-w-4xl mx-auto px-6">
+    <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
+      <div class="max-w-4xl mx-auto px-6 space-y-10">
 
         <!-- BOTONES -->
         <div class="bg-white rounded-2xl shadow-lg p-10 flex gap-6 justify-center">
@@ -95,38 +102,82 @@ const guardarEmpleado = () => {
           </button>
         </div>
 
+        <!-- EMPRESAS REGISTRADAS -->
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-blue-900">
+              Empresas registradas
+            </h3>
+
+            <span
+              v-if="empresas.length"
+              class="text-sm bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-medium"
+            >
+              {{ empresas.length }} empresas
+            </span>
+          </div>
+
+          <div v-if="empresas.length" class="space-y-4">
+            <div
+              v-for="empresa in empresas"
+              :key="empresa.id"
+              class="border rounded-xl p-5 hover:shadow-md transition cursor-pointer"
+              @click="seleccionarEmpresa(empresa)"
+            >
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-gray-800">
+                    {{ empresa.nombre_razon_social }}
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    RFC: {{ empresa.rfc }}
+                  </p>
+                </div>
+
+                <span class="px-4 py-1 rounded-full bg-green-100 text-green-800 font-semibold">
+                  {{ empresa.empleados_count }} empleados
+                </span>
+              </div>
+
+              <!-- EMPLEADOS -->
+              <div
+                v-if="empresaSeleccionada?.id === empresa.id"
+                class="mt-4 bg-gray-50 rounded-xl p-4 border"
+              >
+                <p class="font-semibold text-sm text-gray-700 mb-2">
+                  Empleados:
+                </p>
+
+                <ul
+                  v-if="empresa.empleados?.length"
+                  class="space-y-1"
+                >
+                  <li
+                    v-for="empleado in empresa.empleados"
+                    :key="empleado.id"
+                    class="text-sm text-gray-600"
+                  >
+                    • {{ empleado.nombre_completo }}
+                  </li>
+                </ul>
+
+                <p
+                  v-else
+                  class="text-sm text-gray-500"
+                >
+                  Esta empresa no tiene empleados registrados
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div v-else class="text-center py-10 text-gray-500">
+            No hay empresas registradas todavía
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <div class="mt-10 bg-white rounded-2xl shadow-lg p-6">
-  <h3 class="text-xl font-semibold mb-4 text-blue-900">
-    Empresas registradas
-  </h3>
-
-  <div
-    v-if="empresas.length"
-    class="space-y-3"
-  >
-    <div
-      v-for="empresa in empresas"
-      :key="empresa.id"
-      class="flex justify-between items-center border-b pb-2"
-    >
-      <span class="font-medium">
-        {{ empresa.nombre_razon_social }}
-      </span>
-
-      <span class="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-        {{ empresa.empleados_count }} empleados
-      </span>
-    </div>
-  </div>
-
-  <div v-else class="text-gray-500">
-    No hay empresas registradas
-  </div>
-</div>
-
 
     <!-- =========================
          MODAL EMPRESA
@@ -142,11 +193,11 @@ const guardarEmpleado = () => {
 
         <div class="space-y-4">
           <input
-  type="text"
-  placeholder="Nombre o razón social"
-     class="w-full rounded-xl border-gray-300"
-  v-model="empresaForm.nombre_razon_social"
-/>
+            type="text"
+            placeholder="Nombre o razón social"
+            class="w-full rounded-xl border-gray-300"
+            v-model="empresaForm.nombre_razon_social"
+          />
 
           <input
             type="text"
@@ -175,21 +226,20 @@ const guardarEmpleado = () => {
             v-model="empresaForm.periodo_pago"
           >
             <option value="">Periodo de pago</option>
-            <option value="quincenal">Diario</option>
+            <option value="diario">Diario</option>
             <option value="semanal">Semanal</option>
             <option value="quincenal">Quincenal</option>
-            <option value="quincenal">10 dias</option>   
+            <option value="10_dias">10 días</option>
             <option value="mensual">Mensual</option>
           </select>
 
-           <input
+          <input
             type="text"
             placeholder="Registro patronal"
             class="w-full rounded-xl border-gray-300"
             v-model="empresaForm.registro_patronal"
           />
         </div>
-        
 
         <div class="flex justify-end gap-3 mt-6">
           <button
@@ -200,7 +250,8 @@ const guardarEmpleado = () => {
           </button>
           <button
             @click="guardarEmpresa"
-            class="px-4 py-2 rounded-lg bg-green-700 text-white">
+            class="px-4 py-2 rounded-lg bg-green-700 text-white"
+          >
             Guardar
           </button>
         </div>
@@ -272,8 +323,8 @@ const guardarEmpleado = () => {
             <option value="">Periodo de salario</option>
             <option value="diario">Diario</option>
             <option value="semanal">Semanal</option>
-             <option value="semanal">10 dias</option>
-              <option value="semanal">Quincenal</option>
+            <option value="10_dias">10 días</option>
+            <option value="quincenal">Quincenal</option>
             <option value="mensual">Mensual</option>
           </select>
 
@@ -298,19 +349,18 @@ const guardarEmpleado = () => {
           </select>
 
           <select
-  class="w-full rounded-xl border-gray-300"
-  v-model="empleadoForm.empresa_id"
->
-  <option value="">Empresa donde trabaja</option>
-  <option
-    v-for="empresa in empresas"
-    :key="empresa.id"
-    :value="empresa.id"
-  >
-    {{ empresa.nombre_razon_social }}
-  </option>
-</select>
-
+            class="w-full rounded-xl border-gray-300"
+            v-model="empleadoForm.empresa_id"
+          >
+            <option value="">Empresa donde trabaja</option>
+            <option
+              v-for="empresa in empresas"
+              :key="empresa.id"
+              :value="empresa.id"
+            >
+              {{ empresa.nombre_razon_social }}
+            </option>
+          </select>
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
@@ -332,3 +382,4 @@ const guardarEmpleado = () => {
 
   </AuthenticatedLayout>
 </template>
+
