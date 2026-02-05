@@ -12,10 +12,16 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        // Asignar rol por defecto si no tiene uno
+        if (empty($user->role)) {
+            $user->role = 'alumno';
+            $user->save();
+        }
+
         // ✅ ALUMNO
         if ($user->role === 'alumno') {
             return Inertia::render('Dashboard', [
-                'empresas' => Empresa::with('empleados') // 🔥 AQUÍ ESTABA EL ERROR
+                'empresas' => Empresa::with('empleados')
                     ->withCount('empleados')
                     ->orderBy('nombre_razon_social')
                     ->get(),
@@ -23,9 +29,9 @@ class DashboardController extends Controller
         }
 
         // ✅ ADMIN
-        if ($user->role === 'administrador' || $user->is_admin) {
+        if ($user->role === 'admin') {
             return Inertia::render('Dashboard', [
-                'empresas' => Empresa::with('empleados') // 🔥 AQUÍ TAMBIÉN
+                'empresas' => Empresa::with('empleados')
                     ->withCount('empleados')
                     ->orderBy('nombre_razon_social')
                     ->get(),

@@ -82,25 +82,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/recibo', [AlumnoController::class, 'recibo'])
                 ->name('recibo');
 
-              Route::get('/nomina/diaria', [NominaController::class, 'diaria'])
-        ->name('nomina.diaria');
+            Route::get('/nomina/diaria', [NominaController::class, 'diaria'])
+                ->name('nomina.diaria');
 
-    Route::get('/nomina/semanal', [NominaController::class, 'semanal'])
-        ->name('nomina.semanal');
+            Route::get('/nomina/semanal', [NominaController::class, 'semanal'])
+                ->name('nomina.semanal');
 
-    Route::get('/nomina/decena', [NominaController::class, 'decena'])
-        ->name('nomina.decena');
+            Route::get('/nomina/decena', [NominaController::class, 'decena'])
+                ->name('nomina.decena');
 
-    Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])
-        ->name('nomina.quincenal');
+            Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])
+                ->name('nomina.quincenal');
 
-    Route::get('/nomina/mensual', [NominaController::class, 'mensual'])
-        ->name('nomina.mensual');
-
-    Route::get('/dashboard', [EmpresaController::class, 'index'])
-    ->name('dashboard');
-        
-
+            Route::get('/nomina/mensual', [NominaController::class, 'mensual'])
+                ->name('nomina.mensual');
         });
 
     /*
@@ -108,7 +103,7 @@ Route::middleware(['auth'])->group(function () {
     | ROL ADMIN
     |--------------------------------------------------------------------------
     */
-    Route::middleware(['is_admin'])
+    Route::middleware(['role:admin'])
         ->prefix('admin')
         ->name('admin.')
         ->group(function () {
