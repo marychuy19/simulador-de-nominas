@@ -311,7 +311,7 @@ const guardarEmpleado = () => {
           <input
             type="number"
             step="0.01"
-            placeholder="Salario"
+            placeholder="Salario base (diario)"
             class="w-full rounded-xl border-gray-300"
             v-model="empleadoForm.salario"
           />

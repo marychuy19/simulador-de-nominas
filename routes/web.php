@@ -96,6 +96,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])
                 ->name('nomina.mensual');
+                
         });
 
     /*
