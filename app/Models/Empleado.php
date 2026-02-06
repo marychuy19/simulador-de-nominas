@@ -22,7 +22,6 @@ class Empleado extends Model
         'jornada',
     ];
 
-    // ✅ RELACIÓN (esto te faltaba)
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);

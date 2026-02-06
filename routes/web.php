@@ -3,8 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-// Controllers
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmpresaController;
@@ -42,12 +40,20 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/empleado', [AlumnoController::class, 'empleado'])->name('empleado');
             Route::get('/calculo-nomina', [AlumnoController::class, 'calculoNomina'])->name('calculo-nomina');
             Route::get('/recibo', [AlumnoController::class, 'recibo'])->name('recibo');
+            Route::get('/empleados/create', [EmpleadoController::class, 'create'])->name('empleados.create');
+
 
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
             Route::get('/nomina/semanal', [NominaController::class, 'semanal'])->name('nomina.semanal');
             Route::get('/nomina/decena', [NominaController::class, 'decena'])->name('nomina.decena');
             Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])->name('nomina.quincenal');
+            Route::get('/nomina/quincenal2', function () {
+    return Inertia::render('Alumno/Nomina/Quincenal2');
+})->name('alumno.nomina.quincenal2');
+
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])->name('nomina.mensual');
+            Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
+
 
             // LISTA EMPRESAS (JSON)
             Route::get('/empresas-lista', function () {

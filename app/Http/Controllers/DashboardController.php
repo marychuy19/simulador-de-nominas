@@ -25,7 +25,7 @@ class DashboardController extends Controller
         }
 
         // ✅ ADMIN
-        if ($user->role === 'administrador' || $user->is_admin) {
+        if ($user->role === 'admin' || $user->is_admin) {
             return Inertia::render('Dashboard', [
                 'empresas' => Empresa::with('empleados') 
                     ->withCount('empleados')

@@ -173,9 +173,25 @@ const isrRetener = computed(() => {
 /* =============================
    GUARDAR
 ============================= */
-const guardar = () => {
-  router.visit('/nomina')
+const guardar = async () => {
+  try {
+    await axios.post('/alumno/nomina/guardar-isr', {
+      empleado_id: empleado.value,
+      salario_base: salarioBase.value,
+      dias_trabajados: diasTrabajados.value,
+      total_percepciones: totalPercepciones.value,
+      isr_determinado: isrDeterminado.value,
+      subsidio_periodo: subsidioPeriodo.value,
+      isr_retener: isrRetener.value
+    })
+
+    router.visit('/alumno/nomina/quincenal2')
+  } catch (e) {
+    console.error('Error al guardar ISR:', e)
+  }
 }
+
+
 </script>
 
 <template>

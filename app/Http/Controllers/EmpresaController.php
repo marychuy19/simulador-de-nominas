@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Empresa;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class EmpresaController extends Controller
 {
@@ -22,6 +23,16 @@ class EmpresaController extends Controller
 
         return redirect()->back()->with('success', 'Empresa registrada correctamente');
     }
+
+    public function create()
+{
+    $empresas = Empresa::all();
+
+    return Inertia::render('Empleado/Create', [
+        'empresas' => $empresas
+    ]);
+}
+
     
 }
 

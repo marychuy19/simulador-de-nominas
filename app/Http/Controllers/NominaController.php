@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use App\Models\Isr;
+
 
 class NominaController extends Controller
 {
@@ -30,4 +33,21 @@ class NominaController extends Controller
     {
         return Inertia::render('Alumno/Nomina/Mensual');
     }
+
+    public function guardarIsr(Request $request)
+{
+    $request->validate([
+        'empleado_id' => 'required|exists:empleados,id',
+        'salario_base' => 'required|numeric',
+        'dias_trabajados' => 'required|numeric',
+        'total_percepciones' => 'required|numeric',
+        'isr_determinado' => 'required|numeric',
+        'subsidio_periodo' => 'required|numeric',
+        'isr_retener' => 'required|numeric',
+    ]);
+
+    Isr::create($request->all());
+
+    return redirect()->route('alumno.recibo');
+}
 }
