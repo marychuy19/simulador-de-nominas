@@ -1,7 +1,14 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, router } from '@inertiajs/vue3'
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import axios from 'axios'
+
+/* =============================
+   LISTAS DESDE BASE DE DATOS
+============================= */
+const empresas = ref([])
+const empleados = ref([])
 
 /* =============================
    CONTROL MODAL TARIFA
@@ -26,6 +33,57 @@ const diasTrabajados = ref(15)
 const totalPercepciones = computed(() =>
   salarioBase.value * diasTrabajados.value
 )
+
+/* =============================
+   CARGAR EMPRESAS AL INICIAR
+============================= */
+onMounted(async () => {
+  try {
+    const resEmpresas = await axios.get('/alumno/empresas-lista')
+    empresas.value = resEmpresas.data
+  } catch (e) {
+    console.error('Error cargando empresas:', e)
+    empresas.value = []
+  }
+})
+
+/* =============================
+   AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS QUINCENALES DE ESA EMPRESA
+============================= */
+watch(empresa, async (empresaId) => {
+  // reset
+  empleado.value = ''
+  empleados.value = []
+  tipoSalario.value = ''
+  tipoPago.value = ''
+  fechaIngreso.value = ''
+  salarioBase.value = 300
+
+  if (!empresaId) return
+
+  try {
+    const resEmpleados = await axios.get('/alumno/empleados-quincenales', {
+      params: { empresa_id: empresaId }
+    })
+    empleados.value = resEmpleados.data
+  } catch (e) {
+    console.error('Error cargando empleados:', e)
+    empleados.value = []
+  }
+})
+
+/* =============================
+   AUTOCOMPLETAR DATOS DEL EMPLEADO
+============================= */
+watch(empleado, (id) => {
+  const emp = empleados.value.find(e => String(e.id) === String(id))
+  if (emp) {
+    tipoSalario.value = emp.tipo_salario ?? ''
+    tipoPago.value = emp.periodo_salario ?? ''
+    fechaIngreso.value = emp.fecha_ingreso ?? ''
+    salarioBase.value = Number(emp.salario ?? 0)
+  }
+})
 
 /* =============================
    TABLA ISR QUINCENAL 2026
@@ -102,7 +160,7 @@ const aplicaSubsidio = computed(() =>
 )
 
 /* =============================
-   ISR A RETENER 
+   ISR A RETENER
 ============================= */
 const isrRetener = computed(() => {
   if (aplicaArticulo96.value) return 0
@@ -113,7 +171,7 @@ const isrRetener = computed(() => {
 })
 
 /* =============================
-   GUARDAR Y REDIRECCIONAR
+   GUARDAR
 ============================= */
 const guardar = () => {
   router.visit('/nomina')
@@ -122,45 +180,56 @@ const guardar = () => {
 
 <template>
   <Head title="Simulador de Nómina" />
-
   <AuthenticatedLayout>
     <div class="bg-blue-100 min-h-screen">
       <div class="max-w-6xl mx-auto p-6 space-y-6">
 
         <!-- DATOS GENERALES -->
         <div class="border rounded-xl overflow-hidden">
-          <div class="bg-green-300 font-bold text-center py-2">
-            DATOS
-          </div>
+          <div class="bg-green-300 font-bold text-center py-2">DATOS</div>
           <table class="w-full border text-sm">
             <tr>
               <td class="td font-semibold">EMPRESA</td>
-              <td class="td"><input v-model="empresa" class="input w-full" /></td>
+              <td class="td">
+                <select v-model="empresa" class="input w-full">
+                  <option value="">Seleccione empresa</option>
+                  <option v-for="e in empresas" :key="e.id" :value="e.id">
+                    {{ e.nombre_razon_social }}
+                  </option>
+                </select>
+              </td>
             </tr>
+
             <tr>
               <td class="td font-semibold">NOMBRE DEL EMPLEADO</td>
-              <td class="td"><input v-model="empleado" class="input w-full" /></td>
+              <td class="td">
+                <select v-model="empleado" class="input w-full" :disabled="!empresa">
+                  <option value="">Seleccione empleado</option>
+                  <option v-for="e in empleados" :key="e.id" :value="e.id">
+                    {{ e.nombre_completo }}
+                  </option>
+                </select>
+              </td>
             </tr>
+
             <tr>
               <td class="td font-semibold">TIPO DE SALARIO</td>
-              <td class="td"><input v-model="tipoSalario" class="input w-full" /></td>
+              <td class="td"><input v-model="tipoSalario" class="input w-full" readonly /></td>
             </tr>
             <tr>
               <td class="td font-semibold">TIPO DE PAGO</td>
-              <td class="td"><input v-model="tipoPago" class="input w-full" /></td>
+              <td class="td"><input v-model="tipoPago" class="input w-full" readonly /></td>
             </tr>
             <tr>
               <td class="td font-semibold">FECHA DE INGRESO</td>
-              <td class="td"><input v-model="fechaIngreso" type="date" class="input w-full" /></td>
+              <td class="td"><input v-model="fechaIngreso" type="date" class="input w-full" readonly /></td>
             </tr>
           </table>
         </div>
 
         <!-- PERCEPCIONES -->
         <div class="border rounded-xl overflow-hidden">
-          <div class="bg-green-300 font-bold text-center py-2">
-            PERCEPCIONES
-          </div>
+          <div class="bg-green-300 font-bold text-center py-2">PERCEPCIONES</div>
 
           <table class="w-full border text-sm">
             <tr>
@@ -183,9 +252,7 @@ const guardar = () => {
         <!-- ISR Y SUBSIDIO -->
         <div class="grid grid-cols-2 gap-6">
           <div>
-            <div class="bg-blue-700 text-white font-bold text-center py-1">
-              CÁLCULO DEL ISR
-            </div>
+            <div class="bg-blue-700 text-white font-bold text-center py-1">CÁLCULO DEL ISR</div>
 
             <table class="w-full border text-sm">
               <tr><td class="td">Base del ISR</td><td class="td">$ {{ totalPercepciones.toFixed(2) }}</td></tr>
@@ -209,9 +276,7 @@ const guardar = () => {
           </div>
 
           <div>
-            <div class="bg-blue-500 text-white font-bold text-center py-1">
-              SUBSIDIO PARA EL EMPLEO
-            </div>
+            <div class="bg-blue-500 text-white font-bold text-center py-1">SUBSIDIO PARA EL EMPLEO</div>
 
             <table class="w-full border text-sm">
               <tr>
@@ -267,15 +332,8 @@ const guardar = () => {
     >
       <div class="bg-white rounded-xl w-full max-w-4xl p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-blue-700">
-            Tarifa ISR 2026 (Quincenal)
-          </h2>
-          <button
-            @click="showTarifaModal = false"
-            class="text-red-600 font-bold text-xl"
-          >
-            ✕
-          </button>
+          <h2 class="text-xl font-bold text-blue-700">Tarifa ISR 2026 (Quincenal)</h2>
+          <button @click="showTarifaModal = false" class="text-red-600 font-bold text-xl">✕</button>
         </div>
 
         <table class="w-full border text-sm">
@@ -291,11 +349,7 @@ const guardar = () => {
             <tr
               v-for="(fila, i) in tablaISR"
               :key="i"
-              :class="filaISR &&
-                       fila.li === filaISR.li &&
-                       fila.ls === filaISR.ls
-                       ? 'bg-yellow-200 font-bold'
-                       : ''"
+              :class="filaISR && fila.li === filaISR.li && fila.ls === filaISR.ls ? 'bg-yellow-200 font-bold' : ''"
             >
               <td class="td">$ {{ fila.li.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}</td>
               <td class="td">

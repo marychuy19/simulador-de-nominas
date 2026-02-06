@@ -4,17 +4,26 @@ import { Head } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 
 /* =============================
-   DATOS
+   DATOS GENERALES (IGUAL QUE QUINCENAL 1)
 ============================= */
-const trabajador = ref('Mary Carmen')
-const tipoSalario = ref('Fijo')
-const salarioMensual = ref(60000)
-const tipoPago = ref('Semanal')
-const diasTrabajados = ref(15)
-const fechaIngreso = ref('2024-01-06')
+const empresa = ref('')
+const empleado = ref('')
+const tipoSalario = ref('')
+const tipoPago = ref('')
+const fechaIngreso = ref('')
 
 /* =============================
-   PRESTACIONES (SUPERIORES A LA LEY)
+   PERCEPCIONES (BASE DEL CÁLCULO)
+============================= */
+const salarioBase = ref(600) // salario diario
+const diasTrabajados = ref(15)
+
+const totalPercepciones = computed(() =>
+  salarioBase.value * diasTrabajados.value
+)
+
+/* =============================
+   PRESTACIONES
 ============================= */
 const diasAguinaldo = ref(15)
 const diasVacaciones = ref(12)
@@ -22,30 +31,23 @@ const primaVacacional = ref(0.25)
 const valesDespensaPorcentaje = ref(0.10)
 
 /* =============================
-   UMA Y LÍMITES
+   UMA
 ============================= */
 const UMA = ref(117.31)
 const limiteExentoVales = computed(() => UMA.value * 0.40)
 const tresUMA = computed(() => UMA.value * 3)
 
 /* =============================
-   SALARIO DIARIO (AHORA QUINCENAL)
+   SALARIO DIARIO (YA QUINCENAL)
 ============================= */
-const salarioDiario = computed(() => salarioMensual.value / 15)
+const salarioDiario = computed(() => salarioBase.value)
 
 /* =============================
    FACTOR DE INTEGRACIÓN
 ============================= */
 const proporcionAguinaldo = computed(() => diasAguinaldo.value / 365)
-
-const integradoVacaciones = computed(() =>
-  diasVacaciones.value * primaVacacional.value
-)
-
-const proporcionVacaciones = computed(() =>
-  integradoVacaciones.value / 365
-)
-
+const integradoVacaciones = computed(() => diasVacaciones.value * primaVacacional.value)
+const proporcionVacaciones = computed(() => integradoVacaciones.value / 365)
 const factorIntegracion = computed(() =>
   1 + proporcionAguinaldo.value + proporcionVacaciones.value
 )
@@ -53,11 +55,9 @@ const factorIntegracion = computed(() =>
 /* =============================
    VALES DE DESPENSA (QUINCENAL)
 ============================= */
-const valesMensuales = computed(() =>
-  salarioMensual.value * valesDespensaPorcentaje.value
+const valesDiarios = computed(() =>
+  salarioDiario.value * valesDespensaPorcentaje.value
 )
-
-const valesDiarios = computed(() => valesMensuales.value / 15)
 
 const valesExentos = computed(() =>
   Math.min(valesDiarios.value, limiteExentoVales.value)
@@ -90,31 +90,31 @@ const excedentePatronal = computed(() =>
 /* =============================
    BASE IMSS QUINCENAL
 ============================= */
-const baseIMSSMensual = computed(() =>
-  sbcConVales.value * 15
+const baseIMSSQuincenal = computed(() =>
+  sbcConVales.value * diasTrabajados.value
 )
 
 /* =============================
    CUOTAS IMSS
 ============================= */
 const cuotaExcedentePatronal = computed(() =>
-  excedentePatronal.value * 0.004 * 15
+  excedentePatronal.value * 0.004 * diasTrabajados.value
 )
 
 const prestacionesDinero = computed(() =>
-  baseIMSSMensual.value * 0.0025
+  baseIMSSQuincenal.value * 0.0025
 )
 
 const prestacionesEspecie = computed(() =>
-  baseIMSSMensual.value * 0.00375
+  baseIMSSQuincenal.value * 0.00375
 )
 
 const invalidezVida = computed(() =>
-  baseIMSSMensual.value * 0.00625
+  baseIMSSQuincenal.value * 0.00625
 )
 
 const cesantiaVejez = computed(() =>
-  baseIMSSMensual.value * 0.01125
+  baseIMSSQuincenal.value * 0.01125
 )
 
 const totalIMSS = computed(() =>
@@ -127,97 +127,99 @@ const totalIMSS = computed(() =>
 </script>
 
 <template>
-<Head title="Cálculo SBC" />
+<Head title="Cálculo SBC Quincenal" />
 <AuthenticatedLayout>
-<div class="max-w-7xl mx-auto p-6 space-y-6">
+<div class="bg-blue-100 min-h-screen">
+<div class="max-w-6xl mx-auto p-6 space-y-6">
 
   <!-- ================= DATOS ================= -->
-  <div class="card">
-    <h2 class="title">DATOS</h2>
-    <table class="tabla">
-      <tr><td>TRABAJADOR</td><td><input v-model="trabajador" class="input" /></td></tr>
-      <tr><td>TIPO DE SALARIO</td><td><input v-model="tipoSalario" class="input" /></td></tr>
-      <tr><td>SALARIO MENSUAL</td><td><input v-model.number="salarioMensual" type="number" class="input" /></td></tr>
-      <tr><td>TIPO DE PAGO</td><td><input v-model="tipoPago" class="input" /></td></tr>
-      <tr><td>FECHA DE INGRESO</td><td><input v-model="fechaIngreso" type="date" class="input" /></td></tr>
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-green-300 font-bold text-center py-2">DATOS</div>
+    <table class="w-full border text-sm">
+      <tr><td class="td font-semibold">EMPRESA</td><td class="td"><input v-model="empresa" class="input w-full" /></td></tr>
+      <tr><td class="td font-semibold">NOMBRE DEL EMPLEADO</td><td class="td"><input v-model="empleado" class="input w-full" /></td></tr>
+      <tr><td class="td font-semibold">TIPO DE SALARIO</td><td class="td"><input v-model="tipoSalario" class="input w-full" /></td></tr>
+      <tr><td class="td font-semibold">TIPO DE PAGO</td><td class="td"><input v-model="tipoPago" class="input w-full" /></td></tr>
+      <tr><td class="td font-semibold">FECHA DE INGRESO</td><td class="td"><input v-model="fechaIngreso" type="date" class="input w-full" /></td></tr>
+    </table>
+  </div>
+
+  <!-- ================= PERCEPCIONES ================= -->
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-green-300 font-bold text-center py-2">PERCEPCIONES</div>
+    <table class="w-full border text-sm">
+      <tr>
+        <td class="td">SALARIO DIARIO</td>
+        <td class="td">$ <input v-model.number="salarioBase" type="number" class="input inline w-24" /></td>
+      </tr>
+      <tr>
+        <td class="td">(x) DÍAS TRABAJADOS</td>
+        <td class="td"><input v-model.number="diasTrabajados" type="number" class="input inline w-24" /></td>
+      </tr>
+      <tr class="font-bold bg-gray-100">
+        <td class="td">TOTAL PERCEPCIONES</td>
+        <td class="td">$ {{ totalPercepciones.toFixed(2) }}</td>
+      </tr>
     </table>
   </div>
 
   <!-- ================= FACTOR INTEGRACIÓN ================= -->
-  <div class="card">
-    <h2 class="title">DETERMINACIÓN DEL FACTOR DE INTEGRACIÓN</h2>
-    <table class="tabla">
-      <tr><td>AGUINALDO (art. 87 LFT)</td><td><input v-model.number="diasAguinaldo" type="number" class="input" /></td></tr>
-      <tr><td>PROPORCIÓN DIARIA DE AGUINALDO</td><td>{{ proporcionAguinaldo.toFixed(6) }}</td></tr>
-      <tr><td>DÍAS DE VACACIONES (art. 76 LFT)</td><td><input v-model.number="diasVacaciones" type="number" class="input" /></td></tr>
-      <tr><td>% PRIMA VACACIONAL (art. 80 LFT)</td><td><input v-model.number="primaVacacional" type="number" step="0.01" class="input" /></td></tr>
-      <tr><td>INTEGRADO DIARIO DE VACACIONES</td><td>{{ integradoVacaciones.toFixed(4) }}</td></tr>
-      <tr><td>PROPORCIÓN DIARIA DE VACACIONES</td><td>{{ proporcionVacaciones.toFixed(6) }}</td></tr>
-      <tr class="resaltado"><td>FACTOR DE INTEGRACIÓN</td><td>{{ factorIntegracion.toFixed(6) }}</td></tr>
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-blue-700 text-white font-bold text-center py-2">FACTOR DE INTEGRACIÓN</div>
+    <table class="w-full border text-sm">
+      <tr><td class="td">PROPORCIÓN AGUINALDO</td><td class="td">{{ proporcionAguinaldo.toFixed(6) }}</td></tr>
+      <tr><td class="td">PROPORCIÓN VACACIONES</td><td class="td">{{ proporcionVacaciones.toFixed(6) }}</td></tr>
+      <tr class="font-bold bg-gray-100"><td class="td">FACTOR</td><td class="td">{{ factorIntegracion.toFixed(6) }}</td></tr>
     </table>
   </div>
 
   <!-- ================= VALES ================= -->
-  <div class="card">
-    <h2 class="title">DETERMINAR EL LÍMITE EXENTO DE LOS VALES</h2>
-    <table class="tabla">
-      <tr><td>UMA</td><td><input v-model.number="UMA" type="number" class="input" /></td></tr>
-      <tr><td>LÍMITE EXENTO (40%)</td><td>{{ limiteExentoVales.toFixed(2) }}</td></tr>
-      <tr><td>VALES DE DESPENSA (%)</td><td><input v-model.number="valesDespensaPorcentaje" step="0.01" type="number" class="input" /></td></tr>
-      <tr><td>VALES DIARIOS</td><td>${{ valesDiarios.toFixed(2) }}</td></tr>
-      <tr><td>EXENTO PERMITIDO</td><td>${{ valesExentos.toFixed(2) }}</td></tr>
-      <tr class="resaltado"><td>GRAVADO</td><td>${{ valesGravados.toFixed(2) }}</td></tr>
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-blue-500 text-white font-bold text-center py-2">VALES DE DESPENSA</div>
+    <table class="w-full border text-sm">
+      <tr><td class="td">VALES DIARIOS</td><td class="td">${{ valesDiarios.toFixed(2) }}</td></tr>
+      <tr><td class="td">EXENTO</td><td class="td">${{ valesExentos.toFixed(2) }}</td></tr>
+      <tr class="font-bold bg-gray-100"><td class="td">GRAVADO</td><td class="td">${{ valesGravados.toFixed(2) }}</td></tr>
     </table>
   </div>
 
   <!-- ================= SBC ================= -->
-  <div class="card">
-    <h2 class="title">DETERMINACIÓN DEL SALARIO BASE DE COTIZACIÓN</h2>
-    <table class="tabla">
-      <tr><td>SALARIO DIARIO</td><td>${{ salarioDiario.toFixed(2) }}</td></tr>
-      <tr><td>FACTOR DE INTEGRACIÓN</td><td>{{ factorIntegracion.toFixed(6) }}</td></tr>
-      <tr><td>SBC SIN VALES</td><td>${{ sbcSinVales.toFixed(2) }}</td></tr>
-      <tr><td>VALES GRAVADOS</td><td>${{ valesGravados.toFixed(2) }}</td></tr>
-      <tr class="resaltado"><td>SBC CON VALES</td><td>${{ sbcConVales.toFixed(2) }}</td></tr>
-    </table>
-  </div>
-
-  <!-- ================= EXCEDENTE ================= -->
-  <div class="card">
-    <h2 class="title">EXCEDENTE PATRONAL</h2>
-    <table class="tabla">
-      <tr><td>UMA</td><td>${{ UMA }}</td></tr>
-      <tr><td>3 VECES LA UMA</td><td>${{ tresUMA.toFixed(2) }}</td></tr>
-      <tr><td>SBC</td><td>${{ sbcConVales.toFixed(2) }}</td></tr>
-      <tr class="resaltado"><td>DIFERENCIA</td><td>${{ excedentePatronal.toFixed(2) }}</td></tr>
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-indigo-700 text-white font-bold text-center py-2">SALARIO BASE DE COTIZACIÓN</div>
+    <table class="w-full border text-sm">
+      <tr><td class="td">SBC SIN VALES</td><td class="td">${{ sbcSinVales.toFixed(2) }}</td></tr>
+      <tr><td class="td">VALES GRAVADOS</td><td class="td">${{ valesGravados.toFixed(2) }}</td></tr>
+      <tr class="font-bold bg-gray-100"><td class="td">SBC CON VALES</td><td class="td">${{ sbcConVales.toFixed(2) }}</td></tr>
     </table>
   </div>
 
   <!-- ================= CUOTAS IMSS ================= -->
-  <div class="card">
-    <h2 class="title">CÁLCULO CUOTAS IMSS</h2>
-    <table class="tabla">
-      <tr><td>DÍAS LABORADOS</td><td><input v-model.number="diasTrabajados" type="number" class="input" /></td></tr>
-      <tr><td>BASE IMSS QUINCENAL</td><td>${{ baseIMSSMensual.toFixed(2) }}</td></tr>
-      <tr><td>EXCEDENTE PATRONAL (0.4%)</td><td>${{ cuotaExcedentePatronal.toFixed(2) }}</td></tr>
-      <tr><td>PRESTACIONES EN DINERO (0.25%)</td><td>${{ prestacionesDinero.toFixed(2) }}</td></tr>
-      <tr><td>PRESTACIONES EN ESPECIE (0.375%)</td><td>${{ prestacionesEspecie.toFixed(2) }}</td></tr>
-      <tr><td>INVALIDEZ Y VIDA (0.625%)</td><td>${{ invalidezVida.toFixed(2) }}</td></tr>
-      <tr><td>CESANTÍA Y VEJEZ (1.125%)</td><td>${{ cesantiaVejez.toFixed(2) }}</td></tr>
-      <tr class="total"><td>TOTAL IMSS</td><td>${{ totalIMSS.toFixed(2) }}</td></tr>
+  <div class="border rounded-xl overflow-hidden">
+    <div class="bg-green-600 text-white font-bold text-center py-2">CUOTAS IMSS</div>
+    <table class="w-full border text-sm">
+      <tr><td class="td">BASE IMSS QUINCENAL</td><td class="td">${{ baseIMSSQuincenal.toFixed(2) }}</td></tr>
+      <tr><td class="td">EXCEDENTE PATRONAL</td><td class="td">${{ cuotaExcedentePatronal.toFixed(2) }}</td></tr>
+      <tr><td class="td">PRESTACIONES DINERO</td><td class="td">${{ prestacionesDinero.toFixed(2) }}</td></tr>
+      <tr><td class="td">PRESTACIONES ESPECIE</td><td class="td">${{ prestacionesEspecie.toFixed(2) }}</td></tr>
+      <tr><td class="td">INVALIDEZ Y VIDA</td><td class="td">${{ invalidezVida.toFixed(2) }}</td></tr>
+      <tr><td class="td">CESANTÍA Y VEJEZ</td><td class="td">${{ cesantiaVejez.toFixed(2) }}</td></tr>
+      <tr class="font-bold bg-green-200 text-lg"><td class="td">TOTAL IMSS</td><td class="td">${{ totalIMSS.toFixed(2) }}</td></tr>
     </table>
   </div>
 
+</div>
 </div>
 </AuthenticatedLayout>
 </template>
 
 <style scoped>
-.card { @apply bg-white rounded-xl shadow p-5 }
-.title { @apply font-bold text-lg mb-3 text-blue-800 }
-.tabla { @apply w-full text-sm border }
-.tabla td { @apply border p-2 }
-.resaltado { @apply bg-blue-100 font-semibold }
-.total { @apply bg-green-200 font-bold text-lg }
-.input { @apply border rounded px-2 py-1 w-full }
+.input {
+  padding: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 0.4rem;
+}
+.td {
+  border: 1px solid #ccc;
+  padding: 0.4rem;
+}
 </style>

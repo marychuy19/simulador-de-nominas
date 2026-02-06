@@ -94,7 +94,7 @@ const empleadosFiltrados = computed(() => {
               <p><strong>Identificación:</strong> {{ empleado.identificacion }}</p>
               <p><strong>Tipo de contrato:</strong> {{ empleado.tipo_contrato }}</p>
               <p><strong>Fecha de ingreso:</strong> {{ empleado.fecha_ingreso }}</p>
-              <p><strong>Salario:</strong> ${{ money(empleado.salario) }}</p>
+              <p><strong>Salario diario:</strong> ${{ money(empleado.salario) }}</p>
               <p><strong>Periodo salario:</strong> {{ empleado.periodo_salario }}</p>
               <p><strong>Tipo de salario:</strong> {{ empleado.tipo_salario }}</p>
               <p><strong>Jornada:</strong> {{ empleado.jornada }}</p>
