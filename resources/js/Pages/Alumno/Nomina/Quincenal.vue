@@ -13,6 +13,9 @@ const showTarifaModal = ref(false)
 ============================= */
 const empresa = ref('')
 const empleado = ref('')
+const tipoSalario = ref('')
+const tipoPago = ref('')
+const fechaIngreso = ref('')
 
 /* =============================
    PERCEPCIONES
@@ -113,7 +116,6 @@ const isrRetener = computed(() => {
    GUARDAR Y REDIRECCIONAR
 ============================= */
 const guardar = () => {
-  // Aquí en el futuro puedes hacer un router.post(...)
   router.visit('/nomina')
 }
 </script>
@@ -126,9 +128,32 @@ const guardar = () => {
       <div class="max-w-6xl mx-auto p-6 space-y-6">
 
         <!-- DATOS GENERALES -->
-        <div class="grid grid-cols-2 gap-4">
-          <input v-model="empresa" class="input bg-gray-100" placeholder="Nombre de la empresa" />
-          <input v-model="empleado" class="input bg-gray-100" placeholder="Nombre del empleado" />
+        <div class="border rounded-xl overflow-hidden">
+          <div class="bg-green-300 font-bold text-center py-2">
+            DATOS
+          </div>
+          <table class="w-full border text-sm">
+            <tr>
+              <td class="td font-semibold">EMPRESA</td>
+              <td class="td"><input v-model="empresa" class="input w-full" /></td>
+            </tr>
+            <tr>
+              <td class="td font-semibold">NOMBRE DEL EMPLEADO</td>
+              <td class="td"><input v-model="empleado" class="input w-full" /></td>
+            </tr>
+            <tr>
+              <td class="td font-semibold">TIPO DE SALARIO</td>
+              <td class="td"><input v-model="tipoSalario" class="input w-full" /></td>
+            </tr>
+            <tr>
+              <td class="td font-semibold">TIPO DE PAGO</td>
+              <td class="td"><input v-model="tipoPago" class="input w-full" /></td>
+            </tr>
+            <tr>
+              <td class="td font-semibold">FECHA DE INGRESO</td>
+              <td class="td"><input v-model="fechaIngreso" type="date" class="input w-full" /></td>
+            </tr>
+          </table>
         </div>
 
         <!-- PERCEPCIONES -->
@@ -235,7 +260,7 @@ const guardar = () => {
       </div>
     </div>
 
-    <!-- MODAL TARIFA ISR 2026 QUINCENAL -->
+    <!-- MODAL TARIFA ISR -->
     <div
       v-if="showTarifaModal"
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
