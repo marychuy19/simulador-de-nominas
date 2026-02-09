@@ -102,79 +102,94 @@ const guardarEmpleado = () => {
           </button>
         </div>
 
-        <!-- EMPRESAS REGISTRADAS -->
-        <div class="bg-white rounded-2xl shadow-xl p-8">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-blue-900">
-              Empresas registradas
-            </h3>
+     <!-- EMPRESAS REGISTRADAS -->
+<div class="bg-white rounded-3xl shadow-xl p-8">
+  <div class="flex items-center justify-between mb-8">
+    <h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">
+      Empresas registradas
+    </h3>
 
-            <span
-              v-if="empresas.length"
-              class="text-sm bg-blue-100 text-blue-800 px-4 py-1 rounded-full font-medium"
-            >
-              {{ empresas.length }} empresas
-            </span>
-          </div>
+    <span
+      v-if="empresas.length"
+      class="text-sm bg-gradient-to-r from-blue-100 to-blue-200
+             text-blue-900 px-5 py-1.5 rounded-full font-semibold shadow-sm"
+    >
+      {{ empresas.length }} empresas
+    </span>
+  </div>
 
-          <div v-if="empresas.length" class="space-y-4">
-            <div
-              v-for="empresa in empresas"
-              :key="empresa.id"
-              class="border rounded-xl p-5 hover:shadow-md transition cursor-pointer"
-              @click="seleccionarEmpresa(empresa)"
-            >
-              <div class="flex items-center justify-between">
-                <div>
-                  <p class="text-lg font-semibold text-gray-800">
-                    {{ empresa.nombre_razon_social }}
-                  </p>
-                  <p class="text-sm text-gray-500">
-                    RFC: {{ empresa.rfc }}
-                  </p>
-                </div>
-
-                <span class="px-4 py-1 rounded-full bg-green-100 text-green-800 font-semibold">
-                  {{ empresa.empleados_count }} empleados
-                </span>
-              </div>
-
-              <!-- EMPLEADOS -->
-              <div
-                v-if="empresaSeleccionada?.id === empresa.id"
-                class="mt-4 bg-gray-50 rounded-xl p-4 border"
-              >
-                <p class="font-semibold text-sm text-gray-700 mb-2">
-                  Empleados:
-                </p>
-
-                <ul
-                  v-if="empresa.empleados?.length"
-                  class="space-y-1"
-                >
-                  <li
-                    v-for="empleado in empresa.empleados"
-                    :key="empleado.id"
-                    class="text-sm text-gray-600"
-                  >
-                    • {{ empleado.nombre_completo }}
-                  </li>
-                </ul>
-
-                <p
-                  v-else
-                  class="text-sm text-gray-500"
-                >
-                  Esta empresa no tiene empleados registrados
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="text-center py-10 text-gray-500">
-            No hay empresas registradas todavía
-          </div>
+  <div
+    v-if="empresas.length"
+    class="grid grid-cols-1 gap-6"
+  >
+    <div
+      v-for="empresa in empresas"
+      :key="empresa.id"
+      @click="seleccionarEmpresa(empresa)"
+      class="group cursor-pointer bg-gradient-to-br from-white to-blue-50
+             border border-blue-100 rounded-2xl p-6
+             shadow-sm hover:shadow-xl hover:-translate-y-1
+             transition-all duration-300"
+    >
+      <!-- HEADER CARD -->
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-lg font-bold text-gray-800 group-hover:text-blue-800 transition">
+            {{ empresa.nombre_razon_social }}
+          </p>
+          <p class="text-xs text-gray-500 uppercase tracking-wide">
+            RFC · {{ empresa.rfc }}
+          </p>
         </div>
+
+        <span
+          class="px-4 py-1 rounded-full bg-green-100 text-green-800
+                 font-semibold text-sm shadow-sm"
+        >
+          {{ empresa.empleados_count }} empleados
+        </span>
+      </div>
+
+      <!-- EMPLEADOS -->
+      <div
+        v-if="empresaSeleccionada?.id === empresa.id"
+        class="mt-5 bg-white rounded-xl p-4 border border-gray-200"
+      >
+        <p class="font-semibold text-sm text-gray-700 mb-3">
+          Empleados registrados
+        </p>
+
+        <ul
+          v-if="empresa.empleados?.length"
+          class="space-y-2"
+        >
+          <li
+            v-for="empleado in empresa.empleados"
+            :key="empleado.id"
+            class="flex items-center gap-2 text-sm text-gray-700"
+          >
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            {{ empleado.nombre_completo }}
+          </li>
+        </ul>
+
+        <p
+          v-else
+          class="text-sm text-gray-500 italic"
+        >
+          Esta empresa no tiene empleados registrados
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div
+    v-else
+    class="text-center py-14 text-gray-500 italic"
+  >
+    No hay empresas registradas todavía
+  </div>
+</div>
 
       </div>
     </div>

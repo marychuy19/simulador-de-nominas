@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('direccion_fiscal');
             $table->string('regimen_fiscal');
 
-            // ✅ TODOS LOS PERIODOS SOPORTADOS EN TU SISTEMA
+        
             $table->enum('periodo_pago', [
                 'diario',
                 'semanal',

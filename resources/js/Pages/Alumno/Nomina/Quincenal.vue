@@ -27,7 +27,7 @@ const fechaIngreso = ref('')
 /* =============================
    PERCEPCIONES
 ============================= */
-const salarioBase = ref(300)
+const salarioBase = ref(0)
 const diasTrabajados = ref(15)
 
 const totalPercepciones = computed(() =>
@@ -196,6 +196,7 @@ const guardar = async () => {
 
 <template>
   <Head title="Simulador de Nómina" />
+  
   <AuthenticatedLayout>
     <div class="bg-blue-100 min-h-screen">
       <div class="max-w-6xl mx-auto p-6 space-y-6">
@@ -264,52 +265,61 @@ const guardar = async () => {
             </tr>
           </table>
         </div>
+<!-- ISR Y SUBSIDIO -->
+<div class="grid grid-cols-2 gap-6">
 
-        <!-- ISR Y SUBSIDIO -->
-        <div class="grid grid-cols-2 gap-6">
-          <div>
-            <div class="bg-blue-700 text-white font-bold text-center py-1">CÁLCULO DEL ISR</div>
+  <!-- ISR -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-blue-700 text-white font-bold text-center py-2">
+      CÁLCULO DEL ISR
+    </div>
 
-            <table class="w-full border text-sm">
-              <tr><td class="td">Base del ISR</td><td class="td">$ {{ totalPercepciones.toFixed(2) }}</td></tr>
-              <tr><td class="td">Límite inferior</td><td class="td">$ {{ filaISR?.li ?? 0 }}</td></tr>
-              <tr><td class="td">Excedente</td><td class="td">$ {{ excedente.toFixed(2) }}</td></tr>
-              <tr><td class="td">Tasa ISR</td><td class="td">{{ filaISR?.porcentaje ?? 0 }} %</td></tr>
-              <tr><td class="td">ISR excedente</td><td class="td">$ {{ isrExcedente.toFixed(2) }}</td></tr>
-              <tr><td class="td">Cuota fija</td><td class="td">$ {{ filaISR?.cuota ?? 0 }}</td></tr>
-              <tr class="font-bold bg-gray-100">
-                <td class="td">ISR determinado</td>
-                <td class="td">$ {{ isrDeterminado.toFixed(2) }}</td>
-              </tr>
-            </table>
+    <table class="w-full text-sm">
+      <tr><td class="td">Base del ISR</td><td class="td">$ {{ totalPercepciones.toFixed(2) }}</td></tr>
+      <tr><td class="td">Límite inferior</td><td class="td">$ {{ filaISR?.li ?? 0 }}</td></tr>
+      <tr><td class="td">Excedente</td><td class="td">$ {{ excedente.toFixed(2) }}</td></tr>
+      <tr><td class="td">Tasa ISR</td><td class="td">{{ filaISR?.porcentaje ?? 0 }} %</td></tr>
+      <tr><td class="td">ISR excedente</td><td class="td">$ {{ isrExcedente.toFixed(2) }}</td></tr>
+      <tr><td class="td">Cuota fija</td><td class="td">$ {{ filaISR?.cuota ?? 0 }}</td></tr>
+      <tr class="font-bold bg-gray-100">
+        <td class="td">ISR determinado</td>
+        <td class="td">$ {{ isrDeterminado.toFixed(2) }}</td>
+      </tr>
+    </table>
 
-            <button
-              @click="showTarifaModal = true"
-              class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg w-full"
-            >
-              Ver tarifa ISR
-            </button>
-          </div>
+    <button
+      @click="showTarifaModal = true"
+      class="bg-blue-600 text-white px-4 py-2 w-full font-semibold"
+    >
+      Ver tarifa ISR
+    </button>
+  </div>
 
-          <div>
-            <div class="bg-blue-500 text-white font-bold text-center py-1">SUBSIDIO PARA EL EMPLEO</div>
+  <!-- SUBSIDIO -->
+      <div class="bg-white rounded-xl shadow overflow-hidden">
+    <div class="bg-yellow-400 text-black font-bold text-center py-2">
+      SUBSIDIO PARA EL EMPLEO
+    </div>
 
-            <table class="w-full border text-sm">
-              <tr>
-                <td class="td">Tope de subsidio 2026</td>
-                <td class="td">$ {{ topeSubsidio2026.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}</td>
-              </tr>
-              <tr><td class="td">UMA 2026</td><td class="td">$ {{ uma }}</td></tr>
-              <tr><td class="td">% de subsidio</td><td class="td">{{ porcentajeSubsidio }} %</td></tr>
-              <tr><td class="td">UMA diaria</td><td class="td">$ {{ umaDiaria.toFixed(2) }}</td></tr>
-              <tr><td class="td">Tope de subsidio</td><td class="td">$ {{ topeSubsidio }}</td></tr>
-              <tr class="font-bold bg-gray-100">
-                <td class="td">Subsidio del periodo</td>
-                <td class="td">$ {{ subsidioPeriodo.toFixed(2) }}</td>
-              </tr>
-            </table>
-          </div>
-        </div>
+    <table class="w-full text-sm">
+      <tr>
+        <td class="td">Tope de subsidio 2026</td>
+        <td class="td">
+          $ {{ topeSubsidio2026.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}
+        </td>
+      </tr>
+      <tr><td class="td">UMA 2026</td><td class="td">$ {{ uma }}</td></tr>
+      <tr><td class="td">% de subsidio</td><td class="td">{{ porcentajeSubsidio }} %</td></tr>
+      <tr><td class="td">UMA diaria</td><td class="td">$ {{ umaDiaria.toFixed(2) }}</td></tr>
+      <tr><td class="td">Tope de subsidio</td><td class="td">$ {{ topeSubsidio }}</td></tr>
+      <tr class="font-bold bg-gray-100">
+        <td class="td">Subsidio del periodo</td>
+        <td class="td">$ {{ subsidioPeriodo.toFixed(2) }}</td>
+      </tr>
+    </table>
+  </div>
+
+</div>
 
         <!-- NOTA ARTÍCULO 96 -->
         <div
@@ -333,9 +343,8 @@ const guardar = async () => {
         <!-- BOTÓN GUARDAR -->
         <button
           @click="guardar"
-          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full"
-        >
-          Guardar
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full">
+          Guardar y siguiente
         </button>
 
       </div>

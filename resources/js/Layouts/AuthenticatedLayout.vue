@@ -95,7 +95,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
                   >
                     <div class="flex items-center gap-2">
                       <img :src="iconRecibo" class="w-6 h-6" />
-                      <span>Recibo</span>
+                      <span>Factura de nómina</span>
                     </div>
                   </NavLink>
 

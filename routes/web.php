@@ -48,8 +48,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/nomina/decena', [NominaController::class, 'decena'])->name('nomina.decena');
             Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])->name('nomina.quincenal');
             Route::get('/nomina/quincenal2', function () {
-    return Inertia::render('Alumno/Nomina/Quincenal2');
-})->name('alumno.nomina.quincenal2');
+            return Inertia::render('Alumno/Nomina/Quincenal2');
+            })->name('alumno.nomina.quincenal2');
 
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])->name('nomina.mensual');
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
