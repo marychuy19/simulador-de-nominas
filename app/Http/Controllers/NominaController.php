@@ -33,6 +33,7 @@ class NominaController extends Controller
     {
         return Inertia::render('Alumno/Nomina/Mensual');
     }
+    
 
     public function guardarIsr(Request $request)
 {

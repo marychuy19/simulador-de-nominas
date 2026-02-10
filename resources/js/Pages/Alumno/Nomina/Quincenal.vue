@@ -343,7 +343,8 @@ const guardar = async () => {
         <!-- BOTÓN GUARDAR -->
         <button
           @click="guardar"
-          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full">
+          class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full"
+        >
           Guardar y siguiente
         </button>
 

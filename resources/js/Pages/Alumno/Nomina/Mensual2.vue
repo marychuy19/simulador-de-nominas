@@ -23,7 +23,7 @@ const fechaIngreso = ref('')
    PERCEPCIONES
 ============================= */
 const salarioBase = ref(0)
-const diasTrabajados = ref(15)
+const diasTrabajados = ref(30)
 
 const totalPercepciones = computed(() =>
   salarioBase.value * diasTrabajados.value
@@ -43,7 +43,7 @@ onMounted(async () => {
 })
 
 /* =============================
-   AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS QUINCENALES DE ESA EMPRESA
+   AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS MENSUALES DE ESA EMPRESA
 ============================= */
 watch(empresa, async (empresaId) => {
   // reset
@@ -57,7 +57,7 @@ watch(empresa, async (empresaId) => {
   if (!empresaId) return
 
   try {
-    const resEmpleados = await axios.get('/alumno/empleados-quincenales', {
+    const resEmpleados = await axios.get('/alumno/empleados-mensuales', {
       params: { empresa_id: empresaId }
     })
     empleados.value = resEmpleados.data
@@ -137,7 +137,7 @@ const sbcConVales = computed(() => sbcSinVales.value + valesGravados.value)
 /* =============================
    BASE MENSUAL PARA CUOTAS
 ============================= */
-const diasMes = ref(15)
+const diasMes = ref(30)
 
 const baseMensualIMSS = computed(() => sbcConVales.value * diasMes.value)
 

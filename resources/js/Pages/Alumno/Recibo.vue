@@ -4,7 +4,7 @@ import { Head } from '@inertiajs/vue3'
 </script>
 
 <template>
-  <Head title="Recibo de Nómina" />
+  <Head title="Factura de Nómina" />
 
   <AuthenticatedLayout>
     <!-- HEADER -->

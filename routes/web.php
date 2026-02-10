@@ -44,14 +44,20 @@ Route::middleware(['auth'])->group(function () {
 
 
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
+            Route::get('/nomina/diaria2', function () {return Inertia::render('Alumno/Nomina/Diaria2');})->name('alumno.nomina.diaria2');
+
             Route::get('/nomina/semanal', [NominaController::class, 'semanal'])->name('nomina.semanal');
+            Route::get('/nomina/semanal2', function () {return Inertia::render('Alumno/Nomina/Semanal2');})->name('alumno.nomina.semanal2');
+
             Route::get('/nomina/decena', [NominaController::class, 'decena'])->name('nomina.decena');
+            Route::get('/nomina/decena2', function () {return Inertia::render('Alumno/Nomina/Decena2');})->name('alumno.nomina.decena2');
+
             Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])->name('nomina.quincenal');
-            Route::get('/nomina/quincenal2', function () {
-            return Inertia::render('Alumno/Nomina/Quincenal2');
-            })->name('alumno.nomina.quincenal2');
+            Route::get('/nomina/quincenal2', function () {return Inertia::render('Alumno/Nomina/Quincenal2');})->name('alumno.nomina.quincenal2');
 
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])->name('nomina.mensual');
+            Route::get('/nomina/mensual2', function () {return Inertia::render('Alumno/Nomina/Mensual2');})->name('alumno.nomina.mensual2');
+
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
 
 
@@ -59,6 +65,79 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/empresas-lista', function () {
                 return \App\Models\Empresa::select('id', 'nombre_razon_social')->get();
             })->name('empresas.lista');
+
+            // LISTA EMPLEADOS DIARIO POR EMPRESA (JSON)
+            Route::get('/empleados-diario', function (\Illuminate\Http\Request $request) {
+
+                $empresaId = $request->query('empresa_id');
+
+                $q = \App\Models\Empleado::query()
+                    ->where('periodo_salario', 'diario');
+
+                if ($empresaId) {
+                    $q->where('empresa_id', $empresaId);
+                }
+
+                return $q->select(
+                    'id',
+                    'empresa_id',
+                    'nombre_completo',
+                    'tipo_salario',
+                    'periodo_salario',
+                    'fecha_ingreso',
+                    'salario'
+                )->get();
+
+            })->name('empleados.diario');
+
+            // LISTA EMPLEADOS SEMANAL POR EMPRESA (JSON)
+            Route::get('/empleados-semanal', function (\Illuminate\Http\Request $request) {
+
+                $empresaId = $request->query('empresa_id');
+
+                $q = \App\Models\Empleado::query()
+                    ->where('periodo_salario', 'semanal');
+
+                if ($empresaId) {
+                    $q->where('empresa_id', $empresaId);
+                }
+
+                return $q->select(
+                    'id',
+                    'empresa_id',
+                    'nombre_completo',
+                    'tipo_salario',
+                    'periodo_salario',
+                    'fecha_ingreso',
+                    'salario'
+                )->get();
+
+            })->name('empleados.semanal');
+
+
+            // LISTA EMPLEADOS DECENA POR EMPRESA (JSON)
+            Route::get('/empleados-10_dias', function (\Illuminate\Http\Request $request) {
+
+                $empresaId = $request->query('empresa_id');
+
+                $q = \App\Models\Empleado::query()
+                    ->where('periodo_salario', '10_dias');
+
+                if ($empresaId) {
+                    $q->where('empresa_id', $empresaId);
+                }
+
+                return $q->select(
+                    'id',
+                    'empresa_id',
+                    'nombre_completo',
+                    'tipo_salario',
+                    'periodo_salario',
+                    'fecha_ingreso',
+                    'salario'
+                )->get();
+
+            })->name('empleados.10_dias');
 
             // LISTA EMPLEADOS QUINCENALES POR EMPRESA (JSON)
             Route::get('/empleados-quincenales', function (\Illuminate\Http\Request $request) {
@@ -83,6 +162,30 @@ Route::middleware(['auth'])->group(function () {
                 )->get();
 
             })->name('empleados.quincenales');
+
+            // LISTA EMPLEADOS MENSUALES POR EMPRESA (JSON)
+            Route::get('/empleados-mensuales', function (\Illuminate\Http\Request $request) {
+
+                $empresaId = $request->query('empresa_id');
+
+                $q = \App\Models\Empleado::query()
+                    ->where('periodo_salario', 'mensual');
+
+                if ($empresaId) {
+                    $q->where('empresa_id', $empresaId);
+                }
+
+                return $q->select(
+                    'id',
+                    'empresa_id',
+                    'nombre_completo',
+                    'tipo_salario',
+                    'periodo_salario',
+                    'fecha_ingreso',
+                    'salario'
+                )->get();
+
+            })->name('empleados.mensuales');
 
         });
 
