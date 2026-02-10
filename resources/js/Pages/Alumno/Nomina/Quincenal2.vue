@@ -4,6 +4,19 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+// ✅ RECIBE LOS DATOS QUE VIENEN DE QUINCENAL (desde el controlador)
+const props = defineProps({
+  prefill: {
+    type: Object,
+    default: () => ({
+      empresa: '',
+      empleado: '',
+      salario_base: 0,
+      dias_trabajados: 15,
+    }),
+  },
+})
+
 /* =============================
    LISTAS DESDE BASE DE DATOS
 ============================= */
@@ -29,8 +42,11 @@ const totalPercepciones = computed(() =>
   salarioBase.value * diasTrabajados.value
 )
 
+// ✅ banderita para evitar que el watch(empresa) te resetee cuando estamos precargando
+const isPrefilling = ref(true)
+
 /* =============================
-   CARGAR EMPRESAS AL INICIAR
+   CARGAR EMPRESAS AL INICIAR + APLICAR PREFILL
 ============================= */
 onMounted(async () => {
   try {
@@ -40,19 +56,27 @@ onMounted(async () => {
     console.error('Error cargando empresas:', e)
     empresas.value = []
   }
+
+  // ✅ Aplicamos valores iniciales que vienen de la vista 1
+  if (props.prefill?.empresa) empresa.value = String(props.prefill.empresa)
+  if (props.prefill?.salario_base != null) salarioBase.value = Number(props.prefill.salario_base || 0)
+  if (props.prefill?.dias_trabajados != null) diasTrabajados.value = Number(props.prefill.dias_trabajados || 15)
 })
 
 /* =============================
    AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS QUINCENALES DE ESA EMPRESA
 ============================= */
 watch(empresa, async (empresaId) => {
-  // reset
+  // reset (pero NO cuando venimos precargando)
   empleado.value = ''
   empleados.value = []
   tipoSalario.value = ''
   tipoPago.value = ''
   fechaIngreso.value = ''
-  salarioBase.value = 300
+
+  if (!isPrefilling.value) {
+    salarioBase.value = 300
+  }
 
   if (!empresaId) return
 
@@ -61,9 +85,18 @@ watch(empresa, async (empresaId) => {
       params: { empresa_id: empresaId }
     })
     empleados.value = resEmpleados.data
+
+    // ✅ Si venimos de la vista 1, seleccionamos el empleado automáticamente
+    if (isPrefilling.value && props.prefill?.empleado) {
+      empleado.value = String(props.prefill.empleado)
+    }
+
   } catch (e) {
     console.error('Error cargando empleados:', e)
     empleados.value = []
+  } finally {
+    // ✅ ya terminamos de precargar
+    isPrefilling.value = false
   }
 })
 
@@ -76,7 +109,14 @@ watch(empleado, (id) => {
     tipoSalario.value = emp.tipo_salario ?? ''
     tipoPago.value = emp.periodo_salario ?? ''
     fechaIngreso.value = emp.fecha_ingreso ?? ''
-    salarioBase.value = Number(emp.salario ?? 0)
+
+    // ✅ En quincenal2 respetamos lo que viene de la vista 1 si existe
+    // pero si no vino nada, usamos el salario del empleado.
+    if (props.prefill?.salario_base != null && Number(props.prefill.salario_base) > 0) {
+      salarioBase.value = Number(props.prefill.salario_base)
+    } else {
+      salarioBase.value = Number(emp.salario ?? 0)
+    }
   }
 })
 
@@ -138,14 +178,11 @@ const sbcConVales = computed(() => sbcSinVales.value + valesGravados.value)
    BASE MENSUAL PARA CUOTAS
 ============================= */
 const diasMes = ref(15)
-
 const baseMensualIMSS = computed(() => sbcConVales.value * diasMes.value)
 
 /* =============================
    CUOTAS IMSS – EXCEDENTE
 ============================= */
-
-// Excedente sobre 3 UMA
 const tresUMA = computed(() => uma.value * 3)
 
 const excedenteSBC = computed(() =>
@@ -156,7 +193,7 @@ const diferenciaSBC = computed(() => {
   if (sbcConVales.value < tresUMA.value) {
     return 0
   }
-  return sbcConVales.value  - tresUMA.value
+  return sbcConVales.value - tresUMA.value
 })
 
 const calculoExcedente = computed(() => {
@@ -199,64 +236,6 @@ const totalIMSS = computed(() => {
   )
 })
 
-
-/* =============================
-   CUOTAS IMSS – PATRÓN
-============================= */
-
-// Enfermedades y Maternidad
-const cuotaFijaPatron = computed(() => uma.value * 0.204)
-const excedentePatron = computed(() => excedenteSBC.value * 0.011)
-const prestacionesDineroPatron = computed(() => sbcConVales.value * 0.007)
-const gastosMedicosPatron = computed(() => sbcConVales.value * 0.0105)
-
-// Invalidez y Vida
-const invalidezVidaPatron = computed(() => sbcConVales.value * 0.0175)
-
-// Guarderías
-const guarderiasPatron = computed(() => sbcConVales.value * 0.01)
-
-// Retiro
-const retiroPatron = computed(() => sbcConVales.value * 0.02)
-
-// Cesantía y Vejez
-const cesantiaPatron = computed(() => sbcConVales.value * 0.0315)
-
-/* =============================
-   CUOTAS IMSS – TRABAJADOR
-============================= */
-
-const excedenteObrero = computed(() => excedenteSBC.value * 0.004)
-const prestacionesDineroObrero = computed(() => sbcConVales.value * 0.0025)
-const gastosMedicosObrero = computed(() => sbcConVales.value * 0.00375)
-const invalidezVidaObrero = computed(() => sbcConVales.value * 0.00625)
-const cesantiaObrero = computed(() => sbcConVales.value * 0.01125)
-
-
-
-/* =============================
-   TOTALES IMSS
-============================= */
-
-const totalPatronIMSS = computed(() =>
-  cuotaFijaPatron.value +
-  excedentePatron.value +
-  prestacionesDineroPatron.value +
-  gastosMedicosPatron.value +
-  invalidezVidaPatron.value +
-  guarderiasPatron.value +
-  retiroPatron.value +
-  cesantiaPatron.value
-)
-
-const totalObreroIMSS = computed(() =>
-  excedenteObrero.value +
-  prestacionesDineroObrero.value +
-  gastosMedicosObrero.value +
-  invalidezVidaObrero.value +
-  cesantiaObrero.value
-)
-
 /* =============================
    GUARDAR
 ============================= */
@@ -273,7 +252,7 @@ const guardar = async () => {
       proporcionVacaciones: proporcionVacaciones.value,
       sbcSinVales: sbcSinVales.value,
       valesGravados: valesGravados.value,
-      sbcConVales:sbcConVales.value,
+      sbcConVales: sbcConVales.value,
       totalIMSS: totalIMSS.value
     })
 
@@ -282,8 +261,6 @@ const guardar = async () => {
     console.error('Error al guarda:', e)
   }
 }
-
-
 </script>
 
 <template>
@@ -342,29 +319,21 @@ const guardar = async () => {
 
           <table class="w-full border text-sm">
             <tr>
-  <td class="td">SALARIO BASE</td>
-  <td class="td">
-    <div class="flex items-center gap-2">
-      <span class="font-semibold">$</span>
-      <input
-        v-model.number="salarioBase"
-        type="number"
-        class="input-sm"
-      />
-    </div>
-  </td>
-</tr>
+              <td class="td">SALARIO BASE</td>
+              <td class="td">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold">$</span>
+                  <input v-model.number="salarioBase" type="number" class="input-sm" />
+                </div>
+              </td>
+            </tr>
 
-<tr>
-  <td class="td">(x) DÍAS TRABAJADOS</td>
-  <td class="td">
-    <input
-      v-model.number="diasTrabajados"
-      type="number"
-      class="input-sm"
-    />
-  </td>
-</tr>
+            <tr>
+              <td class="td">(x) DÍAS TRABAJADOS</td>
+              <td class="td">
+                <input v-model.number="diasTrabajados" type="number" class="input-sm" />
+              </td>
+            </tr>
 
             <tr class="font-bold bg-gray-100">
               <td class="td">TOTAL DE PERCEPCIONES</td>
@@ -373,163 +342,137 @@ const guardar = async () => {
           </table>
         </div>
 
-      <!-- PRESTACIONES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-verde">PRESTACIONES</div>
-        <table class="tabla">
-          <tr><td>Aguinaldo (días)</td><td><input v-model.number="diasAguinaldo" type="number" class="input-sm" /></td></tr>
-          <tr><td>Vacaciones (días)</td><td><input v-model.number="diasVacaciones" type="number" class="input-sm" /></td></tr>
-          <tr><td>Prima vacacional (%)</td><td><input v-model.number="primaVacacional" step="0.01" type="number" class="input-sm" /></td></tr>
-          <tr><td>Vales de despensa (%)</td><td><input v-model.number="valesDespensaPorcentaje" step="0.01" type="number" class="input-sm" /></td></tr>
-        </table>
-      </div>
+        <!-- PRESTACIONES -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-verde">PRESTACIONES</div>
+          <table class="tabla">
+            <tr><td>Aguinaldo (días)</td><td><input v-model.number="diasAguinaldo" type="number" class="input-sm" /></td></tr>
+            <tr><td>Vacaciones (días)</td><td><input v-model.number="diasVacaciones" type="number" class="input-sm" /></td></tr>
+            <tr><td>Prima vacacional (%)</td><td><input v-model.number="primaVacacional" step="0.01" type="number" class="input-sm" /></td></tr>
+            <tr><td>Vales de despensa (%)</td><td><input v-model.number="valesDespensaPorcentaje" step="0.01" type="number" class="input-sm" /></td></tr>
+          </table>
+        </div>
 
-      <!-- FACTOR DE INTEGRACIÓN -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-azul">FACTOR DE INTEGRACIÓN</div>
-        <table class="tabla">
-          <tr><td>Salario diario</td><td>$ {{ salarioDiario.toFixed(2) }}</td></tr>
-          <tr><td>Proporción diaria aguinaldo</td><td>{{ proporcionAguinaldo.toFixed(4) }}</td></tr>
-          <tr><td>Proporción diaria vacaciones</td><td>{{ proporcionVacaciones.toFixed(4) }}</td></tr>
-          <tr class="resaltado"><td>Factor de integración</td><td>{{ factorIntegracion.toFixed(4) }}</td></tr>
-        </table>
-      </div>
+        <!-- FACTOR DE INTEGRACIÓN -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-azul">FACTOR DE INTEGRACIÓN</div>
+          <table class="tabla">
+            <tr><td>Salario diario</td><td>$ {{ salarioDiario.toFixed(2) }}</td></tr>
+            <tr><td>Proporción diaria aguinaldo</td><td>{{ proporcionAguinaldo.toFixed(4) }}</td></tr>
+            <tr><td>Proporción diaria vacaciones</td><td>{{ proporcionVacaciones.toFixed(4) }}</td></tr>
+            <tr class="resaltado"><td>Factor de integración</td><td>{{ factorIntegracion.toFixed(4) }}</td></tr>
+          </table>
+        </div>
 
-      <!-- SBC SIN VALES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-azul">SBC SIN VALES</div>
-        <table class="tabla">
-          <tr><td>SBC sin vales</td><td>$ {{ sbcSinVales.toFixed(2) }}</td></tr>
-        </table>
-      </div>
+        <!-- SBC SIN VALES -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-azul">SBC SIN VALES</div>
+          <table class="tabla">
+            <tr><td>SBC sin vales</td><td>$ {{ sbcSinVales.toFixed(2) }}</td></tr>
+          </table>
+        </div>
 
-      <!-- VALES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-morado">VALES DE DESPENSA</div>
-        <table class="tabla">
-          <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
-        <tr>
-  <td>Límite exento vales</td>
-  <td class="font-semibold text-gray-700">40%</td>
-</tr>
+        <!-- VALES -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-morado">VALES DE DESPENSA</div>
+          <table class="tabla">
+            <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
+            <tr><td>Límite exento vales</td><td class="font-semibold text-gray-700">40%</td></tr>
+            <tr><td>Exento permitido</td><td>$ {{ limiteExentoVales.toFixed(2) }}</td></tr>
+            <tr><td>Vales diarios</td><td>$ {{ valesDiarios.toFixed(2) }}</td></tr>
+            <tr><td>Exedente</td><td class="font-semibold text-gray-700">46.924</td></tr>
+            <tr class="resaltado"><td>Vales gravados</td><td>$ {{ valesGravados.toFixed(2) }}</td></tr>
+          </table>
+        </div>
 
-<tr>
-  <td>Exento permitido</td>
-  <td>$ {{ limiteExentoVales.toFixed(2) }}</td>
-</tr>
+        <!-- SBC CON VALES -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-rojo">SBC CON VALES</div>
+          <table class="tabla">
+            <tr class="resaltado"><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
+          </table>
+        </div>
 
-          <tr><td>Vales diarios</td><td>$ {{ valesDiarios.toFixed(2) }}</td></tr>
-       <tr>
-  <td>Exedente</td>
-  <td class="font-semibold text-gray-700">46.924</td>
-</tr>
-          <tr class="resaltado"><td>Vales gravados</td><td>$ {{ valesGravados.toFixed(2) }}</td></tr>
-        </table>
-      </div>
+        <!-- EXCEDENTE PATRONAL -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-azul">EXCEDENTE PATRONAL</div>
+          <table class="tabla">
+            <tr><td>Base mensual IMSS</td><td>$ {{ baseMensualIMSS.toFixed(2) }}</td></tr>
+            <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
+            <tr><td>3 UMA</td><td>$ {{ tresUMA.toFixed(2) }}</td></tr>
+            <tr><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
+            <tr><td>Diferencia</td><td>$ {{ diferenciaSBC.toFixed(2) }}</td></tr>
+            <tr><td>Días trabajados</td><td><input v-model.number="diasMes" type="number" class="input-sm" /></td></tr>
+            <tr><td>Calculo</td><td>$ {{ calculoExcedente.toFixed(2) }}</td></tr>
+            <tr><td>Excedente patronal</td><td class="font-semibold text-gray-700">0.4000%</td></tr>
+            <tr class="resaltado"><td>Importe</td><td>$ {{ importeExcedente.toFixed(2) }}</td></tr>
+          </table>
+        </div>
 
-      <!-- SBC CON VALES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-rojo">SBC CON VALES</div>
-        <table class="tabla">
-          <tr class="resaltado"><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
-        </table>
-      </div>
+        <!-- CUOTAS IMSS -->
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-azul">CUOTAS IMSS</div>
 
-      <!-- EXCEDENTE PATRONAL -->
-<div class="bg-white rounded-xl shadow overflow-hidden">
-  <div class="titulo-azul">EXCEDENTE PATRONAL</div>
-  <table class="tabla">
-    <tr><td>Base mensual IMSS</td><td>$ {{ baseMensualIMSS.toFixed(2) }}</td></tr>
-    <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
-    <tr><td>3 UMA</td><td>$ {{ tresUMA.toFixed(2) }}</td></tr>
-    <tr><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
-    <tr>
-  <td>Diferencia</td>
-  <td>$ {{ diferenciaSBC.toFixed(2) }}</td>
-</tr>
- <tr><td>Días trabajados</td><td><input v-model.number="diasMes" type="number" class="input-sm" /></td></tr>
-  <tr>
-  <td>Calculo</td>
-  <td>$ {{ calculoExcedente.toFixed(2) }}</td>
-</tr>
-<tr>
-  <td>Excedente patronal</td>
-  <td class="font-semibold text-gray-700">0.4000%</td>
-</tr>
+          <table class="tabla text-xs">
+            <tr class="font-bold bg-gray-100">
+              <td>Concepto</td>
+              <td>Porcentaje</td>
+              <td></td>
+              <td></td>
+            </tr>
 
-    <tr class="resaltado">
-  <td>Importe</td>
-  <td>$ {{ importeExcedente.toFixed(2) }}</td>
-</tr>
+            <tr>
+              <td>Excedente patronal</td>
+              <td>0.4000%</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>$ {{ importeExcedente.toFixed(2) }}</td>
+            </tr>
 
-  </table>
-</div>
+            <tr>
+              <td>Prestaciones de dinero</td>
+              <td>0.25%</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>$ {{ prestacionesDinero.toFixed(2) }}</td>
+            </tr>
 
-<!-- CUOTAS IMSS -->
-<div class="bg-white rounded-xl shadow overflow-hidden">
-  <div class="titulo-azul">CUOTAS IMSS</div>
+            <tr>
+              <td>Prestaciones en especie</td>
+              <td>0.375%</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>$ {{ prestacionesEspecie.toFixed(2) }}</td>
+            </tr>
 
-  <table class="tabla text-xs">
-    <tr class="font-bold bg-gray-100">
-      <td>Concepto</td>
-      <td>Porcentaje</td>
-      <td></td>
-      <td></td>
-    </tr>
+            <tr>
+              <td>Invalidez y vida</td>
+              <td>0.625%</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>$ {{ invalidezVida.toFixed(2) }}</td>
+            </tr>
 
-       <tr>
-      <td>Excedente patronal</td>
-      <td>0.4000%</td>
-      <td>$ {{ excetePatronal.toFixed(2) }}</td>
-      <td>$ {{ importeExcedente.toFixed(2) }}</td>
-    </tr>
+            <tr>
+              <td>Cesantia y vejez</td>
+              <td>1.125%</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>$ {{ cesantiaVejez.toFixed(2) }}</td>
+            </tr>
 
-    <tr>
-      <td>Prestaciones de dinero</td>
-      <td>0.25%</td>
-       <td>$ {{ excetePatronal.toFixed(2) }}</td>
-       <td>$ {{ prestacionesDinero.toFixed(2) }}</td>
-    </tr>
+            <tr class="resaltado">
+              <td>Suma de datos IMSS</td>
+              <td>-</td>
+              <td></td>
+              <td>$ {{ totalIMSS.toFixed(2) }}</td>
+            </tr>
+          </table>
+        </div>
 
-    <tr>
-      <td>Prestaciones en especie</td>
-      <td>0.375%</td>
-      <td>$ {{ excetePatronal.toFixed(2) }}</td>
-      <td>$ {{ prestacionesEspecie.toFixed(2) }}</td>
-    </tr>
-
-    <tr>
-      <td>Invalidez y vida</td>
-      <td>0.625%</td>
-      <td>$ {{ excetePatronal.toFixed(2) }}</td>
-      <td>$ {{ invalidezVida.toFixed(2) }}</td>
-    </tr>
-
-    <tr>
-      <td>Cesantia y vejez</td>
-      <td>1.125%</td>
-      <td>$ {{ excetePatronal.toFixed(2) }}</td>
-      <td>$ {{ cesantiaVejez.toFixed(2) }}</td>
-    </tr>
-
-  <tr class="resaltado">
-  <td>Suma de datos IMSS</td>
-  <td>-</td>
-  <td></td>
-  <td>$ {{ totalIMSS.toFixed(2) }}</td>
-</tr>
-  </table>
-</div>
-
-<!-- BOTÓN GUARDAR -->
+        <!-- BOTÓN GUARDAR -->
         <button
           @click="guardar"
           class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full">
           Factura de nomina
         </button>
 
-
-    </div>
+      </div>
     </div>
   </AuthenticatedLayout>
 </template>
@@ -562,5 +505,4 @@ const guardar = async () => {
   border-radius: 0.4rem;
   text-align: right;
 }
-
 </style>

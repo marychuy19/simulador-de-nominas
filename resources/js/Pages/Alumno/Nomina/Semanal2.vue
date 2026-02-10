@@ -4,6 +4,19 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+// ✅ RECIBE LOS DATOS QUE VIENEN DE DIARIA (desde el controlador)
+const props = defineProps({
+  prefil2: {
+    type: Object,
+    default: () => ({
+      empresa: '',
+      empleado: '',
+      salario_base: 0,
+      dias_trabajados: 1,
+    }),
+  },
+})
+
 /* =============================
    LISTAS DESDE BASE DE DATOS
 ============================= */
@@ -29,8 +42,11 @@ const totalPercepciones = computed(() =>
   salarioBase.value * diasTrabajados.value
 )
 
+// ✅ banderita para evitar que el watch(empresa) te resetee cuando estamos precargando
+const isPrefil2ing = ref(true)
+
 /* =============================
-   CARGAR EMPRESAS AL INICIAR
+   CARGAR EMPRESAS AL INICIAR + APLICAR PREFILL
 ============================= */
 onMounted(async () => {
   try {
@@ -40,19 +56,27 @@ onMounted(async () => {
     console.error('Error cargando empresas:', e)
     empresas.value = []
   }
+
+  // ✅ Aplicamos valores iniciales que vienen de la vista 1
+  if (props.prefil2?.empresa) empresa.value = String(props.prefil2.empresa)
+  if (props.prefil2?.salario_base != null) salarioBase.value = Number(props.prefil2.salario_base || 0)
+  if (props.prefil2?.dias_trabajados != null) diasTrabajados.value = Number(props.prefil2.dias_trabajados || 1)
 })
 
 /* =============================
-   AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS QUINCENALES DE ESA EMPRESA
+   AL CAMBIAR EMPRESA -> CARGAR EMPLEADOS SEMANAL DE ESA EMPRESA
 ============================= */
 watch(empresa, async (empresaId) => {
-  // reset
+  // reset (pero NO cuando venimos precargando)
   empleado.value = ''
   empleados.value = []
   tipoSalario.value = ''
   tipoPago.value = ''
   fechaIngreso.value = ''
-  salarioBase.value = 300
+
+  if (!isPrefil2ing.value) {
+    salarioBase.value = 300
+  }
 
   if (!empresaId) return
 
@@ -61,9 +85,18 @@ watch(empresa, async (empresaId) => {
       params: { empresa_id: empresaId }
     })
     empleados.value = resEmpleados.data
+
+    // ✅ Si venimos de la vista 1, seleccionamos el empleado automáticamente
+    if (isPrefil2ing.value && props.prefil2?.empleado) {
+      empleado.value = String(props.prefil2.empleado)
+    }
+
   } catch (e) {
     console.error('Error cargando empleados:', e)
     empleados.value = []
+  } finally {
+    // ✅ ya terminamos de precargar
+    isPrefil2ing.value = false
   }
 })
 
@@ -76,10 +109,15 @@ watch(empleado, (id) => {
     tipoSalario.value = emp.tipo_salario ?? ''
     tipoPago.value = emp.periodo_salario ?? ''
     fechaIngreso.value = emp.fecha_ingreso ?? ''
-    salarioBase.value = Number(emp.salario ?? 0)
+
+  
+    if (props.prefil2?.salario_base != null && Number(props.prefil2.salario_base) > 0) {
+      salarioBase.value = Number(props.prefil2.salario_base)
+    } else {
+      salarioBase.value = Number(emp.salario ?? 0)
+    }
   }
 })
-
 /* =============================
    PRESTACIONES
 ============================= */

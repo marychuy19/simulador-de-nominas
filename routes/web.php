@@ -44,19 +44,19 @@ Route::middleware(['auth'])->group(function () {
 
 
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
-            Route::get('/nomina/diaria2', function () {return Inertia::render('Alumno/Nomina/Diaria2');})->name('alumno.nomina.diaria2');
+            Route::get('/nomina/diaria2', [NominaController::class, 'diaria2'])->name('nomina.diaria2');
 
             Route::get('/nomina/semanal', [NominaController::class, 'semanal'])->name('nomina.semanal');
-            Route::get('/nomina/semanal2', function () {return Inertia::render('Alumno/Nomina/Semanal2');})->name('alumno.nomina.semanal2');
+            Route::get('/nomina/semanal2', [NominaController::class, 'semanal2'])->name('nomina.semanal2');
 
             Route::get('/nomina/decena', [NominaController::class, 'decena'])->name('nomina.decena');
-            Route::get('/nomina/decena2', function () {return Inertia::render('Alumno/Nomina/Decena2');})->name('alumno.nomina.decena2');
+            Route::get('/nomina/decena2', [NominaController::class, 'decena2'])->name('nomina.decena2');
 
             Route::get('/nomina/quincenal', [NominaController::class, 'quincenal'])->name('nomina.quincenal');
-            Route::get('/nomina/quincenal2', function () {return Inertia::render('Alumno/Nomina/Quincenal2');})->name('alumno.nomina.quincenal2');
+            Route::get('/nomina/quincenal2', [NominaController::class, 'quincenal2'])->name('nomina.quincenal2');
 
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])->name('nomina.mensual');
-            Route::get('/nomina/mensual2', function () {return Inertia::render('Alumno/Nomina/Mensual2');})->name('alumno.nomina.mensual2');
+            Route::get('/nomina/mensual2', [NominaController::class, 'mensual2'])->name('nomina.mensual2');
 
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
 

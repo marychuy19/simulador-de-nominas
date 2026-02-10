@@ -185,8 +185,18 @@ const guardar = async () => {
       subsidio_periodo: subsidioPeriodo.value,
       isr_retener: isrRetener.value
     })
-
-    router.visit('/alumno/nomina/mensual2')
+    
+    router.visit('/alumno/nomina/mensual2', {
+      data: {
+        empresa: empresa.value,
+        empleado: empleado.value,
+        salario_base: salarioBase.value,
+        dias_trabajados: diasTrabajados.value,
+      },
+      method: 'get',
+      preserveState: false,
+      replace: true,
+    })
   } catch (e) {
     console.error('Error al guardar ISR:', e)
   }
