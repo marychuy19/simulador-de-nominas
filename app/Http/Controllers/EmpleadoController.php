@@ -26,4 +26,31 @@ class EmpleadoController extends Controller
 
         return back()->with('success', 'Empleado registrado correctamente');
     }
+
+    public function update(Request $request, Empleado $empleado)
+{
+    $request->validate([
+        'nombre_completo' => 'required|string|max:255',
+        'identificacion' => 'required|string|max:255',
+        'puesto' => 'required|string|max:255',
+        'tipo_contrato' => 'required',
+        'fecha_ingreso' => 'required|date',
+        'salario' => 'required|numeric',
+        'periodo_salario' => 'required',
+        'tipo_salario' => 'required',
+        'jornada' => 'required',
+    ]);
+
+    $empleado->update($request->all());
+
+    return redirect()->back()->with('success', 'Empleado actualizado correctamente');
+}
+
+  public function destroy(Empleado $empleado)
+{
+    $empleado->delete();
+
+    return redirect()->back()->with('success', 'Empleado eliminado correctamente');
+}
+
 }

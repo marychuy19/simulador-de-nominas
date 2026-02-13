@@ -23,7 +23,7 @@ return new class extends Migration
             $table->enum('periodo_pago', [
                 'diario',
                 'semanal',
-                'decenal',
+                '10_dias',
                 'quincenal',
                 'mensual'
             ]);

@@ -25,12 +25,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
+        Route::resource('empresas', EmpresaController::class);
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
     Route::post('/empleados', [EmpleadoController::class, 'store'])->name('empleados.store');
+    Route::resource('empleados', EmpleadoController::class);
+
 
     Route::middleware(['role:alumno'])
         ->prefix('alumno')
@@ -41,7 +45,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/calculo-nomina', [AlumnoController::class, 'calculoNomina'])->name('calculo-nomina');
             Route::get('/recibo', [AlumnoController::class, 'recibo'])->name('recibo');
             Route::get('/empleados/create', [EmpleadoController::class, 'create'])->name('empleados.create');
-
 
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
             Route::get('/nomina/diaria2', [NominaController::class, 'diaria2'])->name('nomina.diaria2');
@@ -59,6 +62,11 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/nomina/mensual2', [NominaController::class, 'mensual2'])->name('nomina.mensual2');
 
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
+
+          Route::post('/alumno/nomina/guardar-nomina', [CalculoNominaController::class, 'store']);
+          
+          
+
 
 
             // LISTA EMPRESAS (JSON)

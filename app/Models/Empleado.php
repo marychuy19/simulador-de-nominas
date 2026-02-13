@@ -26,4 +26,10 @@ class Empleado extends Model
     {
         return $this->belongsTo(Empresa::class);
     }
+
+    public function calculosNomina()
+{
+    return $this->hasMany(CalculoNomina::class);
+}
+
 }

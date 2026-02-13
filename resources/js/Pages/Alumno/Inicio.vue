@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, useForm, usePage } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3'
+
 
 /* PROPS */
 const { props } = usePage()
@@ -37,12 +39,14 @@ const empresaForm = useForm({
 
 const guardarEmpresa = () => {
   empresaForm.post(route('empresas.store'), {
+    preserveScroll: true,
     onSuccess: () => {
       showEmpresaModal.value = false
       empresaForm.reset()
     }
   })
 }
+
 
 /* =========================
    FORM EMPLEADO
@@ -68,6 +72,15 @@ const guardarEmpleado = () => {
     }
   })
 }
+
+const eliminarEmpresa = (id) => {
+  if (confirm('¿Seguro que deseas eliminar esta empresa?')) {
+    router.delete(route('empresas.destroy', id), {
+      preserveScroll: true,
+    })
+  }
+}
+
 </script>
 
 <template>
@@ -133,22 +146,33 @@ const guardarEmpleado = () => {
     >
       <!-- HEADER CARD -->
       <div class="flex items-center justify-between">
-        <div>
-          <p class="text-lg font-bold text-gray-800 group-hover:text-blue-800 transition">
-            {{ empresa.nombre_razon_social }}
-          </p>
-          <p class="text-xs text-gray-500 uppercase tracking-wide">
-            RFC · {{ empresa.rfc }}
-          </p>
-        </div>
+  <div>
+    <p class="text-lg font-bold text-gray-800 group-hover:text-blue-800 transition">
+      {{ empresa.nombre_razon_social }}
+    </p>
+    <p class="text-xs text-gray-500 uppercase tracking-wide">
+      RFC · {{ empresa.rfc }}
+    </p>
+  </div>
 
-        <span
-          class="px-4 py-1 rounded-full bg-green-100 text-green-800
-                 font-semibold text-sm shadow-sm"
-        >
-          {{ empresa.empleados_count }} empleados
-        </span>
-      </div>
+  <div class="flex items-center gap-3">
+    <span
+      class="px-4 py-1 rounded-full bg-green-100 text-green-800
+             font-semibold text-sm shadow-sm"
+    >
+      {{ empresa.empleados_count }} empleados
+    </span>
+
+    <!-- BOTÓN ELIMINAR -->
+    <button
+      @click.stop="eliminarEmpresa(empresa.id)"
+      class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition"
+    >
+      Eliminar
+    </button>
+  </div>
+</div>
+
 
       <!-- EMPLEADOS -->
       <div

@@ -7,6 +7,9 @@ defineProps({
   users: Array
 })
 
+/* IMÁGENES */
+const avatarEmpleado = new URL('../image/user.jpeg', import.meta.url).href
+
 /* ================= FORM CREAR ================= */
 const form = useForm({
   name: '',
@@ -89,10 +92,15 @@ const deleteUser = (user) => {
         <!-- HEADER -->
         <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
           <div
-            class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center text-xl font-bold shadow"
-          >
-            👥
-          </div>
+  class="w-14 h-14 rounded-xl overflow-hidden shadow"
+>
+  <img
+    :src="avatarEmpleado"
+    alt="Usuarios"
+    class="w-full h-full object-cover"
+  />
+</div>
+
           <div>
             <h1 class="text-2xl font-bold text-gray-800">
               Administración de usuarios
