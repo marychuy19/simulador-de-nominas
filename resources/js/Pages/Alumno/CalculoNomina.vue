@@ -49,86 +49,163 @@ const imgLogo2 = new URL('../image/logo2.jpeg', import.meta.url).href
             </p>
           </div>
         </div>
+<!-- TARJETAS -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
 
-        <!-- TARJETAS -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <!-- Trabajo diario -->
+  <Link :href="route('alumno.nomina.diaria')" class="group block">
+    <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 border-l-8 border-blue-800 overflow-hidden">
 
-          <!-- Trabajo diario -->
-          <Link :href="route('alumno.nomina.diaria')" class="block">
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-              <div class="w-12 h-12 mb-4">
-                <img :src="imgTrabajo" alt="Trabajo diario" class="w-full h-full object-contain" />
-              </div>
-              <h4 class="text-lg font-semibold text-gray-800">
-                Trabajo realizado y número de días laborales
-              </h4>
-              <p class="text-gray-600 text-sm mt-2">
-                Cálculo de nómina de tus empleados por un día de trabajo realizado.
-              </p>
-            </div>
-          </Link>
+      <!-- Número decorativo -->
+      <div class="absolute right-6 top-4 text-6xl font-bold text-blue-50 select-none">
+        01
+      </div>
 
-          <!-- Periodo semanal -->
-          <Link :href="route('alumno.nomina.semanal')" class="block">
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-              <div class="w-12 h-12 mb-4">
-                <img :src="imgTrabajo" alt="Periodo semanal" class="w-full h-full object-contain" />
-              </div>
-              <h4 class="text-lg font-semibold text-gray-800">
-                Periodo semanal
-              </h4>
-              <p class="text-gray-600 text-sm mt-2">
-                Calcula la nómina de tus empleados en un periodo de 7 días.
-              </p>
-            </div>
-          </Link>
+      <h4 class="text-xl font-bold text-blue-900 mb-3">
+        Trabajo diario
+      </h4>
 
-          <!-- Periodo 10 días -->
-          <Link :href="route('alumno.nomina.decena')" class="block">
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-              <div class="w-12 h-12 mb-4">
-                <img :src="imgTrabajo" alt="Periodo de 10 días" class="w-full h-full object-contain" />
-              </div>
-              <h4 class="text-lg font-semibold text-gray-800">
-                Periodo de 10 días
-              </h4>
-              <p class="text-gray-600 text-sm mt-2">
-                Calcula la nómina de tus empleados en un periodo de 10 días.
-              </p>
-            </div>
-          </Link>
+      <p class="text-gray-600 text-sm leading-relaxed mb-6">
+        Cálculo de nómina por un día trabajado.
+      </p>
 
-          <!-- Periodo quincenal -->
-          <Link :href="route('alumno.nomina.quincenal')" class="block">
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-              <div class="w-12 h-12 mb-4">
-                <img :src="imgTrabajo" alt="Periodo quincenal" class="w-full h-full object-contain" />
-              </div>
-              <h4 class="text-lg font-semibold text-gray-800">
-                Periodo quincenal
-              </h4>
-              <p class="text-gray-600 text-sm mt-2">
-                Calcula la nómina de tus empleados en un periodo de 15 días.
-              </p>
-            </div>
-          </Link>
-
-          <!-- Periodo mensual -->
-          <Link :href="route('alumno.nomina.mensual')" class="block">
-            <div class="bg-white rounded-2xl shadow-md p-6 hover:shadow-xl transition cursor-pointer">
-              <div class="w-12 h-12 mb-4">
-                <img :src="imgTrabajo" alt="Periodo mensual" class="w-full h-full object-contain" />
-              </div>
-              <h4 class="text-lg font-semibold text-gray-800">
-                Periodo mensual
-              </h4>
-              <p class="text-gray-600 text-sm mt-2">
-                Calcula la nómina de tus empleados en un periodo de 30 días.
-              </p>
-            </div>
-          </Link>
-
+      <div class="flex items-center justify-between">
+        <div class="w-10 h-10">
+          <img :src="imgTrabajo" class="w-full h-full object-contain" />
         </div>
+
+        <span class="text-sm font-semibold text-blue-800 group-hover:underline">
+          Acceder →
+        </span>
+      </div>
+
+    </div>
+  </Link>
+
+
+  <!-- Periodo semanal -->
+  <Link :href="route('alumno.nomina.semanal')" class="group block">
+    <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 border-l-8 border-blue-800 overflow-hidden">
+
+      <div class="absolute right-6 top-4 text-6xl font-bold text-blue-50 select-none">
+        02
+      </div>
+
+      <h4 class="text-xl font-bold text-blue-900 mb-3">
+        Periodo semanal
+      </h4>
+
+      <p class="text-gray-600 text-sm leading-relaxed mb-6">
+         Cálculo de nómina por una semana trabajada.
+      </p>
+
+      <div class="flex items-center justify-between">
+        <div class="w-10 h-10">
+          <img :src="imgTrabajo" class="w-full h-full object-contain" />
+        </div>
+
+        <span class="text-sm font-semibold text-blue-800 group-hover:underline">
+          Acceder →
+        </span>
+      </div>
+
+    </div>
+  </Link>
+
+
+  <!-- Periodo 10 días -->
+  <Link :href="route('alumno.nomina.decena')" class="group block">
+    <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 border-l-8 border-blue-800 overflow-hidden">
+
+      <div class="absolute right-6 top-4 text-6xl font-bold text-blue-50 select-none">
+        03
+      </div>
+
+      <h4 class="text-xl font-bold text-blue-900 mb-3">
+        Periodo 10 días
+      </h4>
+
+      <p class="text-gray-600 text-sm leading-relaxed mb-6">
+        Cálculo de nómina para un periodo decenal.
+      </p>
+
+      <div class="flex items-center justify-between">
+        <div class="w-10 h-10">
+          <img :src="imgTrabajo" class="w-full h-full object-contain" />
+        </div>
+
+        <span class="text-sm font-semibold text-blue-800 group-hover:underline">
+          Acceder →
+        </span>
+      </div>
+
+    </div>
+  </Link>
+
+
+  <!-- Periodo quincenal -->
+  <Link :href="route('alumno.nomina.quincenal')" class="group block">
+    <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 border-l-8 border-blue-800 overflow-hidden">
+
+      <div class="absolute right-6 top-4 text-6xl font-bold text-blue-50 select-none">
+        04
+      </div>
+
+      <h4 class="text-xl font-bold text-blue-900 mb-3">
+        Periodo quincenal
+      </h4>
+
+      <p class="text-gray-600 text-sm leading-relaxed mb-6">
+        Calculo de nominas correspondiente a 15 días laborales.
+      </p>
+
+      <div class="flex items-center justify-between">
+        <div class="w-10 h-10">
+          <img :src="imgTrabajo" class="w-full h-full object-contain" />
+        </div>
+
+        <span class="text-sm font-semibold text-blue-800 group-hover:underline">
+          Acceder →
+        </span>
+      </div>
+
+    </div>
+  </Link>
+
+
+  <!-- Periodo mensual -->
+  <Link :href="route('alumno.nomina.mensual')" class="group block">
+    <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 border-l-8 border-blue-800 overflow-hidden">
+
+      <div class="absolute right-6 top-4 text-6xl font-bold text-blue-50 select-none">
+        05
+      </div>
+
+      <h4 class="text-xl font-bold text-blue-900 mb-3">
+        Periodo mensual
+      </h4>
+
+      <p class="text-gray-600 text-sm leading-relaxed mb-6">
+        Cálculo completo correspondiente a 30 días laborales.
+      </p>
+
+      <div class="flex items-center justify-between">
+        <div class="w-10 h-10">
+          <img :src="imgTrabajo" class="w-full h-full object-contain" />
+        </div>
+
+        <span class="text-sm font-semibold text-blue-800 group-hover:underline">
+          Acceder →
+        </span>
+      </div>
+
+    </div>
+  </Link>
+
+</div>
+
+
+
       </div>
     </div>
   </AuthenticatedLayout>

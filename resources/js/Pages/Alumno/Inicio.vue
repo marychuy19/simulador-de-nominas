@@ -94,129 +94,154 @@ const eliminarEmpresa = (id) => {
       </h2>
     </template>
 
-    <!-- CONTENIDO -->
-    <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
-      <div class="max-w-4xl mx-auto px-6 space-y-10">
+   <!-- CONTENIDO -->
+<div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
+  <div class="max-w-7xl mx-auto px-6">
 
-        <!-- BOTONES -->
-        <div class="bg-white rounded-2xl shadow-lg p-10 flex gap-6 justify-center">
+    <!-- LAYOUT 2 COLUMNAS -->
+    <div class="grid grid-cols-12 gap-8">
+
+      <!-- =======================
+           PANEL IZQUIERDO
+      ======================== -->
+      <div class="col-span-12 md:col-span-3">
+
+        <div class="bg-white rounded-2xl shadow-lg p-6 space-y-6">
+
+          <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+            Acciones rápidas
+          </h3>
+
           <button
             @click="showEmpresaModal = true"
-            class="px-8 py-4 rounded-xl bg-blue-700 text-white font-semibold hover:bg-blue-800 transition"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl
+                   bg-blue-700 text-white font-semibold
+                   hover:bg-blue-900 transition"
           >
             Registrar empresa
           </button>
 
           <button
             @click="showEmpleadoModal = true"
-            class="px-8 py-4 rounded-xl bg-green-700 text-white font-semibold hover:bg-green-800 transition"
+            class="w-full flex items-center gap-3 px-4 py-3 rounded-xl
+                   bg-blue-700 text-white font-semibold
+                   hover:bg-blue-900 transition"
           >
             Registrar empleado
           </button>
+
         </div>
 
-     <!-- EMPRESAS REGISTRADAS -->
-<div class="bg-white rounded-3xl shadow-xl p-8">
-  <div class="flex items-center justify-between mb-8">
-    <h3 class="text-2xl font-extrabold text-blue-900 tracking-tight">
-      Empresas registradas
-    </h3>
+      </div>
 
-    <span
-      v-if="empresas.length"
-      class="text-sm bg-gradient-to-r from-blue-100 to-blue-200
-             text-blue-900 px-5 py-1.5 rounded-full font-semibold shadow-sm"
-    >
-      {{ empresas.length }} empresas
-    </span>
-  </div>
+      <!-- =======================
+           CONTENIDO PRINCIPAL
+      ======================== -->
+      <div class="col-span-12 md:col-span-9">
 
-  <div
-    v-if="empresas.length"
-    class="grid grid-cols-1 gap-6"
-  >
-    <div
-      v-for="empresa in empresas"
-      :key="empresa.id"
-      @click="seleccionarEmpresa(empresa)"
-      class="group cursor-pointer bg-gradient-to-br from-white to-blue-50
-             border border-blue-100 rounded-2xl p-6
-             shadow-sm hover:shadow-xl hover:-translate-y-1
-             transition-all duration-300"
-    >
-      <!-- HEADER CARD -->
-      <div class="flex items-center justify-between">
-  <div>
-    <p class="text-lg font-bold text-gray-800 group-hover:text-blue-800 transition">
-      {{ empresa.nombre_razon_social }}
-    </p>
-    <p class="text-xs text-gray-500 uppercase tracking-wide">
-      RFC · {{ empresa.rfc }}
-    </p>
-  </div>
+        <!-- CARD EMPRESAS -->
+        <div class="bg-white rounded-2xl shadow-lg p-8">
 
-  <div class="flex items-center gap-3">
-    <span
-      class="px-4 py-1 rounded-full bg-green-100 text-green-800
-             font-semibold text-sm shadow-sm"
-    >
-      {{ empresa.empleados_count }} empleados
-    </span>
+          <div class="flex items-center justify-between mb-8 border-b pb-4">
+            <h3 class="text-2xl font-bold text-blue-900">
+              Empresas registradas
+            </h3>
 
-    <!-- BOTÓN ELIMINAR -->
-    <button
-      @click.stop="eliminarEmpresa(empresa.id)"
-      class="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition"
-    >
-      Eliminar
-    </button>
-  </div>
-</div>
+            <span
+              v-if="empresas.length"
+              class="text-sm bg-blue-100 text-blue-900
+                     px-4 py-1 rounded-full font-semibold"
+            >
+              {{ empresas.length }} empresas
+            </span>
+          </div>
 
+          <div v-if="empresas.length" class="space-y-6">
 
-      <!-- EMPLEADOS -->
-      <div
-        v-if="empresaSeleccionada?.id === empresa.id"
-        class="mt-5 bg-white rounded-xl p-4 border border-gray-200"
-      >
-        <p class="font-semibold text-sm text-gray-700 mb-3">
-          Empleados registrados
-        </p>
+            <div
+              v-for="empresa in empresas"
+              :key="empresa.id"
+              @click="seleccionarEmpresa(empresa)"
+              class="cursor-pointer bg-white border border-gray-200
+                     rounded-xl p-6
+                     hover:shadow-md transition"
+            >
+              <!-- HEADER -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-gray-800">
+                    {{ empresa.nombre_razon_social }}
+                  </p>
+                  <p class="text-xs text-gray-500 uppercase tracking-wide">
+                    RFC · {{ empresa.rfc }}
+                  </p>
+                </div>
 
-        <ul
-          v-if="empresa.empleados?.length"
-          class="space-y-2"
-        >
-          <li
-            v-for="empleado in empresa.empleados"
-            :key="empleado.id"
-            class="flex items-center gap-2 text-sm text-gray-700"
+                <div class="flex items-center gap-4">
+                  <span
+                    class="px-3 py-1 rounded-full bg-blue-100 text-blue-800
+                           font-semibold text-sm"
+                  >
+                    {{ empresa.empleados_count }} empleados
+                  </span>
+
+                  <button
+                    @click.stop="eliminarEmpresa(empresa.id)"
+                    class="text-red-600 text-sm hover:underline"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+
+              <!-- EMPLEADOS -->
+              <div
+                v-if="empresaSeleccionada?.id === empresa.id"
+                class="mt-5 bg-gray-50 rounded-lg p-4 border border-gray-200"
+              >
+                <p class="font-semibold text-sm text-gray-700 mb-3">
+                  Empleados registrados
+                </p>
+
+                <ul
+                  v-if="empresa.empleados?.length"
+                  class="space-y-2"
+                >
+                  <li
+                    v-for="empleado in empresa.empleados"
+                    :key="empleado.id"
+                    class="text-sm text-gray-700"
+                  >
+                    • {{ empleado.nombre_completo }}
+                  </li>
+                </ul>
+
+                <p
+                  v-else
+                  class="text-sm text-gray-500 italic"
+                >
+                  Esta empresa no tiene empleados registrados
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          <div
+            v-else
+            class="text-center py-14 text-gray-500 italic"
           >
-            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-            {{ empleado.nombre_completo }}
-          </li>
-        </ul>
+            No hay empresas registradas todavía
+          </div>
 
-        <p
-          v-else
-          class="text-sm text-gray-500 italic"
-        >
-          Esta empresa no tiene empleados registrados
-        </p>
+        </div>
+
       </div>
-    </div>
-  </div>
 
-  <div
-    v-else
-    class="text-center py-14 text-gray-500 italic"
-  >
-    No hay empresas registradas todavía
+    </div>
   </div>
 </div>
 
-      </div>
-    </div>
 
     <!-- =========================
          MODAL EMPRESA

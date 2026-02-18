@@ -173,54 +173,116 @@ const guardarEmpleado = () => {
           />
         </div>
 
-        <!-- LISTADO -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div v-for="empleado in empleadosFiltrados"
-               :key="empleado.id"
-               class="bg-white rounded-2xl shadow-lg p-6 border-l-8 border-blue-600 flex justify-between">
+      <!-- LISTADO -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+  <div
+    v-for="empleado in empleadosFiltrados"
+    :key="empleado.id"
+    class="bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-blue-100 flex flex-col justify-between"
+  >
 
-            <div class="space-y-2 text-sm text-gray-700">
-              <p><strong>Identificación:</strong> {{ empleado.identificacion }}</p>
-              <p><strong>Tipo contrato:</strong> {{ empleado.tipo_contrato }}</p>
-              <p><strong>Fecha ingreso:</strong> {{ empleado.fecha_ingreso }}</p>
-              <p><strong>Salario:</strong> ${{ money(empleado.salario) }}</p>
-              <p><strong>Periodo:</strong> {{ empleado.periodo_salario }}</p>
-              <p><strong>Tipo salario:</strong> {{ empleado.tipo_salario }}</p>
-              <p><strong>Jornada:</strong> {{ empleado.jornada }}</p>
-              <p><strong>Empresa:</strong>
-                {{ empleado.empresa?.nombre_razon_social ?? 'Sin empresa' }}
-              </p>
+    <!-- HEADER SUPERIOR -->
+    <div class="flex items-center justify-between mb-4">
 
-              <div class="flex gap-2 mt-3">
-                <button
-                  @click="editarEmpleado(empleado)"
-                  class="px-3 py-1 text-sm bg-blue-600 text-white rounded-lg">
-                  Editar
-                </button>
-
-                <button
-                  @click="eliminarEmpleado(empleado.id)"
-                  class="px-3 py-1 text-sm bg-red-600 text-white rounded-lg">
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <div class="text-right">
-              <div class="w-14 h-14 rounded-xl overflow-hidden shadow mb-2">
-                <img :src="avatarEmpleado"
-                     class="w-full h-full object-cover" />
-              </div>
-              <h3 class="font-semibold text-gray-800">
-                {{ empleado.nombre_completo }}
-              </h3>
-              <p class="text-sm text-gray-500">
-                {{ empleado.puesto }}
-              </p>
-            </div>
-
-          </div>
+      <div class="flex items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-md">
+          <img
+            :src="avatarEmpleado"
+            class="w-full h-full object-cover"
+          />
         </div>
+
+        <div>
+          <h3 class="font-bold text-lg text-blue-900 leading-tight">
+            {{ empleado.nombre_completo }}
+          </h3>
+          <p class="text-sm text-gray-500">
+            {{ empleado.puesto }}
+          </p>
+        </div>
+      </div>
+
+      <div class="px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-700 rounded-full">
+        {{ empleado.tipo_contrato || 'Sin contrato' }}
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN -->
+    <div class="grid grid-cols-2 gap-y-3 text-sm text-gray-600 mb-6">
+
+      <div>
+        <p class="text-gray-400 text-xs">Identificación</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.identificacion }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-gray-400 text-xs">Fecha ingreso</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.fecha_ingreso }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-gray-400 text-xs">Salario</p>
+        <p class="font-medium text-gray-800">
+          ${{ money(empleado.salario) }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-gray-400 text-xs">Periodo</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.periodo_salario }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-gray-400 text-xs">Tipo salario</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.tipo_salario }}
+        </p>
+      </div>
+
+      <div>
+        <p class="text-gray-400 text-xs">Jornada</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.jornada }}
+        </p>
+      </div>
+
+      <div class="col-span-2">
+        <p class="text-gray-400 text-xs">Empresa</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.empresa?.nombre_razon_social ?? 'Sin empresa asignada' }}
+        </p>
+      </div>
+
+    </div>
+
+    <!-- BOTONES -->
+    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+
+      <button
+        @click="editarEmpleado(empleado)"
+        class="px-4 py-2 text-sm font-medium rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
+      >
+        Editar
+      </button>
+
+      <button
+        @click="eliminarEmpleado(empleado.id)"
+        class="px-4 py-2 text-sm font-medium rounded-xl bg-red-500 text-white hover:bg-red-600 transition shadow-sm"
+      >
+        Eliminar
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
 
       <!-- MENSAJE -->
 <div v-if="sinResultados"

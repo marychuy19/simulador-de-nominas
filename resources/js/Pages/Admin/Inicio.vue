@@ -69,7 +69,7 @@ const totalAdmins = computed(() =>
     <p class="text-sm text-gray-500 uppercase tracking-wide">
       Usuarios Totales
     </p>
-    <p class="text-4xl font-bold text-blue-700 mt-2">
+    <p class="text-4xl font-bold text-black-700 mt-2">
       {{ totalUsuarios }}
     </p>
   </div>
@@ -91,7 +91,7 @@ const totalAdmins = computed(() =>
     <p class="text-sm text-gray-500 uppercase tracking-wide">
       Alumnos
     </p>
-    <p class="text-4xl font-bold text-green-600 mt-2">
+    <p class="text-4xl font-bold text-black-700 mt-2">
       {{ totalAlumnos }}
     </p>
   </div>
@@ -112,7 +112,7 @@ const totalAdmins = computed(() =>
     <p class="text-sm text-gray-500 uppercase tracking-wide">
       Administradores
     </p>
-    <p class="text-4xl font-bold text-purple-600 mt-2">
+    <p class="text-4xl font-bold text-black-700 mt-2">
       {{ totalAdmins }}
     </p>
   </div>
