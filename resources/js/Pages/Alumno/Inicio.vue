@@ -242,208 +242,216 @@ const eliminarEmpresa = (id) => {
   </div>
 </div>
 
+<!-- =========================
+     MODAL EMPRESA
+========================= -->
+<div
+  v-if="showEmpresaModal"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+>
+  <div class="bg-white w-full max-w-lg rounded-2xl shadow-xl border border-gray-200 overflow-hidden animate-fade">
 
-    <!-- =========================
-         MODAL EMPRESA
-    ========================= -->
-    <div
-      v-if="showEmpresaModal"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-        <h3 class="text-xl font-semibold mb-4">
-          Registrar empresa
-        </h3>
-
-        <div class="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre o razón social"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empresaForm.nombre_razon_social"
-          />
-
-          <input
-            type="text"
-            placeholder="RFC"
-            maxlength="13"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empresaForm.rfc"
-          />
-
-          <textarea
-            placeholder="Dirección fiscal"
-            class="w-full rounded-xl border-gray-300"
-            rows="2"
-            v-model="empresaForm.direccion_fiscal"
-          ></textarea>
-
-          <input
-            type="text"
-            placeholder="Régimen fiscal"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empresaForm.regimen_fiscal"
-          />
-
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empresaForm.periodo_pago"
-          >
-            <option value="">Periodo de pago</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="10_dias">10 días</option>
-            <option value="mensual">Mensual</option>
-          </select>
-
-          <input
-            type="text"
-            placeholder="Registro patronal"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empresaForm.registro_patronal"
-          />
-        </div>
-
-        <div class="flex justify-end gap-3 mt-6">
-          <button
-            @click="showEmpresaModal = false"
-            class="px-4 py-2 rounded-lg bg-gray-300"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="guardarEmpresa"
-            class="px-4 py-2 rounded-lg bg-green-700 text-white"
-          >
-            Guardar
-          </button>
-        </div>
-      </div>
+    <!-- HEADER -->
+    <div class="bg-blue-600 text-white px-6 py-4">
+      <h3 class="text-lg font-semibold tracking-wide">
+        Registrar empresa
+      </h3>
+      <p class="text-xs opacity-80">
+        Complete la información fiscal correspondiente
+      </p>
     </div>
 
-    <!-- =========================
-         MODAL EMPLEADO
-    ========================= -->
-    <div
-      v-if="showEmpleadoModal"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-    >
-      <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
-        <h3 class="text-xl font-semibold mb-4">
-          Registrar empleado
-        </h3>
+    <!-- BODY -->
+    <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
 
-        <div class="space-y-4">
-          <input
-            type="text"
-            placeholder="Nombre completo"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.nombre_completo"
-          />
+      <input type="text" placeholder="Nombre o razón social"
+        class="modal-input"
+        v-model="empresaForm.nombre_razon_social" />
 
-          <input
-            type="text"
-            placeholder="CURP / NSS / Identificación"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.identificacion"
-          />
+      <input type="text" placeholder="RFC" maxlength="13"
+        class="modal-input"
+        v-model="empresaForm.rfc" />
 
-          <input
-            type="text"
-            placeholder="Puesto"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.puesto"
-          />
+      <textarea placeholder="Dirección fiscal" rows="2"
+        class="modal-input"
+        v-model="empresaForm.direccion_fiscal"></textarea>
 
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.tipo_contrato"
-          >
-            <option value="">Tipo de contrato</option>
-            <option value="indefinido">Indefinido</option>
-            <option value="temporal">Temporal</option>
-            <option value="honorarios">Honorarios</option>
-          </select>
+      <input type="text" placeholder="Régimen fiscal"
+        class="modal-input"
+        v-model="empresaForm.regimen_fiscal" />
 
-          <input
-            type="date"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.fecha_ingreso"
-          />
+      <select class="modal-input"
+        v-model="empresaForm.periodo_pago">
+        <option value="">Periodo de pago</option>
+        <option value="diario">Diario</option>
+        <option value="semanal">Semanal</option>
+        <option value="quincenal">Quincenal</option>
+        <option value="10_dias">10 días</option>
+        <option value="mensual">Mensual</option>
+      </select>
 
-          <input
-            type="number"
-            step="0.01"
-            placeholder="Salario base (diario)"
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.salario"
-          />
+      <input type="text" placeholder="Registro patronal"
+        class="modal-input"
+        v-model="empresaForm.registro_patronal" />
 
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.periodo_salario"
-          >
-            <option value="">Periodo de salario</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="10_dias">10 días</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="mensual">Mensual</option>
-          </select>
-
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.tipo_salario"
-          >
-            <option value="">Tipo de salario</option>
-            <option value="fijo">Fijo</option>
-            <option value="variable">Variable</option>
-            <option value="mixto">Mixto</option>
-          </select>
-
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.jornada"
-          >
-            <option value="">Jornada laboral</option>
-            <option value="completa">Completa</option>
-            <option value="media">Media</option>
-            <option value="nocturna">Nocturna</option>
-          </select>
-
-          <select
-            class="w-full rounded-xl border-gray-300"
-            v-model="empleadoForm.empresa_id"
-          >
-            <option value="">Empresa donde trabaja</option>
-            <option
-              v-for="empresa in empresas"
-              :key="empresa.id"
-              :value="empresa.id"
-            >
-              {{ empresa.nombre_razon_social }}
-            </option>
-          </select>
-        </div>
-
-        <div class="flex justify-end gap-3 mt-6">
-          <button
-            @click="showEmpleadoModal = false"
-            class="px-4 py-2 rounded-lg bg-gray-300"
-          >
-            Cancelar
-          </button>
-          <button
-            @click="guardarEmpleado"
-            class="px-4 py-2 rounded-lg bg-green-700 text-white"
-          >
-            Guardar
-          </button>
-        </div>
-      </div>
     </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t">
+      <button
+        @click="showEmpresaModal = false"
+        class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+
+      <button
+        @click="guardarEmpresa"
+        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition"
+      >
+        Guardar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+ <!-- =========================
+     MODAL EMPLEADO
+========================= -->
+<div
+  v-if="showEmpleadoModal"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+>
+  <div class="bg-white w-full max-w-2xl rounded-2xl shadow-xl border border-gray-200 overflow-hidden animate-fade">
+
+    <!-- HEADER -->
+    <div class="bg-blue-600 text-white px-6 py-4">
+      <h3 class="text-lg font-semibold tracking-wide">
+        Registrar empleado
+      </h3>
+      <p class="text-xs opacity-80">
+        Información laboral y contractual
+      </p>
+    </div>
+
+    <!-- BODY -->
+    <div class="p-6 grid md:grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+
+      <input type="text" placeholder="Nombre completo"
+        class="modal-input"
+        v-model="empleadoForm.nombre_completo" />
+
+      <input type="text" placeholder="CURP / NSS / Identificación"
+        class="modal-input"
+        v-model="empleadoForm.identificacion" />
+
+      <input type="text" placeholder="Puesto"
+        class="modal-input"
+        v-model="empleadoForm.puesto" />
+
+      <select class="modal-input"
+        v-model="empleadoForm.tipo_contrato">
+        <option value="">Tipo de contrato</option>
+        <option value="indefinido">Indefinido</option>
+        <option value="temporal">Temporal</option>
+        <option value="honorarios">Honorarios</option>
+      </select>
+
+      <input type="date"
+        class="modal-input"
+        v-model="empleadoForm.fecha_ingreso" />
+
+      <input type="number" step="0.01"
+        placeholder="Salario base (diario)"
+        class="modal-input"
+        v-model="empleadoForm.salario" />
+
+      <select class="modal-input"
+        v-model="empleadoForm.periodo_salario">
+        <option value="">Periodo de salario</option>
+        <option value="diario">Diario</option>
+        <option value="semanal">Semanal</option>
+        <option value="10_dias">10 días</option>
+        <option value="quincenal">Quincenal</option>
+        <option value="mensual">Mensual</option>
+      </select>
+
+      <select class="modal-input"
+        v-model="empleadoForm.tipo_salario">
+        <option value="">Tipo de salario</option>
+        <option value="fijo">Fijo</option>
+        <option value="variable">Variable</option>
+        <option value="mixto">Mixto</option>
+      </select>
+
+      <select class="modal-input"
+        v-model="empleadoForm.jornada">
+        <option value="">Jornada laboral</option>
+        <option value="completa">Completa</option>
+        <option value="media">Media</option>
+        <option value="nocturna">Nocturna</option>
+      </select>
+
+      <select class="modal-input md:col-span-2"
+        v-model="empleadoForm.empresa_id">
+        <option value="">Empresa donde trabaja</option>
+        <option
+          v-for="empresa in empresas"
+          :key="empresa.id"
+          :value="empresa.id">
+          {{ empresa.nombre_razon_social }}
+        </option>
+      </select>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t">
+      <button
+        @click="showEmpleadoModal = false"
+        class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+
+      <button
+        @click="guardarEmpleado"
+        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition"
+      >
+        Guardar
+      </button>
+    </div>
+
+  </div>
+</div>
 
   </AuthenticatedLayout>
 </template>
+<style scoped>
+.modal-input {
+  @apply w-full bg-white border border-gray-300 rounded-xl px-3 py-2
+  focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+  outline-none transition;
+}
+
+/* Animación suave */
+.animate-fade {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+</style>
+
 
