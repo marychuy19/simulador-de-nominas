@@ -297,73 +297,152 @@ const guardarEmpleado = () => {
 
       </div>
     </div>
+<!-- =========================
+     MODAL EMPLEADO (ESTILO INSTITUCIONAL)
+========================= -->
+<div
+  v-if="showEmpleadoModal"
+  class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+>
 
-    <!-- MODAL COMPLETO -->
-    <div v-if="showEmpleadoModal"
-         class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto">
+  <div class="bg-white w-full max-w-xl rounded-2xl shadow-xl border border-gray-200 overflow-hidden animate-fade">
 
-      <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 my-10">
-        <h3 class="text-xl font-semibold mb-4">
-          {{ editando ? 'Editar empleado' : 'Registrar empleado' }}
-        </h3>
-
-        <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-
-          <input v-model="empleadoForm.nombre_completo" type="text" placeholder="Nombre completo" class="w-full rounded-xl border-gray-300" />
-
-          <input v-model="empleadoForm.identificacion" type="text" placeholder="CURP / NSS / Identificación" class="w-full rounded-xl border-gray-300" />
-
-          <input v-model="empleadoForm.puesto" type="text" placeholder="Puesto" class="w-full rounded-xl border-gray-300" />
-
-          <select v-model="empleadoForm.tipo_contrato" class="w-full rounded-xl border-gray-300">
-            <option value="">Tipo de contrato</option>
-            <option value="indefinido">Indefinido</option>
-            <option value="temporal">Temporal</option>
-            <option value="honorarios">Honorarios</option>
-          </select>
-
-          <input v-model="empleadoForm.fecha_ingreso" type="date" class="w-full rounded-xl border-gray-300" />
-
-          <input v-model="empleadoForm.salario" type="number" step="0.01" placeholder="Salario base (diario)" class="w-full rounded-xl border-gray-300" />
-
-          <select v-model="empleadoForm.periodo_salario" class="w-full rounded-xl border-gray-300">
-            <option value="">Periodo de salario</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="10_dias">10 días</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="mensual">Mensual</option>
-          </select>
-
-          <select v-model="empleadoForm.tipo_salario" class="w-full rounded-xl border-gray-300">
-            <option value="">Tipo de salario</option>
-            <option value="fijo">Fijo</option>
-            <option value="variable">Variable</option>
-            <option value="mixto">Mixto</option>
-          </select>
-
-          <select v-model="empleadoForm.jornada" class="w-full rounded-xl border-gray-300">
-            <option value="">Jornada laboral</option>
-            <option value="completa">Completa</option>
-            <option value="media">Media</option>
-            <option value="nocturna">Nocturna</option>
-          </select>
-
-        </div>
-
-        <div class="flex justify-end gap-3 mt-6">
-          <button @click="showEmpleadoModal = false"
-                  class="px-4 py-2 rounded-lg bg-gray-300">
-            Cancelar
-          </button>
-
-          <button @click="guardarEmpleado"
-                  class="px-4 py-2 rounded-lg bg-green-700 text-white">
-            {{ editando ? 'Actualizar' : 'Guardar' }}
-          </button>
-        </div>
-      </div>
+    <!-- HEADER -->
+    <div class="bg-blue-600 text-white px-6 py-4">
+      <h3 class="text-lg font-semibold tracking-wide">
+        {{ editando ? 'Editar empleado' : 'Registrar empleado' }}
+      </h3>
+      <p class="text-xs opacity-80">
+        Información laboral del empleado
+      </p>
     </div>
+
+    <!-- BODY -->
+    <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+
+      <input
+        v-model="empleadoForm.nombre_completo"
+        type="text"
+        placeholder="Nombre completo"
+        class="modal-input"
+      />
+
+      <input
+        v-model="empleadoForm.identificacion"
+        type="text"
+        placeholder="CURP / NSS / Identificación"
+        class="modal-input"
+      />
+
+      <input
+        v-model="empleadoForm.puesto"
+        type="text"
+        placeholder="Puesto"
+        class="modal-input"
+      />
+
+      <select
+        v-model="empleadoForm.tipo_contrato"
+        class="modal-input"
+      >
+        <option value="">Tipo de contrato</option>
+        <option value="indefinido">Indefinido</option>
+        <option value="temporal">Temporal</option>
+        <option value="honorarios">Honorarios</option>
+      </select>
+
+      <input
+        v-model="empleadoForm.fecha_ingreso"
+        type="date"
+        class="modal-input"
+      />
+
+      <input
+        v-model="empleadoForm.salario"
+        type="number"
+        step="0.01"
+        placeholder="Salario base (diario)"
+        class="modal-input"
+      />
+
+      <select
+        v-model="empleadoForm.periodo_salario"
+        class="modal-input"
+      >
+        <option value="">Periodo de salario</option>
+        <option value="diario">Diario</option>
+        <option value="semanal">Semanal</option>
+        <option value="10_dias">10 días</option>
+        <option value="quincenal">Quincenal</option>
+        <option value="mensual">Mensual</option>
+      </select>
+
+      <select
+        v-model="empleadoForm.tipo_salario"
+        class="modal-input"
+      >
+        <option value="">Tipo de salario</option>
+        <option value="fijo">Fijo</option>
+        <option value="variable">Variable</option>
+        <option value="mixto">Mixto</option>
+      </select>
+
+      <select
+        v-model="empleadoForm.jornada"
+        class="modal-input"
+      >
+        <option value="">Jornada laboral</option>
+        <option value="completa">Completa</option>
+        <option value="media">Media</option>
+        <option value="nocturna">Nocturna</option>
+      </select>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="flex justify-end gap-3 px-6 py-4 bg-gray-50 border-t">
+
+      <button
+        @click="showEmpleadoModal = false"
+        class="px-4 py-2 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition"
+      >
+        Cancelar
+      </button>
+
+      <button
+        @click="guardarEmpleado"
+        class="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-sm transition"
+      >
+        {{ editando ? 'Actualizar' : 'Guardar' }}
+      </button>
+
+    </div>
+
+  </div>
+</div>
 
   </AuthenticatedLayout>
 </template>
+<style scoped>
+.modal-input {
+  @apply w-full bg-white border border-gray-300 rounded-xl px-3 py-2
+  focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+  outline-none transition;
+}
+
+.animate-fade {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+</style>
