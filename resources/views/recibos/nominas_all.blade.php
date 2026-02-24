@@ -21,24 +21,38 @@
       <th>Empresa</th>
       <th>Empleado</th>
       <th>Tipo</th>
-      <th>Sal. Diario</th>
-      <th>IMSS</th>
-      <th>ISR</th>
+      <th class="right">Total percepciones (ISR)</th>
+      <th class="right">IMSS</th>
+      <th class="right">ISR</th>
+      <th class="right">Líquido</th>
       <th>Fecha</th>
     </tr>
   </thead>
   <tbody>
     @foreach($calculos as $c)
-      @php $e=$c->empleado; $emp=$e?->empresa; $isr=$e?->latestIsr; @endphp
+      @php
+        $e = $c->empleado;
+        $emp = $e?->empresa;
+        $isr = $e?->latestIsr;
+
+        $tp = (float) ($isr?->total_percepciones ?? 0);
+        $imss = (float) ($c->total_imss ?? 0);
+        $isrRet = (float) ($isr?->isr_retener ?? 0);
+
+        $liq = $tp - $imss - $isrRet;
+      @endphp
       <tr>
         <td>{{ $c->id }}</td>
         <td>{{ $emp?->nombre_razon_social ?? '—' }}</td>
         <td>{{ $e?->nombre_completo ?? '—' }}</td>
         <td>{{ $e?->periodo_salario ?? '—' }}</td>
-        <td class="right">$ {{ number_format((float)$c->salario_diario,2) }}</td>
-        <td class="right">$ {{ number_format((float)$c->total_imss,2) }}</td>
-        <td class="right">$ {{ number_format((float)($isr?->isr_retener ?? 0),2) }}</td>
-        <td>{{ $c->created_at?->format('Y-m-d H:i') }}</td>
+
+        <td class="right">$ {{ number_format($tp, 2) }}</td>
+        <td class="right">$ {{ number_format($imss, 2) }}</td>
+        <td class="right">$ {{ number_format($isrRet, 2) }}</td>
+        <td class="right">$ {{ number_format($liq, 2) }}</td>
+
+        <td>{{ optional($c->created_at)->format('Y-m-d H:i') }}</td>
       </tr>
     @endforeach
   </tbody>

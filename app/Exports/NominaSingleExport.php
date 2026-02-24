@@ -13,16 +13,33 @@ class NominaSingleExport implements FromArray, WithHeadings
     public function headings(): array
     {
         return [
-            'ID','Empresa','Empleado','Tipo',
-            'Salario Diario','Proporción Aguinaldo','Proporción Vacaciones',
-            'IMSS Total','ISR Retener','Fecha'
+            'ID',
+            'Empresa',
+            'Empleado',
+            'Tipo',
+            'Salario Diario',
+            'Total Percepciones (ISR)',
+            'IMSS Total',
+            'ISR Retener',
+            'Líquido a Percibir',
+            'Fecha',
         ];
     }
 
     public function array(): array
     {
         $c = CalculoNomina::with(['empleado.empresa','empleado.latestIsr'])->findOrFail($this->id);
-        $e = $c->empleado; $emp = $e?->empresa; $isr = $e?->latestIsr;
+
+        $e = $c->empleado;
+        $emp = $e?->empresa;
+        $isr = $e?->latestIsr;
+
+        // ✅ BD desde ISR
+        $tp = (float) ($isr?->total_percepciones ?? 0);
+        $imss = (float) ($c->total_imss ?? 0);
+        $isrRet = (float) ($isr?->isr_retener ?? 0);
+
+        $liq = $tp - $imss - $isrRet;
 
         return [[
             $c->id,
@@ -30,10 +47,10 @@ class NominaSingleExport implements FromArray, WithHeadings
             $e?->nombre_completo,
             $e?->periodo_salario,
             $c->salario_diario,
-            $c->proporcion_aguinaldo,
-            $c->proporcion_vacaciones,
-            $c->total_imss,
-            $isr?->isr_retener ?? 0,
+            $tp,
+            $imss,
+            $isrRet,
+            $liq,
             optional($c->created_at)->format('Y-m-d H:i'),
         ]];
     }
