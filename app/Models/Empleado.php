@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Isr;
+
 
 class Empleado extends Model
 {
@@ -30,6 +32,16 @@ class Empleado extends Model
     public function calculosNomina()
 {
     return $this->hasMany(CalculoNomina::class);
+}
+
+public function isrs()
+{
+    return $this->hasMany(Isr::class);
+}
+
+public function latestIsr()
+{
+    return $this->hasOne(Isr::class)->latestOfMany();
 }
 
 }

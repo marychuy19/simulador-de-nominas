@@ -186,11 +186,14 @@ const eliminarEmpresa = (id) => {
                   </span>
 
                   <button
-                    @click.stop="eliminarEmpresa(empresa.id)"
-                    class="text-red-600 text-sm hover:underline"
-                  >
-                    Eliminar
-                  </button>
+  @click.stop="eliminarEmpresa(empresa.id)"
+  class="px-6 py-2.5 rounded-full
+         bg-red-500 text-white font-semibold
+         hover:bg-red-600
+         transition duration-200 shadow"
+>
+  Eliminar
+</button>
                 </div>
               </div>
 

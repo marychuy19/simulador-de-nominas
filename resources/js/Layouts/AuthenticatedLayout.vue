@@ -160,31 +160,100 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
           ☰
         </button>
 
-        <h1 class="text-lg font-semibold text-gray-700 hidden lg:block">
-          Simulador Nómina
-        </h1>
+        <!-- TITULO -->
+<div class="hidden lg:flex flex-col">
+  <h1 class="text-xl font-bold text-gray-800 dark:text-gray-100 leading-tight transition-colors duration-300">
+    Simulador de Nómina
+  </h1>
+  <span class="text-xs text-gray-500 dark:text-gray-400">
+    Sistema académico de cálculo
+  </span>
+</div>
 
-        <!-- Usuario -->
-        <Dropdown align="right" width="48">
-          <template #trigger>
-            <button class="text-sm font-medium text-gray-600 hover:text-gray-800">
-              {{ $page.props.auth.user.name }}
-            </button>
-          </template>
+<!-- LADO DERECHO -->
+<div class="flex items-center gap-5">
 
-          <template #content>
-            <DropdownLink :href="route('profile.edit')">
-              Perfil
-            </DropdownLink>
-            <DropdownLink
-              :href="route('logout')"
-              method="post"
-              as="button"
-            >
-              Cerrar sesión
-            </DropdownLink>
-          </template>
-        </Dropdown>
+  <!-- FECHA -->
+  <span class="hidden md:block text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
+    {{ new Date().toLocaleDateString() }}
+  </span>
+
+  <!-- USUARIO -->
+  <Dropdown align="right" width="64">
+    <template #trigger>
+      <button
+        class="flex items-center gap-3 px-4 py-2 rounded-2xl
+               bg-gray-100 dark:bg-gray-700
+               hover:bg-gray-200 dark:hover:bg-gray-600
+               shadow-sm hover:shadow-md
+               transition-all duration-300 ease-in-out
+               transform hover:scale-105"
+      >
+        <!-- Avatar -->
+        <div class="relative">
+          <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold shadow-md">
+            {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
+          </div>
+
+          <!-- Indicador activo -->
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white dark:border-gray-700 rounded-full animate-pulse"></span>
+        </div>
+
+        <!-- Nombre y Rol -->
+        <div class="text-left hidden sm:block">
+          <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-300">
+            {{ $page.props.auth.user.name }}
+          </div>
+
+          <!-- Rol dinámico -->
+          <div
+            class="text-xs font-medium px-2 py-0.5 rounded-full inline-block mt-1
+                   transition-all duration-300"
+            :class="{
+              'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300': $page.props.auth.user.role === 'admin',
+              'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300': $page.props.auth.user.role === 'alumno'
+            }"
+          >
+            {{ $page.props.auth.user.role }}
+          </div>
+        </div>
+
+        <!-- Flecha -->
+        <svg class="w-4 h-4 text-gray-500 dark:text-gray-300 transition-transform duration-300 group-hover:rotate-180"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </template>
+
+    <template #content>
+      <div class="px-4 py-3 border-b dark:border-gray-600">
+        <div class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+          {{ $page.props.auth.user.name }}
+        </div>
+        <div class="text-xs text-gray-400">
+          Rol: {{ $page.props.auth.user.role }}
+        </div>
+      </div>
+
+      <DropdownLink :href="route('profile.edit')">
+        Perfil
+      </DropdownLink>
+
+      <DropdownLink
+        :href="route('logout')"
+        method="post"
+        as="button"
+      >
+        Cerrar sesión
+      </DropdownLink>
+    </template>
+  </Dropdown>
+
+</div>
 
       </header>
 

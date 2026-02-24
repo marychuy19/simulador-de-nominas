@@ -10,6 +10,8 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NominaController;
+use App\Http\Controllers\CalculoNominaController;
+use App\Http\Controllers\ReciboController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -62,12 +64,17 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/nomina/mensual2', [NominaController::class, 'mensual2'])->name('nomina.mensual2');
 
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr']) ->name('guardar.isr');
-
-          Route::post('/alumno/nomina/guardar-nomina', [CalculoNominaController::class, 'store']);
+            Route::post('/nomina/guardar-nomina', [CalculoNominaController::class, 'store'])->name('nomina.guardar');
           
-          
+        Route::get('/recibo', [ReciboController::class, 'index'])->name('recibo');
 
+Route::get('/recibo/{calculo}/pdf', [ReciboController::class, 'pdf'])->name('recibo.pdf');
+Route::get('/recibo/{calculo}/excel', [ReciboController::class, 'excel'])->name('recibo.excel');
 
+Route::get('/recibo/pdf-all', [ReciboController::class, 'pdfAll'])->name('recibo.pdfAll');
+Route::get('/recibo/excel-all', [ReciboController::class, 'excelAll'])->name('recibo.excelAll');
+
+Route::delete('/recibo/{calculo}', [ReciboController::class, 'destroy'])->name('recibo.destroy');
 
             // LISTA EMPRESAS (JSON)
             Route::get('/empresas-lista', function () {

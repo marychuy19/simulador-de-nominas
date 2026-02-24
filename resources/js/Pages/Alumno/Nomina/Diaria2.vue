@@ -320,7 +320,7 @@ const guardar = async () => {
       totalIMSS: totalIMSS.value
     })
 
-    router.get('/alumno/nomina/recibo')
+    router.get('/alumno/recibo')
   } catch (e) {
     console.error('Error al guarda:', e)
   }
