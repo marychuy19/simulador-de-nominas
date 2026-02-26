@@ -3,6 +3,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, router, usePage } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
 
+/* IMÁGENES */
+const logoFactura = new URL('../image/factura.jpeg', import.meta.url).href
+
 const props = defineProps({
   calculos: Object,
   filters: Object,
@@ -63,8 +66,32 @@ const borrar = (id) => {
       <h2 class="text-2xl font-bold text-slate-900">Recibos de Nómina</h2>
     </template>
 
-    <div class="py-8">
+    <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
       <div class="max-w-7xl mx-auto px-6 space-y-6">
+         <!-- BIENVENIDA -->
+       <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
+
+
+          <!-- LOGO -->
+          <div
+            class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow"
+          >
+            <img
+              :src="logoFactura"
+              alt="Logo"
+              class="w-full h-full object-contain rounded-xl"
+            />
+          </div>
+
+          <div>
+            <h3 class="text-2xl font-semibold text-gray-800">
+                 Recibos de Nómina
+            </h3>
+            <p class="text-gray-600 mt-1">
+              Gestión y descarga de recibos generados en el sistema.
+            </p>
+          </div>
+        </div>
 
         <!-- Filtros + Acciones globales -->
         <div class="bg-white rounded-2xl shadow p-5 space-y-4">

@@ -158,34 +158,118 @@ const deleteUser = (user) => {
 
             <tbody>
               <tr
-                v-for="user in users"
-                :key="user.id"
-                class="border-b hover:bg-slate-50 transition"
-              >
-                <td class="p-3">{{ user.name }}</td>
-                <td class="p-3">{{ user.email }}</td>
-                <td class="p-3">{{ user.cuatrimestre }}</td>
-                <td class="p-3 text-gray-400">••••••••</td>
-                <td class="p-3 capitalize">{{ user.role }}</td>
+  v-for="user in users"
+  :key="user.id"
+  class="border-b hover:bg-slate-50 transition"
+>
+  <!-- NOMBRE -->
+  <td class="p-3">
+    <input
+      v-if="editingUserId === user.id"
+      v-model="editForm.name"
+      class="input"
+    />
+    <span v-else>
+      {{ user.name }}
+    </span>
+  </td>
 
-                <td class="p-3 flex gap-3">
-                  <button
-                    type="button"
-                    @click="startEdit(user)"
-                    class="text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Editar
-                  </button>
+  <!-- EMAIL -->
+  <td class="p-3">
+    <input
+      v-if="editingUserId === user.id"
+      v-model="editForm.email"
+      class="input"
+    />
+    <span v-else>
+      {{ user.email }}
+    </span>
+  </td>
 
-                  <button
-                    type="button"
-                    @click="deleteUser(user)"
-                    class="text-red-600 hover:text-red-800 font-medium"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
+  <!-- CUATRIMESTRE -->
+  <td class="p-3">
+    <select
+      v-if="editingUserId === user.id"
+      v-model="editForm.cuatrimestre"
+      class="input"
+    >
+      <option v-for="n in 11" :key="n" :value="n">
+        {{ n }}
+      </option>
+    </select>
+    <span v-else>
+      {{ user.cuatrimestre }}
+    </span>
+  </td>
+
+  <!-- PASSWORD -->
+  <td class="p-3">
+    <input
+      v-if="editingUserId === user.id"
+      v-model="editForm.password"
+      type="password"
+      placeholder="Nueva contraseña"
+      class="input"
+    />
+    <span v-else class="text-gray-400">
+      ••••••••
+    </span>
+  </td>
+
+  <!-- ROL -->
+  <td class="p-3">
+    <select
+      v-if="editingUserId === user.id"
+      v-model="editForm.role"
+      class="input"
+    >
+      <option value="alumno">Alumno</option>
+      <option value="admin">Administrador</option>
+    </select>
+    <span v-else class="capitalize">
+      {{ user.role }}
+    </span>
+  </td>
+
+  <!-- ACCIONES -->
+  <td class="p-3 flex gap-3">
+    <template v-if="editingUserId === user.id">
+      <button
+        type="button"
+        @click="updateUser(user)"
+        class="px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+      >
+        Guardar
+      </button>
+
+      <button
+        type="button"
+        @click="cancelEdit"
+        class="px-3 py-1 rounded-lg bg-gray-400 text-white hover:bg-gray-500 transition"
+      >
+        Cancelar
+      </button>
+    </template>
+
+    <template v-else>
+      <button
+        type="button"
+        @click="startEdit(user)"
+        class="px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+      >
+        Editar
+      </button>
+
+      <button
+        type="button"
+        @click="deleteUser(user)"
+        class="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
+      >
+        Eliminar
+      </button>
+    </template>
+  </td>
+</tr>
             </tbody>
           </table>
         </div>
