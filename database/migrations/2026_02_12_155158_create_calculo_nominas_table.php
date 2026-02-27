@@ -14,6 +14,11 @@ return new class extends Migration
     Schema::create('calculo_nominas', function (Blueprint $table) {
         $table->id();
 
+
+        $table->foreignId('user_id')
+        ->constrained()
+        ->onDelete('cascade');
+
         $table->foreignId('empleado_id')
               ->constrained()
               ->onDelete('cascade');

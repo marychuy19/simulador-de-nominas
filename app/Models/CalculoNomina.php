@@ -10,6 +10,7 @@ class CalculoNomina extends Model
     use HasFactory;
 
     protected $fillable = [
+    'user_id',
     'empleado_id',
     'dias_aguinaldo',
     'dias_vacaciones',

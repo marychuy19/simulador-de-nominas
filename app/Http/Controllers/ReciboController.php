@@ -14,12 +14,12 @@ class ReciboController extends Controller
 {
     public function index(Request $request)
     {
-        $q = CalculoNomina::query()
-            ->with([
-                'empleado.empresa',
-                'empleado.latestIsr',
-            ])
-            ->latest();
+        $q = CalculoNomina::where('user_id', auth()->id())
+    ->with([
+        'empleado.empresa',
+        'empleado.latestIsr',
+    ])
+    ->latest();
 
         // Buscar por empleado o empresa
         if ($request->filled('search')) {
@@ -56,29 +56,43 @@ class ReciboController extends Controller
         ]);
     }
 
-    public function destroy(CalculoNomina $calculo)
-    {
-        $calculo->delete();
-        return back()->with('success', 'Nómina eliminada correctamente.');
-    }
+   public function destroy($id)
+{
+    $calculo = CalculoNomina::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    $calculo->delete();
+
+    return back()->with('success', 'Nómina eliminada correctamente.');
+}
 
     // PDF de UNA nómina
-    public function pdf(CalculoNomina $calculo)
-    {
-        $calculo->load(['empleado.empresa', 'empleado.latestIsr']);
+    public function pdf($id)
+{
+    $calculo = CalculoNomina::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->with(['empleado.empresa', 'empleado.latestIsr'])
+        ->firstOrFail();
 
-        $pdf = Pdf::loadView('recibos.nomina', [
-            'calculo' => $calculo,
-        ])->setPaper('a4');
+    $pdf = Pdf::loadView('recibos.nomina', [
+        'calculo' => $calculo,
+    ])->setPaper('a4');
 
-        return $pdf->download("nomina_{$calculo->id}.pdf");
-    }
+    return $pdf->download("nomina_{$calculo->id}.pdf");
+}
 
-    // Excel de UNA nómina
-    public function excel(CalculoNomina $calculo)
-    {
-        return Excel::download(new NominaSingleExport($calculo->id), "nomina_{$calculo->id}.xlsx");
-    }
+    public function excel($id)
+{
+    $calculo = CalculoNomina::where('id', $id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
+
+    return Excel::download(
+        new NominaSingleExport($calculo->id),
+        "nomina_{$calculo->id}.xlsx"
+    );
+}
 
     // Excel de TODAS
     public function excelAll(Request $request)
@@ -89,9 +103,15 @@ class ReciboController extends Controller
     // PDF de TODAS (tipo reporte)
     public function pdfAll(Request $request)
     {
-        $q = CalculoNomina::query()
-            ->with(['empleado.empresa','empleado.latestIsr'])
-            ->latest();
+      return Excel::download(
+    new NominasAllExport(
+        array_merge(
+            $request->only(['search','empresa','tipo']),
+            ['user_id' => auth()->id()]
+        )
+    ),
+    "nominas_todas.xlsx"
+);
 
         // Reusa filtros
         if ($request->filled('search')) {
