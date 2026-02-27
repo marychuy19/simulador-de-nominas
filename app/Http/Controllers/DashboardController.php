@@ -2,35 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empresa;
-use App\Models\Empleado;
-use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Empresa;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $user = auth()->user();
+        $empresas = Empresa::query()
+            ->where('user_id', auth()->id())
+            ->withCount('empleados')
+            ->with(['empleados' => function ($q) {
+                $q->orderBy('nombre_completo'); // o 'nombre' si así se llama tu columna
+            }])
+            ->orderBy('nombre_razon_social')
+            ->get();
 
-        // ✅ ALUMNO
-        if ($user->role === 'alumno') {
-            return Inertia::render('Alumno/Inicio', [
-                'empresas' => Empresa::with('empleados') 
-                    ->withCount('empleados')
-                    ->orderBy('nombre_razon_social')
-                    ->get(),
-            ]);
-
-            
-        }
- // ✅ ADMIN
-        if ($user->role === 'admin') {
-            return Inertia::render('Admin/Inicio', [
-                'users' => User::select('id', 'role')->get() // 👈 solo enviamos lo necesario
-            ]);
-        }
-        abort(403);
+        return Inertia::render('Alumno/Inicio', [
+            'empresas' => $empresas,
+        ]);
     }
-    
 }

@@ -8,10 +8,20 @@ use Inertia\Inertia;
 
 class EmpresaController extends Controller
 {
+    private function ensureOwner(Empresa $empresa): void
+    {
+        if ((int)$empresa->user_id !== (int)auth()->id()) {
+            abort(403, 'No puedes acceder a esta empresa.');
+        }
+    }
+
     public function index()
     {
-        $empresas = Empresa::withCount('empleados')
+        $empresas = Empresa::query()
+            ->where('user_id', auth()->id())
+            ->withCount('empleados')
             ->with('empleados')
+            ->orderBy('nombre_razon_social')
             ->get();
 
         return Inertia::render('Dashboard', [
@@ -30,14 +40,17 @@ class EmpresaController extends Controller
             'registro_patronal' => 'required|string',
         ]);
 
-        Empresa::create($validated);
+        Empresa::create($validated + [
+            'user_id' => auth()->id(),
+        ]);
 
         return redirect()->route('dashboard');
-
     }
 
     public function update(Request $request, Empresa $empresa)
     {
+        $this->ensureOwner($empresa);
+
         $validated = $request->validate([
             'nombre_razon_social' => 'required|string',
             'rfc' => 'required|string',
@@ -53,12 +66,11 @@ class EmpresaController extends Controller
     }
 
     public function destroy(Empresa $empresa)
-{
-    $empresa->delete();
+    {
+        $this->ensureOwner($empresa);
 
-    return redirect()->route('dashboard')->with('success', 'Empresa eliminada correctamente');
+        $empresa->delete();
+
+        return redirect()->route('dashboard')->with('success', 'Empresa eliminada correctamente');
+    }
 }
-
-}
-
-

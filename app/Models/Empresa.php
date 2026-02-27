@@ -10,6 +10,7 @@ class Empresa extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nombre_razon_social',
         'rfc',
         'direccion_fiscal',
@@ -17,6 +18,11 @@ class Empresa extends Model
         'periodo_pago',
         'registro_patronal',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function empleados()
     {

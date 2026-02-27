@@ -10,7 +10,11 @@ class AlumnoController extends Controller
     public function empleado()
     {
         return Inertia::render('Alumno/Empleado', [
-            'empleados' => Empleado::with('empresa')->latest()->get()
+            'empleados' => Empleado::query()
+                ->with('empresa')
+                ->whereHas('empresa', fn($q) => $q->where('user_id', auth()->id()))
+                ->latest()
+                ->get()
         ]);
     }
 

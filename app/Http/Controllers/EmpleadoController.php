@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Empleado;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 
 class EmpleadoController extends Controller
@@ -22,35 +23,52 @@ class EmpleadoController extends Controller
             'jornada'         => 'required|string|max:50',
         ]);
 
+        // ✅ Validar ownership de la empresa
+        $empresaOk = Empresa::where('id', $validated['empresa_id'])
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if (!$empresaOk) {
+            abort(403, 'No puedes agregar empleados a empresas que no son tuyas.');
+        }
+
         Empleado::create($validated);
 
         return back()->with('success', 'Empleado registrado correctamente');
     }
 
     public function update(Request $request, Empleado $empleado)
-{
-    $request->validate([
-        'nombre_completo' => 'required|string|max:255',
-        'identificacion' => 'required|string|max:255',
-        'puesto' => 'required|string|max:255',
-        'tipo_contrato' => 'required',
-        'fecha_ingreso' => 'required|date',
-        'salario' => 'required|numeric',
-        'periodo_salario' => 'required',
-        'tipo_salario' => 'required',
-        'jornada' => 'required',
-    ]);
+    {
+        // ✅ Solo si su empresa pertenece al usuario
+        if ((int)$empleado->empresa->user_id !== (int)auth()->id()) {
+            abort(403);
+        }
 
-    $empleado->update($request->all());
+        $data = $request->validate([
+            'nombre_completo' => 'required|string|max:255',
+            'identificacion'  => 'required|string|max:255',
+            'puesto'          => 'required|string|max:255',
+            'tipo_contrato'   => 'required|string|max:50',
+            'fecha_ingreso'   => 'required|date',
+            'salario'         => 'required|numeric|min:0',
+            'periodo_salario' => 'required|string|max:50',
+            'tipo_salario'    => 'required|string|max:50',
+            'jornada'         => 'required|string|max:50',
+        ]);
 
-    return redirect()->back()->with('success', 'Empleado actualizado correctamente');
-}
+        $empleado->update($data);
 
-  public function destroy(Empleado $empleado)
-{
-    $empleado->delete();
+        return back()->with('success', 'Empleado actualizado');
+    }
 
-    return redirect()->back()->with('success', 'Empleado eliminado correctamente');
-}
+    public function destroy(Empleado $empleado)
+    {
+        if ((int)$empleado->empresa->user_id !== (int)auth()->id()) {
+            abort(403);
+        }
 
+        $empleado->delete();
+
+        return back()->with('success', 'Empleado eliminado');
+    }
 }

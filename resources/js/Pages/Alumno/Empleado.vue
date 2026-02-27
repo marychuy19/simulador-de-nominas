@@ -87,14 +87,14 @@ const editarEmpleado = (empleado) => {
 /* ELIMINAR */
 const eliminarEmpleado = (id) => {
   if (confirm('¿Seguro que deseas eliminar este empleado?')) {
-    router.delete(route('empleados.destroy', id))
+    router.delete(route('alumno.empleados.destroy', id))
   }
 }
 
 /* GUARDAR */
 const guardarEmpleado = () => {
   if (editando.value) {
-    empleadoForm.put(route('empleados.update', empleadoForm.id), {
+    empleadoForm.put(route('alumno.empleados.update', empleadoForm.id), {
       onSuccess: () => {
         showEmpleadoModal.value = false
         editando.value = false
