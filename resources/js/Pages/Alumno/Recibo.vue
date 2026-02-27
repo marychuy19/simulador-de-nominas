@@ -146,7 +146,7 @@ const borrar = (id) => {
 
         <!-- Tabla -->
         <div class="bg-white rounded-2xl shadow overflow-hidden">
-          <div class="overflow-x-auto">
+          <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full text-sm">
               <thead class="bg-slate-50 text-slate-700">
                 <tr>
@@ -212,6 +212,51 @@ const borrar = (id) => {
 
          
         </div>
+        <div class="md:hidden space-y-4 p-4">
+  <div
+    v-for="c in props.calculos.data"
+    :key="c.id"
+    class="bg-white rounded-2xl shadow p-4 space-y-2"
+  >
+    <div class="flex justify-between">
+      <span class="font-bold">#{{ c.id }}</span>
+      <span class="text-xs uppercase font-semibold">
+        {{ c.empleado?.periodo_salario }}
+      </span>
+    </div>
+
+    <div class="text-sm text-gray-600">
+      <div><strong>Empresa:</strong> {{ c.empleado?.empresa?.nombre_razon_social }}</div>
+      <div><strong>Empleado:</strong> {{ c.empleado?.nombre_completo }}</div>
+      <div><strong>Salario:</strong> {{ money(c.salario_diario) }}</div>
+      <div><strong>IMSS:</strong> {{ money(c.total_imss) }}</div>
+      <div><strong>ISR:</strong> {{ money(c.empleado?.latest_isr?.isr_retener || 0) }}</div>
+    </div>
+
+    <div class="flex flex-col gap-2 pt-2">
+      <button
+        @click="downloadPdf(c.id)"
+        class="w-full bg-blue-600 text-white rounded-xl py-2 text-sm font-semibold"
+      >
+        Descargar PDF
+      </button>
+
+      <button
+        @click="downloadExcel(c.id)"
+        class="w-full bg-emerald-600 text-white rounded-xl py-2 text-sm font-semibold"
+      >
+        Descargar Excel
+      </button>
+
+      <button
+        @click="borrar(c.id)"
+        class="w-full bg-red-500 text-white rounded-xl py-2 text-sm font-semibold"
+      >
+        Borrar
+      </button>
+    </div>
+  </div>
+</div>
 
       </div>
     </div>
