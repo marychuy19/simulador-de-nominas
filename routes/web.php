@@ -15,13 +15,12 @@ use App\Http\Controllers\CalculoNominaController;
 use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\ConfiguracionNominaController;
-
-
+use App\Http\Controllers\IsrTarifaController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
-        'canRegister'    => Route::has('login'),
+        'canRegister'    => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
     ]);
@@ -47,28 +46,19 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['role:admin|superadmin'])
         ->group(function () {
 
+            // Usuarios
             Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
             Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
             Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
             Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
 
-            Route::get('/usuarios', [UserController::class, 'index'])
-                ->name('usuarios.index');
+            // Tabla ISR
+            Route::get('/isr-tarifas', [IsrTarifaController::class, 'index'])->name('isr.index');
+            Route::post('/isr-tarifas/save', [IsrTarifaController::class, 'saveTable'])->name('isr.save');
 
-            /*
-            |--------------------------------------------------------------------------
-            | CONFIGURACION NOMINA (AÑADIDO)
-            |--------------------------------------------------------------------------
-            */
-
-            Route::get('/configuracion-nomina',
-                [ConfiguracionNominaController::class,'index'])
-                ->name('configuracion.nomina');
-
-            Route::post('/configuracion-nomina',
-                [ConfiguracionNominaController::class,'update'])
-                ->name('configuracion.nomina.update');
-
+            // Configuración Nómina
+            Route::get('/configuracion-nomina', [ConfiguracionNominaController::class, 'index'])->name('configuracion.nomina');
+            Route::post('/configuracion-nomina', [ConfiguracionNominaController::class, 'update'])->name('configuracion.nomina.update');
         });
 
     /*
@@ -81,19 +71,11 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(['role:admin|alumno'])
         ->group(function () {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Páginas (AlumnoController)
-            |--------------------------------------------------------------------------
-            */
+            // Páginas
             Route::get('/empleado', [AlumnoController::class, 'empleado'])->name('empleado');
             Route::get('/calculo-nomina', [AlumnoController::class, 'calculoNomina'])->name('calculoNomina');
 
-            /*
-            |--------------------------------------------------------------------------
-            | EMPRESAS (CRUD)
-            |--------------------------------------------------------------------------
-            */
+            // Empresas (CRUD)
             Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
             Route::put('/empresas/{empresa}', [EmpresaController::class, 'update'])->name('empresas.update');
             Route::delete('/empresas/{empresa}', [EmpresaController::class, 'destroy'])->name('empresas.destroy');
@@ -106,22 +88,13 @@ Route::middleware(['auth'])->group(function () {
                     ->get();
             })->name('empresas.lista');
 
-            /*
-            |--------------------------------------------------------------------------
-            | EMPLEADOS
-            |--------------------------------------------------------------------------
-            */
+            // Empleados
             Route::post('/empleados', [EmpleadoController::class, 'store'])->name('empleados.store');
             Route::put('/empleados/{empleado}', [EmpleadoController::class, 'update'])->name('empleados.update');
             Route::delete('/empleados/{empleado}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
-
             Route::get('/empleados/create', [EmpleadoController::class, 'create'])->name('empleados.create');
 
-            /*
-            |--------------------------------------------------------------------------
-            | NOMINA
-            |--------------------------------------------------------------------------
-            */
+            // Nómina
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
             Route::get('/nomina/diaria2', [NominaController::class, 'diaria2'])->name('nomina.diaria2');
 
@@ -138,14 +111,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/nomina/mensual2', [NominaController::class, 'mensual2'])->name('nomina.mensual2');
 
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr'])->name('guardar.isr');
-
             Route::post('/nomina/guardar-nomina', [CalculoNominaController::class, 'store'])->name('nomina.guardar');
 
-            /*
-            |--------------------------------------------------------------------------
-            | RECIBOS
-            |--------------------------------------------------------------------------
-            */
+            // Recibos
             Route::get('/recibo', [ReciboController::class, 'index'])->name('recibo');
             Route::get('/recibo/{calculo}/pdf', [ReciboController::class, 'pdf'])->name('recibo.pdf');
             Route::get('/recibo/{calculo}/excel', [ReciboController::class, 'excel'])->name('recibo.excel');
@@ -155,11 +123,7 @@ Route::middleware(['auth'])->group(function () {
 
             Route::delete('/recibo/{calculo}', [ReciboController::class, 'destroy'])->name('recibo.destroy');
 
-            /*
-            |--------------------------------------------------------------------------
-            | LISTAS EMPLEADOS
-            |--------------------------------------------------------------------------
-            */
+            // Listas empleados por periodo
             Route::get('/empleados-diario', function (\Illuminate\Http\Request $request) {
                 $empresaId = $request->query('empresa_id');
 

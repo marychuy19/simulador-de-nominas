@@ -78,27 +78,45 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
           </div>
         </NavLink>
 
-        <!-- ADMIN (Actualizaciones) -->
-<NavLink
-  v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
-  :href="route('admin.configuracion.nomina')"
-  :active="route().current('admin.configuracion.nomina')"
-  class="block"
->
-  <div
-    :class="[
-      'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-      route().current('admin.configuracion.nomina')
-        ? 'bg-white text-black'
-        : 'text-white hover:bg-blue-500/70'
-    ]"
-  >
-    <img :src="iconActualizacion" class="w-5 h-5" />
-    <span class="font-medium">Config Nómina</span>
-  </div>
-</NavLink>
+        <!-- ADMIN (Config Nómina) -->
+        <NavLink
+          v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
+          :href="route('admin.configuracion.nomina')"
+          :active="route().current('admin.configuracion.nomina')"
+          class="block"
+        >
+          <div
+            :class="[
+              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+              route().current('admin.configuracion.nomina')
+                ? 'bg-white text-black'
+                : 'text-white hover:bg-blue-500/70'
+            ]"
+          >
+            <img :src="iconActualizacion" class="w-5 h-5" />
+            <span class="font-medium">Config Nómina</span>
+          </div>
+        </NavLink>
 
-    
+        <!-- ADMIN (Actualizaciones ISR) ✅ CORRECTO -->
+        <NavLink
+          v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
+          :href="route('admin.isr.index')"
+          :active="route().current('admin.isr.index')"
+          class="block"
+        >
+          <div
+            :class="[
+              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+              route().current('admin.isr.index')
+                ? 'bg-white text-black'
+                : 'text-white hover:bg-blue-500/70'
+            ]"
+          >
+            <img :src="iconActualizacion" class="w-5 h-5" />
+            <span class="font-medium">Actualizaciones ISR</span>
+          </div>
+        </NavLink>
 
         <!-- ALUMNO (y ADMIN también) -->
         <template v-if="['alumno','admin','superadmin'].includes($page.props.auth.user.role)">
@@ -175,7 +193,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
       <!-- TOPBAR -->
       <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
 
-        <!-- BOTÓN HAMBURGUESA (visible en móvil y tablet) -->
+        <!-- BOTÓN HAMBURGUESA -->
         <button
           @click="sidebarOpen = !sidebarOpen"
           class="text-2xl text-gray-600 lg:hidden"
@@ -212,26 +230,20 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
                        transition-all duration-300 ease-in-out
                        transform hover:scale-105"
               >
-                <!-- Avatar -->
                 <div class="relative">
                   <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold shadow-md">
                     {{ $page.props.auth.user.name.charAt(0).toUpperCase() }}
                   </div>
-
-                  <!-- Indicador activo -->
                   <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white dark:border-gray-700 rounded-full animate-pulse"></span>
                 </div>
 
-                <!-- Nombre y Rol -->
                 <div class="text-left hidden sm:block">
                   <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 transition-colors duration-300">
                     {{ $page.props.auth.user.name }}
                   </div>
 
-                  <!-- Rol dinámico -->
                   <div
-                    class="text-xs font-medium px-2 py-0.5 rounded-full inline-block mt-1
-                           transition-all duration-300"
+                    class="text-xs font-medium px-2 py-0.5 rounded-full inline-block mt-1 transition-all duration-300"
                     :class="{
                       'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300': ['admin','superadmin'].includes($page.props.auth.user.role),
                       'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300': $page.props.auth.user.role === 'alumno'
@@ -241,7 +253,6 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
                   </div>
                 </div>
 
-                <!-- Flecha -->
                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-300 transition-transform duration-300 group-hover:rotate-180"
                      fill="none"
                      stroke="currentColor"
@@ -262,12 +273,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
                 </div>
               </div>
 
-        
-              <DropdownLink
-                :href="route('logout')"
-                method="post"
-                as="button"
-              >
+              <DropdownLink :href="route('logout')" method="post" as="button">
                 Cerrar sesión
               </DropdownLink>
             </template>

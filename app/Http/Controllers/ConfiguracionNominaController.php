@@ -18,7 +18,7 @@ class ConfiguracionNominaController extends Controller
                 'salario_minimo' => 0,
                 'uma' => 0,
                 'limite_vales_despensa' => 0,
-                'subsidio_empleo' => 0
+                'subsidio_empleo' => 0,
             ]);
         }
 
