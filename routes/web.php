@@ -59,6 +59,8 @@ Route::middleware(['auth'])->group(function () {
             // Configuración Nómina
             Route::get('/configuracion-nomina', [ConfiguracionNominaController::class, 'index'])->name('configuracion.nomina');
             Route::post('/configuracion-nomina', [ConfiguracionNominaController::class, 'update'])->name('configuracion.nomina.update');
+
+            Route::post('/cuotas-imss', [ConfiguracionNominaController::class,'updateCuotas'])->name('cuotas.imss.update');
         });
 
     /*
