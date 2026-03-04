@@ -14,11 +14,14 @@ use App\Http\Controllers\NominaController;
 use App\Http\Controllers\CalculoNominaController;
 use App\Http\Controllers\ReciboController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\ConfiguracionNominaController;
+
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
-        'canRegister'    => Route::has('login'), // si tienes register, cámbialo
+        'canRegister'    => Route::has('login'),
         'laravelVersion' => Application::VERSION,
         'phpVersion'     => PHP_VERSION,
     ]);
@@ -38,7 +41,6 @@ Route::middleware(['auth'])->group(function () {
     |--------------------------------------------------------------------------
     | ADMIN / SUPERADMIN
     |--------------------------------------------------------------------------
-    | ✅ Un solo grupo admin, sin duplicados
     */
     Route::prefix('admin')
         ->name('admin.')
@@ -49,14 +51,30 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
             Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
             Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+
+            Route::get('/usuarios', [UserController::class, 'index'])
+                ->name('usuarios.index');
+
+            /*
+            |--------------------------------------------------------------------------
+            | CONFIGURACION NOMINA (AÑADIDO)
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/configuracion-nomina',
+                [ConfiguracionNominaController::class,'index'])
+                ->name('configuracion.nomina');
+
+            Route::post('/configuracion-nomina',
+                [ConfiguracionNominaController::class,'update'])
+                ->name('configuracion.nomina.update');
+
         });
 
     /*
     |--------------------------------------------------------------------------
     | ALUMNO (y ADMIN también)
     |--------------------------------------------------------------------------
-    | ✅ Aquí viven todas las rutas que tu frontend usa con route('alumno....')
-    | ✅ Esto evita 403 y evita Ziggy routes faltantes
     */
     Route::prefix('alumno')
         ->name('alumno.')
@@ -75,13 +93,11 @@ Route::middleware(['auth'])->group(function () {
             |--------------------------------------------------------------------------
             | EMPRESAS (CRUD)
             |--------------------------------------------------------------------------
-            | ✅ Estas son las que usas desde Inicio.vue: alumno.empresas.store / destroy
             */
             Route::post('/empresas', [EmpresaController::class, 'store'])->name('empresas.store');
             Route::put('/empresas/{empresa}', [EmpresaController::class, 'update'])->name('empresas.update');
             Route::delete('/empresas/{empresa}', [EmpresaController::class, 'destroy'])->name('empresas.destroy');
 
-            // LISTA EMPRESAS (JSON) - solo del usuario logueado
             Route::get('/empresas-lista', function () {
                 return \App\Models\Empresa::query()
                     ->where('user_id', auth()->id())
@@ -92,22 +108,19 @@ Route::middleware(['auth'])->group(function () {
 
             /*
             |--------------------------------------------------------------------------
-            | EMPLEADOS (CRUD)
+            | EMPLEADOS
             |--------------------------------------------------------------------------
-            | ✅ Estas son las que usas desde Inicio.vue: alumno.empleados.store
             */
             Route::post('/empleados', [EmpleadoController::class, 'store'])->name('empleados.store');
             Route::put('/empleados/{empleado}', [EmpleadoController::class, 'update'])->name('empleados.update');
             Route::delete('/empleados/{empleado}', [EmpleadoController::class, 'destroy'])->name('empleados.destroy');
 
-            // (Opcional) Si aún usas la vista create en /alumno/empleados/create
             Route::get('/empleados/create', [EmpleadoController::class, 'create'])->name('empleados.create');
 
             /*
             |--------------------------------------------------------------------------
-            | NOMINA (pantallas)
+            | NOMINA
             |--------------------------------------------------------------------------
-            | ✅ Quité duplicados
             */
             Route::get('/nomina/diaria', [NominaController::class, 'diaria'])->name('nomina.diaria');
             Route::get('/nomina/diaria2', [NominaController::class, 'diaria2'])->name('nomina.diaria2');
@@ -124,10 +137,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/nomina/mensual', [NominaController::class, 'mensual'])->name('nomina.mensual');
             Route::get('/nomina/mensual2', [NominaController::class, 'mensual2'])->name('nomina.mensual2');
 
-            // Guardar ISR
             Route::post('/nomina/guardar-isr', [NominaController::class, 'guardarIsr'])->name('guardar.isr');
 
-            // Guardar nómina (una sola vez)
             Route::post('/nomina/guardar-nomina', [CalculoNominaController::class, 'store'])->name('nomina.guardar');
 
             /*
@@ -146,7 +157,7 @@ Route::middleware(['auth'])->group(function () {
 
             /*
             |--------------------------------------------------------------------------
-            | LISTAS JSON DE EMPLEADOS POR PERIODO (FILTRADO POR EMPRESA)
+            | LISTAS EMPLEADOS
             |--------------------------------------------------------------------------
             */
             Route::get('/empleados-diario', function (\Illuminate\Http\Request $request) {
@@ -158,9 +169,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($empresaId) $q->where('empresa_id', $empresaId);
 
                 return $q->select(
-                    'id', 'empresa_id', 'nombre_completo',
-                    'tipo_salario', 'periodo_salario',
-                    'fecha_ingreso', 'salario'
+                    'id','empresa_id','nombre_completo',
+                    'tipo_salario','periodo_salario',
+                    'fecha_ingreso','salario'
                 )->get();
             })->name('empleados.diario');
 
@@ -173,9 +184,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($empresaId) $q->where('empresa_id', $empresaId);
 
                 return $q->select(
-                    'id', 'empresa_id', 'nombre_completo',
-                    'tipo_salario', 'periodo_salario',
-                    'fecha_ingreso', 'salario'
+                    'id','empresa_id','nombre_completo',
+                    'tipo_salario','periodo_salario',
+                    'fecha_ingreso','salario'
                 )->get();
             })->name('empleados.semanal');
 
@@ -188,9 +199,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($empresaId) $q->where('empresa_id', $empresaId);
 
                 return $q->select(
-                    'id', 'empresa_id', 'nombre_completo',
-                    'tipo_salario', 'periodo_salario',
-                    'fecha_ingreso', 'salario'
+                    'id','empresa_id','nombre_completo',
+                    'tipo_salario','periodo_salario',
+                    'fecha_ingreso','salario'
                 )->get();
             })->name('empleados.10_dias');
 
@@ -203,9 +214,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($empresaId) $q->where('empresa_id', $empresaId);
 
                 return $q->select(
-                    'id', 'empresa_id', 'nombre_completo',
-                    'tipo_salario', 'periodo_salario',
-                    'fecha_ingreso', 'salario'
+                    'id','empresa_id','nombre_completo',
+                    'tipo_salario','periodo_salario',
+                    'fecha_ingreso','salario'
                 )->get();
             })->name('empleados.quincenales');
 
@@ -218,9 +229,9 @@ Route::middleware(['auth'])->group(function () {
                 if ($empresaId) $q->where('empresa_id', $empresaId);
 
                 return $q->select(
-                    'id', 'empresa_id', 'nombre_completo',
-                    'tipo_salario', 'periodo_salario',
-                    'fecha_ingreso', 'salario'
+                    'id','empresa_id','nombre_completo',
+                    'tipo_salario','periodo_salario',
+                    'fecha_ingreso','salario'
                 )->get();
             })->name('empleados.mensuales');
         });

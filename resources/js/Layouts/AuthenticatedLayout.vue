@@ -13,6 +13,7 @@ const logoSrc = new URL('../Pages/image/logo.jpeg', import.meta.url).href
 /* ICONOS MENU */
 const iconInicio = new URL('../Pages/image/inicio.jpeg', import.meta.url).href
 const iconUsuarios = new URL('../Pages/image/usuario.jpeg', import.meta.url).href
+const iconActualizacion = new URL('../Pages/image/actualizacion.jpeg', import.meta.url).href
 const iconEmpleado = new URL('../Pages/image/empleado.jpeg', import.meta.url).href
 const iconCalculo = new URL('../Pages/image/calculo.jpeg', import.meta.url).href
 const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
@@ -76,6 +77,28 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
             <span class="font-medium">Usuarios</span>
           </div>
         </NavLink>
+
+        <!-- ADMIN (Actualizaciones) -->
+<NavLink
+  v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
+  :href="route('admin.configuracion.nomina')"
+  :active="route().current('admin.configuracion.nomina')"
+  class="block"
+>
+  <div
+    :class="[
+      'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+      route().current('admin.configuracion.nomina')
+        ? 'bg-white text-black'
+        : 'text-white hover:bg-blue-500/70'
+    ]"
+  >
+    <img :src="iconActualizacion" class="w-5 h-5" />
+    <span class="font-medium">Config Nómina</span>
+  </div>
+</NavLink>
+
+    
 
         <!-- ALUMNO (y ADMIN también) -->
         <template v-if="['alumno','admin','superadmin'].includes($page.props.auth.user.role)">
@@ -239,10 +262,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
                 </div>
               </div>
 
-              <DropdownLink :href="route('profile.edit')">
-                Perfil
-              </DropdownLink>
-
+        
               <DropdownLink
                 :href="route('logout')"
                 method="post"

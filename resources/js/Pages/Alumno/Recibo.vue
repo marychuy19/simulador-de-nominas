@@ -102,7 +102,7 @@ const borrar = (id) => {
 
             <input v-model="empresa" @keyup.enter="submitFilters"
               class="rounded-xl border-slate-300 focus:border-slate-500 focus:ring-slate-500"
-              placeholder="Filtrar por empresa (texto)..." />
+              placeholder="Filtrar por empresa..." />
 
             <select v-model="tipo" @change="submitFilters"
               class="rounded-xl border-slate-300 focus:border-slate-500 focus:ring-slate-500">
