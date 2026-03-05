@@ -41,6 +41,10 @@ const guardarEmpresa = () => {
     onSuccess: () => {
       showEmpresaModal.value = false
       empresaForm.reset()
+
+      router.visit(route('dashboard'), {
+        preserveScroll: true
+      })
     }
   })
 }
@@ -67,6 +71,10 @@ const guardarEmpleado = () => {
     onSuccess: () => {
       showEmpleadoModal.value = false
       empleadoForm.reset()
+
+      router.visit(route('dashboard'), {
+        preserveScroll: true
+      })
     }
   })
 }
@@ -75,6 +83,11 @@ const eliminarEmpresa = (id) => {
   if (confirm('¿Seguro que deseas eliminar esta empresa?')) {
     router.delete(route('alumno.empresas.destroy', id), {
       preserveScroll: true,
+      onSuccess: () => {
+        router.visit(route('dashboard'), {
+          preserveScroll: true
+        })
+      }
     })
   }
 }

@@ -113,7 +113,7 @@ Guardar Configuración
 <div class="bg-white p-6 rounded shadow space-y-6">
 
 <h2 class="font-bold text-lg text-emerald-600  border-b pb-2">
-Cuotas IMSS
+Cuotas IMSS del trabajador
 </h2>
 
 <div>

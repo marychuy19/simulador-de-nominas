@@ -37,143 +37,158 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
       </div>
 
       <!-- Menu -->
-      <nav class="mt-6 px-4 space-y-2">
+      <nav class="mt-4 px-2 space-y-3">
 
         <!-- INICIO -->
-        <NavLink
-          :href="route('dashboard')"
-          :active="route().current('dashboard')"
-          class="block"
-        >
-          <div
-            :class="[
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-              route().current('dashboard')
-                ? 'bg-white text-black'
-                : 'text-white hover:bg-blue-500/70'
-            ]"
-          >
-            <img :src="iconInicio" class="w-5 h-5" />
-            <span class="font-medium">Inicio</span>
-          </div>
-        </NavLink>
+  <NavLink
+    :href="route('dashboard')"
+    :active="route().current('dashboard')"
+    class="block"
+  >
+    <div
+      :class="[
+        'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+        route().current('dashboard')
+          ? 'bg-white text-black'
+          : 'text-white hover:bg-blue-500/70'
+      ]"
+    >
+      <img :src="iconInicio" class="w-5 h-5" />
+      <span class="font-medium">Inicio</span>
+    </div>
+  </NavLink>
 
-        <!-- ADMIN (Usuarios) -->
-        <NavLink
-          v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
-          :href="route('admin.usuarios.index')"
-          :active="route().current('admin.usuarios.index')"
-          class="block"
-        >
-          <div
-            :class="[
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-              route().current('admin.usuarios.index')
-                ? 'bg-white text-black'
-                : 'text-white hover:bg-blue-500/70'
-            ]"
-          >
-            <img :src="iconUsuarios" class="w-5 h-5" />
-            <span class="font-medium">Usuarios</span>
-          </div>
-        </NavLink>
+  <!-- ================= ADMIN ================= -->
+  <template v-if="['admin','superadmin'].includes($page.props.auth.user.role)">
 
-        <!-- ADMIN (Config Nómina) -->
-        <NavLink
-          v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
-          :href="route('admin.configuracion.nomina')"
-          :active="route().current('admin.configuracion.nomina')"
-          class="block"
-        >
-          <div
-            :class="[
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-              route().current('admin.configuracion.nomina')
-                ? 'bg-white text-black'
-                : 'text-white hover:bg-blue-500/70'
-            ]"
-          >
-            <img :src="iconActualizacion" class="w-5 h-5" />
-            <span class="font-medium">Config Nómina</span>
-          </div>
-        </NavLink>
+    <!-- TITULO ADMIN -->
+    <div class="px-3 pt-4 text-xs font-bold uppercase tracking-wider text-blue-200">
+      Panel Administrativo
+    </div>
 
-        <!-- ADMIN (Actualizaciones ISR) ✅ CORRECTO -->
-        <NavLink
-          v-if="['admin','superadmin'].includes($page.props.auth.user.role)"
-          :href="route('admin.isr.index')"
-          :active="route().current('admin.isr.index')"
-          class="block"
-        >
-          <div
-            :class="[
-              'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-              route().current('admin.isr.index')
-                ? 'bg-white text-black'
-                : 'text-white hover:bg-blue-500/70'
-            ]"
-          >
-            <img :src="iconActualizacion" class="w-5 h-5" />
-            <span class="font-medium">Actualizaciones ISR</span>
-          </div>
-        </NavLink>
+    <!-- USUARIOS -->
+    <NavLink
+      :href="route('admin.usuarios.index')"
+      :active="route().current('admin.usuarios.index')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('admin.usuarios.index')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconUsuarios" class="w-5 h-5" />
+        <span class="font-medium">Usuarios</span>
+      </div>
+    </NavLink>
 
-        <!-- ALUMNO (y ADMIN también) -->
-        <template v-if="['alumno','admin','superadmin'].includes($page.props.auth.user.role)">
+    <!-- CONFIG NOMINA -->
+    <NavLink
+      :href="route('admin.configuracion.nomina')"
+      :active="route().current('admin.configuracion.nomina')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('admin.configuracion.nomina')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconActualizacion" class="w-5 h-5" />
+        <span class="font-medium">Config Nómina</span>
+      </div>
+    </NavLink>
 
-          <NavLink
-            :href="route('alumno.empleado')"
-            :active="route().current('alumno.empleado')"
-            class="block"
-          >
-            <div
-              :class="[
-                'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-                route().current('alumno.empleado')
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-blue-500/70'
-              ]"
-            >
-              <img :src="iconEmpleado" class="w-5 h-5" />
-              <span class="font-medium">Empleado</span>
-            </div>
-          </NavLink>
+    <!-- ISR -->
+    <NavLink
+      :href="route('admin.isr.index')"
+      :active="route().current('admin.isr.index')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('admin.isr.index')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconActualizacion" class="w-5 h-5" />
+        <span class="font-medium">Actualizaciones ISR</span>
+      </div>
+    </NavLink>
 
-          <NavLink
-            :href="route('alumno.calculoNomina')"
-            :active="route().current('alumno.calculoNomina')"
-            class="block"
-          >
-            <div
-              :class="[
-                'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-                route().current('alumno.calculoNomina')
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-blue-500/70'
-              ]"
-            >
-              <img :src="iconCalculo" class="w-5 h-5" />
-              <span class="font-medium">Cálculo de nómina</span>
-            </div>
-          </NavLink>
+  </template>
 
-          <NavLink
-            :href="route('alumno.recibo')"
-            :active="route().current('alumno.recibo')"
-            class="block"
-          >
-            <div
-              :class="[
-                'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
-                route().current('alumno.recibo')
-                  ? 'bg-white text-black'
-                  : 'text-white hover:bg-blue-500/70'
-              ]"
-            >
-              <img :src="iconRecibo" class="w-5 h-5" />
-              <span class="font-medium">Factura de nómina</span>
-            </div>
-          </NavLink>
+  <!-- ================= SISTEMA ================= -->
+  <template v-if="['alumno','admin','superadmin'].includes($page.props.auth.user.role)">
+
+    <!-- TITULO SISTEMA -->
+    <div class="px-3 pt-6 text-xs font-bold uppercase tracking-wider text-blue-200">
+      Funciones del Sistema
+    </div>
+
+    <!-- EMPLEADO -->
+    <NavLink
+      :href="route('alumno.empleado')"
+      :active="route().current('alumno.empleado')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('alumno.empleado')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconEmpleado" class="w-5 h-5" />
+        <span class="font-medium">Empleado</span>
+      </div>
+    </NavLink>
+
+    <!-- CALCULO -->
+    <NavLink
+      :href="route('alumno.calculoNomina')"
+      :active="route().current('alumno.calculoNomina')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('alumno.calculoNomina')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconCalculo" class="w-5 h-5" />
+        <span class="font-medium">Cálculo de nómina</span>
+      </div>
+    </NavLink>
+
+    <!-- RECIBO -->
+    <NavLink
+      :href="route('alumno.recibo')"
+      :active="route().current('alumno.recibo')"
+      class="block"
+    >
+      <div
+        :class="[
+          'flex items-center gap-3 px-4 py-3 rounded-lg transition duration-200',
+          route().current('alumno.recibo')
+            ? 'bg-white text-black'
+            : 'text-white hover:bg-blue-500/70'
+        ]"
+      >
+        <img :src="iconRecibo" class="w-5 h-5" />
+        <span class="font-medium">Factura de nómina</span>
+      </div>
+    </NavLink>
 
         </template>
 

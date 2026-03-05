@@ -79,7 +79,7 @@ function guardar() {
         </div>
 
         <div class="flex items-center gap-3 p-5 flex items-center gap-5">
-          <select class="border rounded px-3 py-2" :value="form.tipo" @change="cambiarTipo">
+          <select class="rounded-xl border rounded px-5 py-2" :value="form.tipo" @change="cambiarTipo">
             <option v-for="t in tipos" :key="t" :value="t">{{ t }}</option>
           </select>
 
@@ -105,7 +105,7 @@ function guardar() {
               <th class="p-3">Límite inferior</th>
               <th class="p-3">Límite superior</th>
               <th class="p-3">Cuota fija</th>
-              <th class="p-3">% (ej. 1.92)</th>
+              <th class="p-3">% </th>
               <th class="p-3">Activo</th>
               <th class="p-3">Acciones</th>
             </tr>
