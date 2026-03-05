@@ -3,6 +3,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 
+/* IMÁGENES */
+const avatarFiscales = new URL('../image/fiscales.jpeg', import.meta.url).href
+
 const props = defineProps({
     config:Object,
     cuotas:Object
@@ -12,7 +15,8 @@ const form = useForm({
     salario_minimo: props.config.salario_minimo,
     uma: props.config.uma,
     limite_vales_despensa: props.config.limite_vales_despensa,
-    subsidio_empleo: props.config.subsidio_empleo
+    subsidio_empleo: props.config.subsidio_empleo,
+    tope_subsidio: props.config.tope_subsidio
 })
 
 const formCuotas = useForm({
@@ -36,58 +40,70 @@ function guardarCuotas(){
 <template>
 
 <AuthenticatedLayout>
+<div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
+<div class="max-w-7xl mx-auto px-6 space-y-8">
 
-<div class="max-w-6xl mx-auto py-10 space-y-10">
 
-<h1 class="text-2xl font-bold">
-Configuración Fiscal de Nómina
-</h1>
+<!-- HEADER -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+          <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
+            <img
+              :src="avatarFiscales"
+              alt="fiscales"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">
+              Actualizaciones de datos fiscales y cuotas IMSS
+            </h1>
+            <p class="text-gray-600">
+              Modifica los datos generales y cuotas del IMSS al año.           
+             </p>
+          </div>
+        </div>
 
 <!-- ================= DATOS GENERALES ================= -->
 <div class="bg-white p-6 rounded shadow space-y-6">
 
-<h2 class="font-bold text-lg border-b pb-2">
+<h2 class="font-bold text-lg text-blue-600 border-b pb-2">
 Datos Generales
 </h2>
 
 <div>
 <label class="font-semibold">Salario Mínimo</label>
-<p class="text-sm text-gray-500 mb-1">
-Monto oficial diario establecido por ley.
-</p>
 <input v-model="form.salario_minimo" type="number" step="0.01"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">UMA (Unidad de Medida y Actualización)</label>
-<p class="text-sm text-gray-500 mb-1">
-Valor vigente utilizado para cálculos fiscales y de seguridad social.
-</p>
 <input v-model="form.uma" type="number" step="0.01"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">Límite Exento de Vales de Despensa</label>
-<p class="text-sm text-gray-500 mb-1">
-Monto máximo libre de impuestos permitido para vales.
-</p>
 <input v-model="form.limite_vales_despensa" type="number" step="0.01"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
-<label class="font-semibold">Subsidio al Empleo</label>
-<p class="text-sm text-gray-500 mb-1">
-Cantidad aplicada como apoyo fiscal a trabajadores con bajos ingresos.
-</p>
+<label class="font-semibold">Subsidio al Empleo (porcentaje)</label>
 <input v-model="form.subsidio_empleo" type="number" step="0.01"
 class="w-full border p-2 rounded">
 </div>
 
+<div>
+<label class="font-semibold">Tope Subsidio (mensual)</label>
+<input v-model="form.tope_subsidio" type="number" step="0.01"
+class="w-full border p-2 rounded">
+</div>
+
+
 <button @click="guardarConfig"
-class="bg-blue-600 text-white px-6 py-2 rounded">
+class="rounded-xl bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700">
 Guardar Configuración
 </button>
 
@@ -96,63 +112,50 @@ Guardar Configuración
 <!-- ================= CUOTAS IMSS ================= -->
 <div class="bg-white p-6 rounded shadow space-y-6">
 
-<h2 class="font-bold text-lg text-blue-600 border-b pb-2">
+<h2 class="font-bold text-lg text-emerald-600  border-b pb-2">
 Cuotas IMSS
 </h2>
 
 <div>
 <label class="font-semibold">Excedente Patronal (%)</label>
-<p class="text-sm text-gray-500 mb-1">
-Cuota aplicada sobre el excedente del salario base mayor a 3 UMA.
-</p>
 <input v-model="formCuotas.excedente_patronal" type="number" step="0.0001"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">Prestaciones en Dinero (%)</label>
-<p class="text-sm text-gray-500 mb-1">
-Cuota correspondiente a subsidios económicos por incapacidad.
-</p>
 <input v-model="formCuotas.prestaciones_dinero" type="number" step="0.0001"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">Prestaciones en Especie (%)</label>
-<p class="text-sm text-gray-500 mb-1">
-Cuota destinada a servicios médicos y hospitalarios.
-</p>
 <input v-model="formCuotas.prestaciones_especie" type="number" step="0.0001"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">Invalidez y Vida (%)</label>
-<p class="text-sm text-gray-500 mb-1">
-Aportación para pensiones por invalidez o fallecimiento.
-</p>
 <input v-model="formCuotas.invalidez_vida" type="number" step="0.0001"
 class="w-full border p-2 rounded">
 </div>
 
 <div>
 <label class="font-semibold">Cesantía y Vejez (%)</label>
-<p class="text-sm text-gray-500 mb-1">
-Cuota destinada al fondo de retiro y pensión por edad avanzada.
-</p>
 <input v-model="formCuotas.cesantia_vejez" type="number" step="0.0001"
 class="w-full border p-2 rounded">
 </div>
 
 <button @click="guardarCuotas"
-class="bg-green-600 text-white px-6 py-2 rounded">
+class="rounded-xl bg-emerald-600 text-white px-4 py-2 font-semibold hover:bg-emerald-700">
 Guardar Cuotas IMSS
 </button>
 
 </div>
 
 </div>
+</div>
+
 
 </AuthenticatedLayout>
 

@@ -33,7 +33,7 @@ class IsrTarifaController extends Controller
     {
         $data = $request->validate([
             'tipo' => 'required|string|max:20',
-            'rows' => 'required|array|min:1',
+            'rows' => 'required|array', // ← MODIFICADO (se quitó min:1)
             'rows.*.id' => 'nullable|integer',
             'rows.*.limite_inferior' => 'required|numeric|min:0',
             'rows.*.limite_superior' => 'nullable|numeric|min:0',
@@ -87,9 +87,13 @@ class IsrTarifaController extends Controller
             }
 
             // Elimina los que ya no están en la tabla enviada (solo del tipo actual)
-            IsrTarifa::where('tipo', $tipo)
-                ->whereNotIn('id', $keepIds)
-                ->delete();
+            if (count($keepIds) > 0) {
+                IsrTarifa::where('tipo', $tipo)
+                    ->whereNotIn('id', $keepIds)
+                    ->delete();
+            } else {
+                IsrTarifa::where('tipo', $tipo)->delete();
+            }
         });
 
         return back()->with('success', 'Tabla ISR guardada correctamente');

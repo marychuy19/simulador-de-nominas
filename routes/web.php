@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
             // Tabla ISR
             Route::get('/isr-tarifas', [IsrTarifaController::class, 'index'])->name('isr.index');
             Route::post('/isr-tarifas/save', [IsrTarifaController::class, 'saveTable'])->name('isr.save');
+            Route::delete('/isr-tarifas/{tarifa}', [IsrTarifaController::class, 'destroy'])->name('isr.destroy');
+
 
             // Configuración Nómina
             Route::get('/configuracion-nomina', [ConfiguracionNominaController::class, 'index'])->name('configuracion.nomina');

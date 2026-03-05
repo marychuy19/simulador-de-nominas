@@ -16,6 +16,7 @@ return new class extends Migration
             $table->decimal('limite_vales_despensa',10,2)->default(0);
 
             $table->decimal('subsidio_empleo',10,2)->default(0);
+            $table->decimal('tope_subsidio',10,2)->default(0);
 
             $table->timestamps();
         });

@@ -49,6 +49,7 @@ class ConfiguracionNominaController extends Controller
             'uma'=>'required|numeric',
             'limite_vales_despensa'=>'required|numeric',
             'subsidio_empleo'=>'required|numeric',
+            'tope_subsidio'=>'required|numeric',
         ]);
 
         $config->update($request->all());

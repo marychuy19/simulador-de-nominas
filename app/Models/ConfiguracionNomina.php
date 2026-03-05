@@ -13,5 +13,6 @@ class ConfiguracionNomina extends Model
         'uma',
         'limite_vales_despensa',
         'subsidio_empleo',
+        'tope_subsidio',
     ];
 }

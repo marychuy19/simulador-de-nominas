@@ -3,6 +3,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { router, useForm } from '@inertiajs/vue3'
 
+/* IMÁGENES */
+const avatarISR = new URL('../image/isr.jpeg', import.meta.url).href
+
 const props = defineProps({
   tipo: String,
   tipos: Array,
@@ -51,24 +54,41 @@ function guardar() {
 
 <template>
   <AuthenticatedLayout>
-    <div class="max-w-6xl mx-auto py-10 space-y-6">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <h1 class="text-2xl font-black text-slate-900">Tabla ISR</h1>
-          <p class="text-slate-600">Edita renglones como Excel y guarda todo de una vez.</p>
+<div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
+<div class="max-w-7xl mx-auto px-6 space-y-8">
+
+
+        <!-- HEADER -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+          <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
+            <img
+              :src="avatarISR"
+              alt="ISR"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800">
+              Actualizaciones de las tarifas del ISR
+            </h1>
+            <p class="text-gray-600">
+              Modifica las tablas de tarifa del ISR al año.         
+             </p>
+          </div>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 p-5 flex items-center gap-5">
           <select class="border rounded px-3 py-2" :value="form.tipo" @change="cambiarTipo">
             <option v-for="t in tipos" :key="t" :value="t">{{ t }}</option>
           </select>
 
-          <button class="bg-slate-800 text-white px-4 py-2 rounded" @click="addRow">
+          <button class="rounded-xl bg-slate-900 text-white px-4 py-2 font-semibold hover:bg-slate-800" @click="addRow">
             + Agregar fila
           </button>
 
           <button
-            class="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-60"
+            class="rounded-xl bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700"
             :disabled="form.processing"
             @click="guardar"
           >
