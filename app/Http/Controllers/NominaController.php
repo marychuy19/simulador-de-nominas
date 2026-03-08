@@ -5,99 +5,165 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Isr;
+use App\Models\IsrTarifa;
+use App\Models\ConfiguracionNomina;
+use App\Models\CuotaImss;
 
 class NominaController extends Controller
 {
+    private function getNominaSharedData(string $tipo): array
+    {
+        $tipoTabla = match ($tipo) {
+            'decena' => 'decenal',
+            default => $tipo,
+        };
+
+        $config = ConfiguracionNomina::first();
+
+        if (!$config) {
+            $config = ConfiguracionNomina::create([
+                'salario_minimo' => 278.80,
+                'uma' => 117.31,
+                'limite_vales_despensa' => 0.40,
+                'subsidio_empleo' => 15.02,
+                'tope_subsidio' => 535.65,
+                'tope_subsidio_mensual' => 535.65,
+                'limite_ingreso_subsidio' => 11492.66,
+            ]);
+        }
+
+        $cuotas = CuotaImss::first();
+
+        if (!$cuotas) {
+            $cuotas = CuotaImss::create([
+                'excedente_patronal' => 0.0040,
+                'prestaciones_dinero' => 0.0025,
+                'prestaciones_especie' => 0.00375,
+                'invalidez_vida' => 0.00625,
+                'cesantia_vejez' => 0.01125,
+            ]);
+        }
+
+        $tablaIsr = IsrTarifa::where('tipo', $tipoTabla)
+            ->where('activo', true)
+            ->orderBy('orden')
+            ->orderBy('limite_inferior')
+            ->get([
+                'id',
+                'limite_inferior',
+                'limite_superior',
+                'cuota_fija',
+                'porcentaje',
+                'orden',
+                'activo',
+            ]);
+
+        return [
+            'configNomina' => $config,
+            'cuotasImss' => $cuotas,
+            'tablaIsr' => $tablaIsr,
+        ];
+    }
+
     public function diaria()
     {
-        return Inertia::render('Alumno/Nomina/Diaria');
+        return Inertia::render('Alumno/Nomina/Diaria', $this->getNominaSharedData('diaria'));
     }
 
     public function semanal()
     {
-        return Inertia::render('Alumno/Nomina/Semanal');
+        return Inertia::render('Alumno/Nomina/Semanal', $this->getNominaSharedData('semanal'));
     }
 
     public function decena()
     {
-        return Inertia::render('Alumno/Nomina/Decena');
+        return Inertia::render('Alumno/Nomina/Decena', $this->getNominaSharedData('decena'));
     }
 
     public function quincenal()
     {
-        return Inertia::render('Alumno/Nomina/Quincenal');
+        return Inertia::render('Alumno/Nomina/Quincenal', $this->getNominaSharedData('quincenal'));
     }
 
     public function mensual()
     {
-        return Inertia::render('Alumno/Nomina/Mensual');
+        return Inertia::render('Alumno/Nomina/Mensual', $this->getNominaSharedData('mensual'));
     }
 
-    // DIARIA2 con prefil1 desde querystring
     public function diaria2(Request $request)
     {
-        return Inertia::render('Alumno/Nomina/Diaria2', [
-            'prefil1' => [
-                'empresa'        => $request->query('empresa', ''),
-                'empleado'       => $request->query('empleado', ''),
-                'salario_base'   => $request->query('salario_base', 0),
-                'dias_trabajados'=> $request->query('dias_trabajados', 1),
-            ],
-        ]);
+        return Inertia::render('Alumno/Nomina/Diaria2', array_merge(
+            $this->getNominaSharedData('diaria'),
+            [
+                'prefil1' => [
+                    'empresa' => $request->query('empresa', ''),
+                    'empleado' => $request->query('empleado', ''),
+                    'salario_base' => $request->query('salario_base', 0),
+                    'dias_trabajados' => $request->query('dias_trabajados', 1),
+                ],
+            ]
+        ));
     }
 
-    // SEMANAL2 con prefil2 desde querystring
     public function semanal2(Request $request)
     {
-        return Inertia::render('Alumno/Nomina/Semanal2', [
-            'prefil2' => [
-                'empresa'        => $request->query('empresa', ''),
-                'empleado'       => $request->query('empleado', ''),
-                'salario_base'   => $request->query('salario_base', 0),
-                'dias_trabajados'=> $request->query('dias_trabajados', 1),
-            ],
-        ]);
+        return Inertia::render('Alumno/Nomina/Semanal2', array_merge(
+            $this->getNominaSharedData('semanal'),
+            [
+                'prefil2' => [
+                    'empresa' => $request->query('empresa', ''),
+                    'empleado' => $request->query('empleado', ''),
+                    'salario_base' => $request->query('salario_base', 0),
+                    'dias_trabajados' => $request->query('dias_trabajados', 7),
+                ],
+            ]
+        ));
     }
 
-    //DECENAL2 con prefil2 desde querystring
     public function decena2(Request $request)
     {
-        return Inertia::render('Alumno/Nomina/Decena2', [
-            'prefil3' => [
-                'empresa'        => $request->query('empresa', ''),
-                'empleado'       => $request->query('empleado', ''),
-                'salario_base'   => $request->query('salario_base', 0),
-                'dias_trabajados'=> $request->query('dias_trabajados', 1),
-            ],
-        ]);
+        return Inertia::render('Alumno/Nomina/Decena2', array_merge(
+            $this->getNominaSharedData('decena'),
+            [
+                'prefil3' => [
+                    'empresa' => $request->query('empresa', ''),
+                    'empleado' => $request->query('empleado', ''),
+                    'salario_base' => $request->query('salario_base', 0),
+                    'dias_trabajados' => $request->query('dias_trabajados', 10),
+                ],
+            ]
+        ));
     }
 
-    // QUINCENAL2 con prefill desde querystring
     public function quincenal2(Request $request)
     {
-        return Inertia::render('Alumno/Nomina/Quincenal2', [
-            'prefill' => [
-                'empresa'        => $request->query('empresa', ''),
-                'empleado'       => $request->query('empleado', ''),
-                'salario_base'   => $request->query('salario_base', 0),
-                'dias_trabajados'=> $request->query('dias_trabajados', 15),
-            ],
-        ]);
+        return Inertia::render('Alumno/Nomina/Quincenal2', array_merge(
+            $this->getNominaSharedData('quincenal'),
+            [
+                'prefill' => [
+                    'empresa' => $request->query('empresa', ''),
+                    'empleado' => $request->query('empleado', ''),
+                    'salario_base' => $request->query('salario_base', 0),
+                    'dias_trabajados' => $request->query('dias_trabajados', 15),
+                ],
+            ]
+        ));
     }
 
-    //MENSUAL2 con prefil4 desde querystring
     public function mensual2(Request $request)
     {
-        return Inertia::render('Alumno/Nomina/Mensual2', [
-            'prefil4' => [
-                'empresa'        => $request->query('empresa', ''),
-                'empleado'       => $request->query('empleado', ''),
-                'salario_base'   => $request->query('salario_base', 0),
-                'dias_trabajados'=> $request->query('dias_trabajados', 1),
-            ],
-        ]);
+        return Inertia::render('Alumno/Nomina/Mensual2', array_merge(
+            $this->getNominaSharedData('mensual'),
+            [
+                'prefil4' => [
+                    'empresa' => $request->query('empresa', ''),
+                    'empleado' => $request->query('empleado', ''),
+                    'salario_base' => $request->query('salario_base', 0),
+                    'dias_trabajados' => $request->query('dias_trabajados', 30),
+                ],
+            ]
+        ));
     }
-
 
     public function guardarIsr(Request $request)
     {
@@ -113,7 +179,6 @@ class NominaController extends Controller
 
         Isr::create($request->all());
 
-        // (Esto lo dejas igual, tú ya haces router.visit a quincenal2 desde Vue)
         return redirect()->route('alumno.recibo');
     }
 }

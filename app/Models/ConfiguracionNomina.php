@@ -14,5 +14,7 @@ class ConfiguracionNomina extends Model
         'limite_vales_despensa',
         'subsidio_empleo',
         'tope_subsidio',
+        'tope_subsidio_mensual',
+        'limite_ingreso_subsidio',
     ];
 }

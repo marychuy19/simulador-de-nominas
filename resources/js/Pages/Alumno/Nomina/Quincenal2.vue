@@ -4,7 +4,7 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
-// ✅ RECIBE LOS DATOS QUE VIENEN DE QUINCENAL (desde el controlador)
+// ✅ RECIBE LOS DATOS QUE VIENEN DE QUINCENAL1 (desde el controlador)
 const props = defineProps({
   prefill: {
     type: Object,
@@ -15,6 +15,14 @@ const props = defineProps({
       dias_trabajados: 15,
     }),
   },
+    configNomina: {
+    type: Object,
+    default: () => ({})
+  },
+  cuotasImss: {
+    type: Object,
+    default: () => ({})
+  }
 })
 
 /* =============================
@@ -131,21 +139,24 @@ const valesDespensaPorcentaje = ref(0.10)
 /* =============================
    UMA Y TOPES
 ============================= */
-const uma = ref(117.31)
-const limiteValesUMA = ref(0.40)
+const uma = computed(() => Number(props.configNomina?.uma ?? 0))
+const limiteValesUMA = computed(() => Number(props.configNomina?.limite_vales_despensa ?? 0))
 
 const limiteExentoVales = computed(() => uma.value * limiteValesUMA.value)
+
 
 /* =============================
    SALARIO DIARIO
 ============================= */
-const salarioDiario = computed(() => salarioBase.value)
+const salarioDiario = computed(() => Number(salarioBase.value || 0))
 
 /* =============================
    FACTOR DE INTEGRACIÓN
 ============================= */
-const proporcionAguinaldo = computed(() => diasAguinaldo.value / 365)
-const proporcionVacaciones = computed(() => (diasVacaciones.value * primaVacacional.value) / 365)
+const proporcionAguinaldo = computed(() => Number(diasAguinaldo.value || 0) / 365)
+const proporcionVacaciones = computed(() =>
+  (Number(diasVacaciones.value || 0) * Number(primaVacacional.value || 0)) / 365
+)
 
 const factorIntegracion = computed(() =>
   1 + proporcionAguinaldo.value + proporcionVacaciones.value
@@ -154,12 +165,16 @@ const factorIntegracion = computed(() =>
 /* =============================
    SBC SIN VALES
 ============================= */
-const sbcSinVales = computed(() => salarioDiario.value * factorIntegracion.value)
+const sbcSinVales = computed(() => {
+  return Number(salarioDiario.value * factorIntegracion.value)
+})
 
 /* =============================
    VALES DE DESPENSA
 ============================= */
-const valesDiarios = computed(() => salarioDiario.value * valesDespensaPorcentaje.value)
+const valesDiarios = computed(() =>
+  Number(salarioDiario.value || 0) * Number(valesDespensaPorcentaje.value || 0)
+)
 
 const valesExentos = computed(() =>
   Math.min(valesDiarios.value, limiteExentoVales.value)
@@ -168,7 +183,6 @@ const valesExentos = computed(() =>
 const valesGravados = computed(() =>
   Math.max(valesDiarios.value - valesExentos.value, 0)
 )
-
 /* =============================
    SBC CON VALES
 ============================= */
@@ -178,7 +192,7 @@ const sbcConVales = computed(() => sbcSinVales.value + valesGravados.value)
    BASE MENSUAL PARA CUOTAS
 ============================= */
 const diasMes = ref(15)
-const baseMensualIMSS = computed(() => sbcConVales.value * diasMes.value)
+const baseMensualIMSS = computed(() => sbcConVales.value * Number(diasMes.value || 0))
 
 /* =============================
    CUOTAS IMSS – EXCEDENTE
@@ -197,33 +211,35 @@ const diferenciaSBC = computed(() => {
 })
 
 const calculoExcedente = computed(() => {
-  return diferenciaSBC.value * sbcConVales.value
+  return diferenciaSBC.value * Number(diasMes.value || 0)
 })
 
-const excedentePatronal = 0.004 // 0.4000%
+const excedentePatronal = computed(() =>
+  Number(props.cuotasImss?.excedente_patronal ?? 0)
+)
 
 const importeExcedente = computed(() => {
-  return calculoExcedente.value * excedentePatronal
+  return calculoExcedente.value * excedentePatronal.value
 })
 
 const excetePatronal = computed(() => {
-  return sbcConVales.value * diasMes.value
+  return sbcConVales.value * Number(diasMes.value || 0)
 })
 
 const prestacionesDinero = computed(() => {
-  return excetePatronal.value * 0.0025
+  return excetePatronal.value * Number(props.cuotasImss?.prestaciones_dinero ?? 0)
 })
 
 const prestacionesEspecie = computed(() => {
-  return excetePatronal.value * 0.00375
+  return excetePatronal.value * Number(props.cuotasImss?.prestaciones_especie ?? 0)
 })
 
 const invalidezVida = computed(() => {
-  return excetePatronal.value * 0.00625
+  return excetePatronal.value * Number(props.cuotasImss?.invalidez_vida ?? 0)
 })
 
 const cesantiaVejez = computed(() => {
-  return excetePatronal.value * 0.01125
+  return excetePatronal.value * Number(props.cuotasImss?.cesantia_vejez ?? 0)
 })
 
 const totalIMSS = computed(() => {
@@ -236,6 +252,88 @@ const totalIMSS = computed(() => {
   )
 })
 
+/* =============================
+   CUOTAS IMSS – PATRÓN
+============================= */
+const cuotaFijaPatron = computed(() => uma.value * 0.204)
+const excedentePatron = computed(() => excedenteSBC.value * 0.011)
+const prestacionesDineroPatron = computed(() => sbcConVales.value * 0.007)
+const gastosMedicosPatron = computed(() => sbcConVales.value * 0.0105)
+const invalidezVidaPatron = computed(() => sbcConVales.value * 0.0175)
+const guarderiasPatron = computed(() => sbcConVales.value * 0.01)
+const retiroPatron = computed(() => sbcConVales.value * 0.02)
+const cesantiaPatron = computed(() => sbcConVales.value * 0.0315)
+
+
+/* =============================
+   TOTALES IMSS
+============================= */
+const totalPatronIMSS = computed(() =>
+  cuotaFijaPatron.value +
+  excedentePatron.value +
+  prestacionesDineroPatron.value +
+  gastosMedicosPatron.value +
+  invalidezVidaPatron.value +
+  guarderiasPatron.value +
+  retiroPatron.value +
+  cesantiaPatron.value
+)
+
+const totalObreroIMSS = computed(() =>
+  excedenteObrero.value +
+  prestacionesDineroObrero.value +
+  gastosMedicosObrero.value +
+  invalidezVidaObrero.value +
+  cesantiaObrero.value
+)
+
+/* =============================
+   PORCENTAJES EN TEXTO
+============================= */
+const porcentajeExcedentePatronalTexto = computed(() =>
+  `${(Number(props.cuotasImss?.excedente_patronal ?? 0) * 100).toFixed(4)}%`
+)
+
+const porcentajePrestacionesDineroTexto = computed(() =>
+  `${(Number(props.cuotasImss?.prestaciones_dinero ?? 0) * 100).toFixed(4)}%`
+)
+
+const porcentajePrestacionesEspecieTexto = computed(() =>
+  `${(Number(props.cuotasImss?.prestaciones_especie ?? 0) * 100).toFixed(4)}%`
+)
+
+const porcentajeInvalidezVidaTexto = computed(() =>
+  `${(Number(props.cuotasImss?.invalidez_vida ?? 0) * 100).toFixed(4)}%`
+)
+
+const porcentajeCesantiaVejezTexto = computed(() =>
+  `${(Number(props.cuotasImss?.cesantia_vejez ?? 0) * 100).toFixed(4)}%`
+)
+
+const porcentajeLimiteValesTexto = computed(() =>
+  `${(limiteValesUMA.value * 100).toFixed(2)}%`
+)
+
+/* =============================
+   CUOTAS IMSS – TRABAJADOR
+============================= */
+const excedenteObrero = computed(() => excedenteSBC.value * 0.004)
+
+const prestacionesDineroObrero = computed(() =>
+  sbcConVales.value * Number(props.cuotasImss?.prestaciones_dinero ?? 0)
+)
+
+const gastosMedicosObrero = computed(() =>
+  sbcConVales.value * Number(props.cuotasImss?.prestaciones_especie ?? 0)
+)
+
+const invalidezVidaObrero = computed(() =>
+  sbcConVales.value * Number(props.cuotasImss?.invalidez_vida ?? 0)
+)
+
+const cesantiaObrero = computed(() =>
+  sbcConVales.value * Number(props.cuotasImss?.cesantia_vejez ?? 0)
+)
 /* =============================
    GUARDAR
 ============================= */
@@ -373,14 +471,23 @@ const guardar = async () => {
         </div>
 
         <!-- VALES -->
-        <div class="bg-white rounded-xl shadow overflow-hidden">
+ <div class="bg-white rounded-xl shadow overflow-hidden">
           <div class="titulo-morado">VALES DE DESPENSA</div>
           <table class="tabla">
-            <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
-            <tr><td>Límite exento vales</td><td class="font-semibold text-gray-700">40%</td></tr>
-            <tr><td>Exento permitido</td><td>$ {{ limiteExentoVales.toFixed(2) }}</td></tr>
+            <tr><td>UMA</td><td>$ {{ uma.toFixed(2) }}</td></tr>
+            <tr>
+              <td>Límite exento vales</td>
+              <td class="font-semibold text-gray-700">{{ porcentajeLimiteValesTexto }}</td>
+            </tr>
+            <tr>
+              <td>Exento permitido</td>
+              <td>$ {{ limiteExentoVales.toFixed(2) }}</td>
+            </tr>
             <tr><td>Vales diarios</td><td>$ {{ valesDiarios.toFixed(2) }}</td></tr>
-            <tr><td>Exedente</td><td class="font-semibold text-gray-700">46.924</td></tr>
+            <tr>
+              <td>Excedente</td>
+              <td>$ {{ valesGravados.toFixed(2) }}</td>
+            </tr>
             <tr class="resaltado"><td>Vales gravados</td><td>$ {{ valesGravados.toFixed(2) }}</td></tr>
           </table>
         </div>
@@ -398,14 +505,29 @@ const guardar = async () => {
           <div class="titulo-azul">EXCEDENTE PATRONAL</div>
           <table class="tabla">
             <tr><td>Base mensual IMSS</td><td>$ {{ baseMensualIMSS.toFixed(2) }}</td></tr>
-            <tr><td>UMA</td><td>$ {{ uma }}</td></tr>
+            <tr><td>UMA</td><td>$ {{ uma.toFixed(2) }}</td></tr>
             <tr><td>3 UMA</td><td>$ {{ tresUMA.toFixed(2) }}</td></tr>
             <tr><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
-            <tr><td>Diferencia</td><td>$ {{ diferenciaSBC.toFixed(2) }}</td></tr>
-            <tr><td>Días trabajados</td><td><input v-model.number="diasMes" type="number" class="input-sm" /></td></tr>
-            <tr><td>Calculo</td><td>$ {{ calculoExcedente.toFixed(2) }}</td></tr>
-            <tr><td>Excedente patronal</td><td class="font-semibold text-gray-700">0.4000%</td></tr>
-            <tr class="resaltado"><td>Importe</td><td>$ {{ importeExcedente.toFixed(2) }}</td></tr>
+            <tr>
+              <td>Diferencia</td>
+              <td>$ {{ diferenciaSBC.toFixed(2) }}</td>
+            </tr>
+            <tr>
+              <td>Días trabajados</td>
+              <td><input v-model.number="diasMes" type="number" class="input-sm" /></td>
+            </tr>
+            <tr>
+              <td>Cálculo</td>
+              <td>$ {{ calculoExcedente.toFixed(2) }}</td>
+            </tr>
+            <tr>
+              <td>Excedente patronal</td>
+              <td class="font-semibold text-gray-700">{{ porcentajeExcedentePatronalTexto }}</td>
+            </tr>
+            <tr class="resaltado">
+              <td>Importe</td>
+              <td>$ {{ importeExcedente.toFixed(2) }}</td>
+            </tr>
           </table>
         </div>
 
@@ -417,41 +539,41 @@ const guardar = async () => {
             <tr class="font-bold bg-gray-100">
               <td>Concepto</td>
               <td>Porcentaje</td>
-              <td></td>
-              <td></td>
+              <td>Base</td>
+              <td>Importe</td>
             </tr>
 
             <tr>
               <td>Excedente patronal</td>
-              <td>0.4000%</td>
-              <td>$ {{ excetePatronal.toFixed(2) }}</td>
+              <td>{{ porcentajeExcedentePatronalTexto }}</td>
+              <td>$ {{ calculoExcedente.toFixed(2) }}</td>
               <td>$ {{ importeExcedente.toFixed(2) }}</td>
             </tr>
 
             <tr>
               <td>Prestaciones de dinero</td>
-              <td>0.25%</td>
+              <td>{{ porcentajePrestacionesDineroTexto }}</td>
               <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ prestacionesDinero.toFixed(2) }}</td>
             </tr>
 
             <tr>
               <td>Prestaciones en especie</td>
-              <td>0.375%</td>
+              <td>{{ porcentajePrestacionesEspecieTexto }}</td>
               <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ prestacionesEspecie.toFixed(2) }}</td>
             </tr>
 
             <tr>
               <td>Invalidez y vida</td>
-              <td>0.625%</td>
+              <td>{{ porcentajeInvalidezVidaTexto }}</td>
               <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ invalidezVida.toFixed(2) }}</td>
             </tr>
 
             <tr>
-              <td>Cesantia y vejez</td>
-              <td>1.125%</td>
+              <td>Cesantía y vejez</td>
+              <td>{{ porcentajeCesantiaVejezTexto }}</td>
               <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ cesantiaVejez.toFixed(2) }}</td>
             </tr>
@@ -464,7 +586,6 @@ const guardar = async () => {
             </tr>
           </table>
         </div>
-
         <!-- BOTÓN GUARDAR -->
         <button
           @click="guardar"

@@ -4,6 +4,17 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+const props = defineProps({
+  configNomina: {
+    type: Object,
+    default: () => ({})
+  },
+  tablaIsr: {
+    type: Array,
+    default: () => []
+  }
+})
+
 /* =============================
    LISTAS DESDE BASE DE DATOS
 ============================= */
@@ -86,28 +97,22 @@ watch(empleado, (id) => {
 })
 
 /* =============================
-   TABLA ISR MENSUAL 2026
+   TABLA ISR MENSUAL 
 ============================= */
-const tablaISR = [
-  { li: 0.01,      ls: 844.59,     cuota: 0.00,      porcentaje: 1.92 },
-  { li: 844.60,    ls: 7168.51,    cuota: 16.22,     porcentaje: 6.40 },
-  { li: 7168.52,   ls: 12598.02,   cuota: 420.95,    porcentaje: 10.88 },
-  { li: 12598.03,  ls: 14644.64,   cuota: 1011.68,   porcentaje: 16.00 },
-  { li: 14644.65,  ls: 17533.64,   cuota: 1339.14,   porcentaje: 17.92 },
-  { li: 17533.65,  ls: 35362.83,   cuota: 1856.84,   porcentaje: 21.36 },
-  { li: 35362.84,  ls: 55736.68,   cuota: 5665.16,   porcentaje: 23.52 },
-  { li: 55736.69,  ls: 106410.50,  cuota: 10457.09,  porcentaje: 30.00 },
-  { li: 106410.51, ls: 141880.66,  cuota: 25659.23,  porcentaje: 32.00 },
-  { li: 141880.67, ls: 425641.99,  cuota: 37009.69,  porcentaje: 34.00 },
-  { li: 425642.00, ls: Infinity,   cuota: 133488.54, porcentaje: 35.00 },
-]
-
+const tablaISR = computed(() =>
+  (props.tablaIsr || []).map((fila) => ({
+    li: Number(fila.limite_inferior ?? 0),
+    ls: fila.limite_superior === null ? Infinity : Number(fila.limite_superior ?? 0),
+    cuota: Number(fila.cuota_fija ?? 0),
+    porcentaje: Number(fila.porcentaje ?? 0),
+  }))
+)
 
 /* =============================
    CÁLCULO ISR
 ============================= */
 const filaISR = computed(() =>
-  tablaISR.find(f =>
+  tablaISR.value.find(f =>
     totalPercepciones.value >= f.li &&
     totalPercepciones.value <= f.ls
   )
@@ -128,10 +133,13 @@ const isrDeterminado = computed(() =>
 /* =============================
    SUBSIDIO PARA EL EMPLEO
 ============================= */
-const uma = ref(117.31)
-const porcentajeSubsidio = ref(15.02)
-const topeSubsidio = ref(535.65)
-const topeSubsidio2026 = ref(11492.66)
+const salarioMinimo = computed(() =>
+  Number(props.configNomina?.salario_minimo ?? 0)
+)
+const uma = computed(() => Number(props.configNomina?.uma ?? 0))
+const porcentajeSubsidio = computed(() => Number(props.configNomina?.subsidio_empleo ?? 0))
+const topeSubsidio = computed(() => Number(props.configNomina?.tope_subsidio ?? 0))
+const topeSubsidio2026 = computed(() => Number(props.configNomina?.limite_ingreso_subsidio ?? 0))
 
 const umaDiaria = computed(() =>
   uma.value * (porcentajeSubsidio.value / 100)
@@ -145,11 +153,12 @@ const subsidioPeriodo = computed(() =>
   subsidioAplicable.value * diasTrabajados.value
 )
 
+
 /* =============================
    CONDICIONALES
 ============================= */
 const aplicaArticulo96 = computed(() =>
-  totalPercepciones.value ===  9451.20
+  salarioBase.value === salarioMinimo.value
 )
 
 const baseISRporDos = computed(() =>
@@ -159,6 +168,7 @@ const baseISRporDos = computed(() =>
 const aplicaSubsidio = computed(() =>
   baseISRporDos.value <= topeSubsidio2026.value
 )
+
 
 /* =============================
    ISR A RETENER
@@ -307,7 +317,7 @@ const guardar = async () => {
   </div>
 
   <!-- SUBSIDIO -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
+     <div class="bg-white rounded-xl shadow overflow-hidden">
     <div class="bg-yellow-400 text-black font-bold text-center py-2">
       SUBSIDIO PARA EL EMPLEO
     </div>
@@ -329,7 +339,6 @@ const guardar = async () => {
       </tr>
     </table>
   </div>
-
 </div>
 
         <!-- NOTA ARTÍCULO 96 -->
@@ -369,7 +378,7 @@ const guardar = async () => {
     >
       <div class="bg-white rounded-xl w-full max-w-4xl p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-blue-700">Tarifa ISR 2026 (Mensual)</h2>
+          <h2 class="text-xl font-bold text-blue-700">Tarifa ISR (Diaria)</h2>
           <button @click="showTarifaModal = false" class="text-red-600 font-bold text-xl">✕</button>
         </div>
 
@@ -403,6 +412,7 @@ const guardar = async () => {
         </table>
       </div>
     </div>
+
 
   </AuthenticatedLayout>
 </template>

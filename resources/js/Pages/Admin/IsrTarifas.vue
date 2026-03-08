@@ -96,8 +96,7 @@ function guardar() {
           </button>
         </div>
       </div>
-
-      <div class="overflow-auto bg-white rounded shadow border">
+<div class="overflow-auto bg-white rounded-xl shadow border max-w-6xl mx-auto p-4">
         <table class="min-w-full text-sm">
           <thead class="bg-slate-100">
             <tr class="text-left">

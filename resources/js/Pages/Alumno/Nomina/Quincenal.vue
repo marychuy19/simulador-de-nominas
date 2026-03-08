@@ -4,6 +4,17 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+const props = defineProps({
+  configNomina: {
+    type: Object,
+    default: () => ({})
+  },
+  tablaIsr: {
+    type: Array,
+    default: () => []
+  }
+})
+
 /* =============================
    LISTAS DESDE BASE DE DATOS
 ============================= */
@@ -86,27 +97,22 @@ watch(empleado, (id) => {
 })
 
 /* =============================
-   TABLA ISR QUINCENAL 2026
+   TABLA ISR QUINCENAL 
 ============================= */
-const tablaISR = [
-  { li: 0.01, ls: 416.70, cuota: 0.00, porcentaje: 1.92 },
-  { li: 416.71, ls: 3537.15, cuota: 7.95, porcentaje: 6.40 },
-  { li: 3537.16, ls: 6216.15, cuota: 207.75, porcentaje: 10.88 },
-  { li: 6216.16, ls: 7225.95, cuota: 499.20, porcentaje: 16.00 },
-  { li: 7225.96, ls: 8651.40, cuota: 660.75, porcentaje: 17.92 },
-  { li: 8651.41, ls: 17448.75, cuota: 916.20, porcentaje: 21.36 },
-  { li: 17448.76, ls: 27501.60, cuota: 2795.25, porcentaje: 23.52 },
-  { li: 27501.61, ls: 52505.25, cuota: 5159.70, porcentaje: 30.00 },
-  { li: 52505.26, ls: 70006.95, cuota: 12660.75, porcentaje: 32.00 },
-  { li: 70006.96, ls: 210020.70, cuota: 18261.30, porcentaje: 34.00 },
-  { li: 210020.71, ls: Infinity, cuota: 65866.05, porcentaje: 35.00 },
-]
+const tablaISR = computed(() =>
+  (props.tablaIsr || []).map((fila) => ({
+    li: Number(fila.limite_inferior ?? 0),
+    ls: fila.limite_superior === null ? Infinity : Number(fila.limite_superior ?? 0),
+    cuota: Number(fila.cuota_fija ?? 0),
+    porcentaje: Number(fila.porcentaje ?? 0),
+  }))
+)
 
 /* =============================
    CÁLCULO ISR
 ============================= */
 const filaISR = computed(() =>
-  tablaISR.find(f =>
+  tablaISR.value.find(f =>
     totalPercepciones.value >= f.li &&
     totalPercepciones.value <= f.ls
   )
@@ -127,10 +133,13 @@ const isrDeterminado = computed(() =>
 /* =============================
    SUBSIDIO PARA EL EMPLEO
 ============================= */
-const uma = ref(117.31)
-const porcentajeSubsidio = ref(15.02)
-const topeSubsidio = ref(535.65)
-const topeSubsidio2026 = ref(11492.66)
+const salarioMinimo = computed(() =>
+  Number(props.configNomina?.salario_minimo ?? 0)
+)
+const uma = computed(() => Number(props.configNomina?.uma ?? 0))
+const porcentajeSubsidio = computed(() => Number(props.configNomina?.subsidio_empleo ?? 0))
+const topeSubsidio = computed(() => Number(props.configNomina?.tope_subsidio ?? 0))
+const topeSubsidio2026 = computed(() => Number(props.configNomina?.limite_ingreso_subsidio ?? 0))
 
 const umaDiaria = computed(() =>
   uma.value * (porcentajeSubsidio.value / 100)
@@ -148,7 +157,7 @@ const subsidioPeriodo = computed(() =>
    CONDICIONALES
 ============================= */
 const aplicaArticulo96 = computed(() =>
-  totalPercepciones.value === 4725.6
+  salarioBase.value === salarioMinimo.value
 )
 
 const baseISRporDos = computed(() =>
@@ -368,7 +377,7 @@ const guardar = async () => {
     >
       <div class="bg-white rounded-xl w-full max-w-4xl p-6">
         <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-blue-700">Tarifa ISR 2026 (Quincenal)</h2>
+          <h2 class="text-xl font-bold text-blue-700">Tarifa ISR (Quincenal)</h2>
           <button @click="showTarifaModal = false" class="text-red-600 font-bold text-xl">✕</button>
         </div>
 

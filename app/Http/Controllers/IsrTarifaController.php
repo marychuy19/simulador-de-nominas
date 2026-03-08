@@ -20,20 +20,16 @@ class IsrTarifaController extends Controller
 
         return Inertia::render('Admin/IsrTarifas', [
             'tipo' => $tipo,
-            'tipos' => ['diaria','semanal','decenal','quincenal','mensual'],
+            'tipos' => ['diaria', 'semanal', 'decenal', 'quincenal', 'mensual'],
             'rows' => $rows,
         ]);
     }
 
-    /**
-     * Guarda toda la tabla de una sola vez (estilo Excel).
-     * Recibe: tipo + rows[]
-     */
     public function saveTable(Request $request)
     {
         $data = $request->validate([
             'tipo' => 'required|string|max:20',
-            'rows' => 'required|array', // ← MODIFICADO (se quitó min:1)
+            'rows' => 'required|array',
             'rows.*.id' => 'nullable|integer',
             'rows.*.limite_inferior' => 'required|numeric|min:0',
             'rows.*.limite_superior' => 'nullable|numeric|min:0',
@@ -46,10 +42,9 @@ class IsrTarifaController extends Controller
         $tipo = $data['tipo'];
         $rows = $data['rows'];
 
-        // Validación extra: superior >= inferior (si existe)
         foreach ($rows as $r) {
             if (isset($r['limite_superior']) && $r['limite_superior'] !== null) {
-                if ((float)$r['limite_superior'] < (float)$r['limite_inferior']) {
+                if ((float) $r['limite_superior'] < (float) $r['limite_inferior']) {
                     return back()->withErrors([
                         'rows' => 'Hay renglones donde el límite superior es menor que el inferior.'
                     ]);
@@ -68,11 +63,12 @@ class IsrTarifaController extends Controller
                     'cuota_fija' => $r['cuota_fija'],
                     'porcentaje' => $r['porcentaje'],
                     'orden' => $r['orden'] ?? ($i + 1),
-                    'activo' => isset($r['activo']) ? (bool)$r['activo'] : true,
+                    'activo' => isset($r['activo']) ? (bool) $r['activo'] : true,
                 ];
 
                 if (!empty($r['id'])) {
                     $row = IsrTarifa::where('tipo', $tipo)->where('id', $r['id'])->first();
+
                     if ($row) {
                         $row->update($payload);
                         $keepIds[] = $row->id;
@@ -86,7 +82,6 @@ class IsrTarifaController extends Controller
                 }
             }
 
-            // Elimina los que ya no están en la tabla enviada (solo del tipo actual)
             if (count($keepIds) > 0) {
                 IsrTarifa::where('tipo', $tipo)
                     ->whereNotIn('id', $keepIds)

@@ -23,13 +23,13 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
   <div class="min-h-screen bg-gray-100 flex">
 
     <!-- SIDEBAR -->
-    <aside
-      :class="[
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed z-50 inset-y-0 left-0 w-64 bg-blue-800 text-white transform transition-transform duration-300 ease-in-out',
-        'lg:translate-x-0 lg:static lg:inset-0'
-      ]"
-    >
+  <aside
+  :class="[
+    sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+    'fixed z-50 inset-y-0 left-0 w-64 h-screen bg-blue-800 text-white transform transition-transform duration-300 ease-in-out',
+    'lg:translate-x-0'
+  ]"
+>
 
       <!-- Logo -->
       <div class="flex items-center justify-center h-16 border-b border-blue-800">
@@ -203,7 +203,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
     ></div>
 
     <!-- CONTENIDO -->
-    <div class="flex-1 flex flex-col">
+   <div class="flex-1 flex flex-col lg:ml-64">
 
       <!-- TOPBAR -->
       <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
