@@ -557,7 +557,7 @@ const guardar = async () => {
             <tr>
               <td>Excedente patronal</td>
               <td>{{ porcentajeExcedentePatronalTexto }}</td>
-              <td>$ {{ calculoExcedente.toFixed(2) }}</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ importeExcedente.toFixed(2) }}</td>
             </tr>
 

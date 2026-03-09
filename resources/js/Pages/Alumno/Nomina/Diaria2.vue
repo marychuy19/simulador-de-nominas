@@ -234,6 +234,7 @@ const invalidezVida = computed(() => {
   return excetePatronal.value * Number(props.cuotasImss?.invalidez_vida ?? 0)
 })
 
+
 const cesantiaVejez = computed(() => {
   return excetePatronal.value * Number(props.cuotasImss?.cesantia_vejez ?? 0)
 })
@@ -550,7 +551,7 @@ const guardar = async () => {
             <tr>
               <td>Excedente patronal</td>
               <td>{{ porcentajeExcedentePatronalTexto }}</td>
-              <td>$ {{ calculoExcedente.toFixed(2) }}</td>
+              <td>$ {{ excetePatronal.toFixed(2) }}</td>
               <td>$ {{ importeExcedente.toFixed(2) }}</td>
             </tr>
 

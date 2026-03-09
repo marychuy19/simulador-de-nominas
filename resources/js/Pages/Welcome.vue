@@ -20,13 +20,13 @@ const logoSrc = new URL('image/logo.jpeg', import.meta.url).href
     />
 
     <!-- OVERLAY MÁS OSCURO Y AZUL -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-blue-900/85 to-black/80"></div>
+    <div class="absolute inset-0 bg-gradient-to-br bg-blue-800/70"></div>
 
     <!-- CARD PRINCIPAL -->
     <div
       class="relative z-10 w-full max-w-md
              bg-white/90 backdrop-blur-xl
-             rounded-3xl shadow-2xl
+             rounded-2xl shadow-2xl
              px-8 py-10 mx-4 text-center"
     >
 
@@ -54,32 +54,32 @@ const logoSrc = new URL('image/logo.jpeg', import.meta.url).href
       <!-- BOTÓN -->
       <div class="mt-8">
 
-        <Link
-          :href="route('login')"
-          class="group inline-flex items-center justify-center gap-3
-                 w-full px-6 py-4
-                 bg-blue-800 hover:bg-blue-900
-                 text-white font-semibold text-lg
-                 rounded-xl shadow-lg
-                 transition-all duration-300"
-        >
-          Iniciar sesión
-          <svg
-            class="h-5 w-5 transform group-hover:translate-x-1 transition"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M5 12h14M13 5l7 7-7 7"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </Link>
+  <Link
+    :href="route('login')"
+    class="group inline-flex items-center justify-center gap-2
+           w-full px-4 py-2
+           bg-black hover:bg-gray-900
+           text-white font-medium text-sm
+           rounded-lg shadow
+           transition"
+  >
+    Iniciar sesión
+    <svg
+      class="h-4 w-4 transform group-hover:translate-x-1 transition"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <path
+        d="M5 12h14M13 5l7 7-7 7"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </Link>
 
-      </div>
+</div>
 
       <!-- TEXTO INFERIOR -->
       <p class="mt-6 text-sm text-gray-600">

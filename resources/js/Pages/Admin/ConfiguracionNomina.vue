@@ -72,7 +72,7 @@ function guardarCuotas() {
         </div>
 
         <div>
-            <label class="font-semibold">Límite Exento de Vales de Despensa (veces UMA)</label>
+            <label class="font-semibold">Límite Exento de Vales de Despensa (%) (veces UMA)</label>
             <input v-model="form.limite_vales_despensa" type="number" step="0.01" class="w-full border p-2 rounded">
         </div>
 
@@ -81,7 +81,7 @@ function guardarCuotas() {
             <input v-model="form.subsidio_empleo" type="number" step="0.01" class="w-full border p-2 rounded">
         </div>
         <div>
-            <label class="font-semibold">Límite de Ingreso para Aplicar Subsidio</label>
+            <label class="font-semibold">Límite de Ingreso para Aplicar Subsidio (mensual)</label>
             <input v-model="form.limite_ingreso_subsidio" type="number" step="0.01" class="w-full border p-2 rounded">
         </div>
 
@@ -98,27 +98,29 @@ function guardarCuotas() {
 
         <div>
             <label class="font-semibold">Excedente Patronal (%)</label>
-            <input v-model="formCuotas.excedente_patronal" type="number" step="0.0001" class="w-full border p-2 rounded">
+            <input v-model="formCuotas.excedente_patronal" type="number" step="0.01" class="w-full border p-2 rounded">
         </div>
 
         <div>
             <label class="font-semibold">Prestaciones en Dinero (%)</label>
-            <input v-model="formCuotas.prestaciones_dinero" type="number" step="0.0001" class="w-full border p-2 rounded">
+            <input v-model="formCuotas.prestaciones_dinero" type="text" class="w-full border p-2 rounded">
+
         </div>
 
         <div>
             <label class="font-semibold">Prestaciones en Especie (%)</label>
-            <input v-model="formCuotas.prestaciones_especie" type="number" step="0.0001" class="w-full border p-2 rounded">
+            <input v-model="formCuotas.prestaciones_especie" type="text" class="w-full border p-2 rounded">
         </div>
 
         <div>
             <label class="font-semibold">Invalidez y Vida (%)</label>
-            <input v-model="formCuotas.invalidez_vida" type="number" step="0.0001" class="w-full border p-2 rounded">
+           <input v-model="formCuotas.invalidez_vida" type="text" class="w-full border p-2 rounded">
+
         </div>
 
         <div>
             <label class="font-semibold">Cesantía y Vejez (%)</label>
-            <input v-model="formCuotas.cesantia_vejez" type="number" step="0.0001" class="w-full border p-2 rounded">
+           <input v-model="formCuotas.cesantia_vejez" type="text" class="w-full border p-2 rounded">
         </div>
 
         <button @click="guardarCuotas"

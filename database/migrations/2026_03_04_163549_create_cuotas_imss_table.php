@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('cuotas_imss', function (Blueprint $table) {
             $table->id();
-            $table->decimal('excedente_patronal', 8, 4)->default(0);
-            $table->decimal('prestaciones_dinero', 8, 4)->default(0);
-            $table->decimal('prestaciones_especie', 8, 4)->default(0);
-            $table->decimal('invalidez_vida', 8, 4)->default(0);
-            $table->decimal('cesantia_vejez', 8, 4)->default(0);
+            $table->decimal('excedente_patronal', 12, 6)->default(0);
+            $table->decimal('prestaciones_dinero', 12, 6)->default(0);
+            $table->decimal('prestaciones_especie', 12, 6)->default(0);
+            $table->decimal('invalidez_vida', 12, 6)->default(0);
+            $table->decimal('cesantia_vejez', 12, 6)->default(0);
             $table->timestamps();
         });
     }

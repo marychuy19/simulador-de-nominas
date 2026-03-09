@@ -1,3 +1,4 @@
+```vue
 <script setup>
 import Checkbox from '@/Components/Checkbox.vue'
 import InputError from '@/Components/InputError.vue'
@@ -24,123 +25,128 @@ const submit = () => {
 }
 
 const bgImage = new URL('../image/contabilidad.jpeg', import.meta.url).href
+const bgImage2 = new URL('../image/contaa.jpeg', import.meta.url).href
 const logoSrc = new URL('../image/logo.jpeg', import.meta.url).href
 </script>
 
 <template>
-  <Head title="Iniciar sesión" />
+<Head title="Iniciar sesión" />
 
-  <!-- CONTENEDOR GENERAL -->
-  <div class="relative min-h-screen flex items-center justify-center overflow-hidden">
+<div class="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-    <!-- FONDO -->
-    <img
-      :src="bgImage"
-      alt="Contabilidad"
-      class="absolute inset-0 w-full h-full object-cover"
-    />
+  <!-- FONDO -->
+  <img
+    :src="bgImage"
+    class="absolute inset-0 w-full h-full object-cover"
+  />
 
-    <!-- OVERLAY AZUL OSCURO -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-blue-900/85 to-black/80"></div>
+  <!-- OVERLAY VERDE -->
+  <div class="absolute inset-0 bg-blue-800/70"></div>
 
-    <!-- CARD LOGIN -->
-    <div
-      class="relative z-10 w-full max-w-md
-             bg-white/90 backdrop-blur-xl
-             rounded-3xl shadow-2xl
-             px-8 py-10 mx-4"
-    >
+  <!-- CARD PRINCIPAL -->
+  <div class="relative z-10 w-[900px] max-w-full bg-white rounded-lg shadow-2xl flex overflow-hidden">
 
-      <!-- LOGO -->
-      <div class="flex justify-center mb-6">
-        <img
-          :src="logoSrc"
-          alt="Logo"
-          class="h-24 w-24 rounded-2xl shadow-md"
-        />
-      </div>
+    <!-- LADO IZQUIERDO IMAGEN -->
+    <div class="relative w-1/2 hidden md:block">
 
-      <!-- TÍTULO -->
-      <h1 class="text-3xl font-extrabold text-center text-gray-900">
-        Iniciar sesión
+      <img
+        :src="bgImage2"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+
+      <div class="absolute inset-0"></div>
+
+
+    </div>
+
+    <!-- LADO DERECHO LOGIN -->
+    <div class="w-full md:w-1/2 p-10 flex flex-col justify-center">
+
+      <h1 class="text-3xl font-semibold text-gray-700 mb-2">
+        Simulador de Nominas
       </h1>
 
-      <p class="mt-2 text-center text-gray-600 text-sm">
-        Accede al simulador de nóminas
+      <p class="text-gray-500 mb-8 text-sm">
+        Inicia sesion en tu cuenta para acceder al simulador de nominas.
       </p>
 
       <!-- STATUS -->
       <div
         v-if="status"
-        class="mt-4 text-sm text-green-600 text-center font-medium"
+        class="mb-4 text-sm text-green-600"
       >
         {{ status }}
       </div>
 
-      <!-- FORMULARIO -->
-      <form @submit.prevent="submit" class="mt-6 space-y-5">
+      <!-- FORM -->
+      <form @submit.prevent="submit" class="space-y-4">
 
         <!-- EMAIL -->
         <div>
-          <InputLabel for="email" value="Correo electrónico" />
           <TextInput
             id="email"
             type="email"
-            class="mt-1 block w-full"
+            class="w-full rounded-full border-gray-300 px-4 py-2"
+            placeholder="Correo electronico"
             v-model="form.email"
             required
             autofocus
             autocomplete="username"
           />
-          <InputError class="mt-2" :message="form.errors.email" />
+
+          <InputError class="mt-1" :message="form.errors.email" />
         </div>
 
         <!-- PASSWORD -->
         <div>
-          <InputLabel for="password" value="Contraseña" />
           <TextInput
             id="password"
             type="password"
-            class="mt-1 block w-full"
+            class="w-full rounded-full border-gray-300 px-4 py-2"
+            placeholder="••••••••••"
             v-model="form.password"
             required
             autocomplete="current-password"
           />
-          <InputError class="mt-2" :message="form.errors.password" />
+
+          <InputError class="mt-1" :message="form.errors.password" />
         </div>
 
-        <!-- RECORDAR / RESET -->
-        <div class="flex items-center justify-between text-sm">
+        <!-- FORGOT -->
+        <div class="flex justify-between text-sm">
+
           <label class="flex items-center">
             <Checkbox v-model:checked="form.remember" />
-            <span class="ms-2 text-gray-600">Recordarme</span>
+            <span class="ml-2 text-gray-500">Recordar</span>
           </label>
 
           <Link
             v-if="canResetPassword"
             :href="route('password.request')"
-            class="text-blue-700 hover:text-blue-900 font-medium"
+            class="text-gray-400 hover:text-gray-600"
           >
-            ¿Olvidaste tu contraseña?
+            Haz olvidado tu contraseña?
           </Link>
+
         </div>
 
-        <!-- BOTÓN -->
+        <!-- BOTON -->
         <PrimaryButton
-          class="w-full justify-center gap-2 py-4 text-lg
-                 bg-blue-700 hover:bg-blue-800
-                 rounded-xl shadow-lg transition"
+          class="w-full justify-center py-2 rounded-full bg-blue-600 hover:bg-blue-700"
           :class="{ 'opacity-25': form.processing }"
           :disabled="form.processing"
         >
-          Iniciar sesión
+          Entrar
         </PrimaryButton>
+
       </form>
 
-      <!-- FOOTER -->
-      <p class="mt-6 text-center text-xs text-gray-600">
-        Acceso exclusivo para usuarios autorizados
-      </p>
+
+
     </div>
+
   </div>
+
+</div>
 </template>
+

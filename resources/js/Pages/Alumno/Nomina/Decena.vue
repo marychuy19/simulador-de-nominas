@@ -138,7 +138,7 @@ const salarioMinimo = computed(() =>
 )
 const uma = computed(() => Number(props.configNomina?.uma ?? 0))
 const porcentajeSubsidio = computed(() => Number(props.configNomina?.subsidio_empleo ?? 0))
-const topeSubsidio = computed(() => Number(props.configNomina?.tope_subsidio ?? 0))
+const topeSubsidio = computed(() => umaDiaria.value * 30.4)
 const topeSubsidio2026 = computed(() => Number(props.configNomina?.limite_ingreso_subsidio ?? 0))
 
 const umaDiaria = computed(() =>
@@ -323,12 +323,12 @@ const guardar = async () => {
 
     <table class="w-full text-sm">
       <tr>
-        <td class="td">Tope de subsidio 2026</td>
+        <td class="td">Tope de subsidio del año actual</td>
         <td class="td">
           $ {{ topeSubsidio2026.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}
         </td>
       </tr>
-      <tr><td class="td">UMA 2026</td><td class="td">$ {{ uma }}</td></tr>
+      <tr><td class="td">UMA del año actual</td><td class="td">$ {{ uma }}</td></tr>
       <tr><td class="td">% de subsidio</td><td class="td">{{ porcentajeSubsidio }} %</td></tr>
       <tr><td class="td">UMA diaria</td><td class="td">$ {{ umaDiaria.toFixed(2) }}</td></tr>
       <tr><td class="td">Tope de subsidio</td><td class="td">$ {{ topeSubsidio }}</td></tr>

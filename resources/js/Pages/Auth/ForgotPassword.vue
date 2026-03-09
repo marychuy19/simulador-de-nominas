@@ -25,7 +25,7 @@ const logoSrc = new URL('../image/logo.jpeg', import.meta.url).href
     />
 
     <!-- OVERLAY -->
-    <div class="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-blue-900/85 to-black/80"></div>
+    <div class="absolute inset-0 bg-gradient-to-br bg-blue-800/70"></div>
 
     <!-- CARD -->
     <div
@@ -61,18 +61,17 @@ const logoSrc = new URL('../image/logo.jpeg', import.meta.url).href
       >
         {{ status }}
       </div>
-
-      <!-- BOTÓN VOLVER -->
-      <div class="mt-8">
-        <Link
-          :href="route('login')"
-          class="block w-full text-center py-4 text-lg font-semibold
-                 bg-blue-700 hover:bg-blue-800
-                 text-white rounded-xl shadow-lg transition"
-        >
-          Volver al inicio de sesión
-        </Link>
-      </div>
+<!-- BOTÓN VOLVER -->
+<div class="mt-8">
+  <Link
+    :href="route('login')"
+    class="block w-full text-center py-2 text-sm font-medium
+           bg-black hover:bg-gray-900
+           text-white rounded-lg shadow transition"
+  >
+    Volver al inicio de sesión
+  </Link>
+</div>
 
       <!-- FOOTER -->
       <p class="mt-6 text-center text-xs text-gray-600">
