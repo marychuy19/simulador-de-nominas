@@ -4,6 +4,9 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+const mostrarNotaTopeSubsidio = ref(false)
+const mostrarNotaTopeSubsidioPeriodo = ref(false)
+
 const props = defineProps({
   configNomina: {
     type: Object,
@@ -322,17 +325,31 @@ const guardar = async () => {
       SUBSIDIO PARA EL EMPLEO
     </div>
 
-    <table class="w-full text-sm">
-      <tr>
-        <td class="td">Tope de subsidio del año actual</td>
-        <td class="td">
-          $ {{ topeSubsidio2026.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}
-        </td>
-      </tr>
+     <table class="w-full text-sm">
+      <tr @click="mostrarNotaTopeSubsidio = !mostrarNotaTopeSubsidio" class="cursor-pointer">
+  <td class="td">Tope de subsidio del año actual</td>
+  <td class="td">
+    $ {{ topeSubsidio2026.toLocaleString('es-MX', { minimumFractionDigits: 2 }) }}
+  </td>
+</tr>
+<tr v-if="mostrarNotaTopeSubsidio">
+  <td colspan="2" class="text-sm text-gray-600 px-2 pb-2">
+    El subcidio para el empleo se establece en el decreto publicado en el Diario Oficial de la Federacion el 31 de diciembre,
+    donde se actualiza el porcentaje de la UMA y el limite de ingresos mensuales.
+  </td>
+</tr>
       <tr><td class="td">UMA del año actual</td><td class="td">$ {{ uma }}</td></tr>
       <tr><td class="td">% de subsidio</td><td class="td">{{ porcentajeSubsidio }} %</td></tr>
       <tr><td class="td">UMA diaria</td><td class="td">$ {{ umaDiaria.toFixed(2) }}</td></tr>
-      <tr><td class="td">Tope de subsidio</td><td class="td">$ {{ topeSubsidio }}</td></tr>
+      <tr @click="mostrarNotaTopeSubsidioPeriodo = !mostrarNotaTopeSubsidioPeriodo" class="cursor-pointer">
+  <td class="td">Tope de subsidio</td>
+  <td class="td">$ {{ topeSubsidio }}</td>
+</tr>
+<tr v-if="mostrarNotaTopeSubsidioPeriodo">
+  <td colspan="2" class="text-sm text-gray-600 px-2 pb-2">
+    El subsidio maximo mensual para el empledo es de:
+  </td>
+</tr>
       <tr class="font-bold bg-gray-100">
         <td class="td">Subsidio del periodo</td>
         <td class="td">$ {{ subsidioPeriodo.toFixed(2) }}</td>

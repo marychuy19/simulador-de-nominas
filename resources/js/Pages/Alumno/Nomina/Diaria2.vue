@@ -4,6 +4,11 @@ import { Head, router } from '@inertiajs/vue3'
 import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
+const mostrarNotaAguinaldo = ref(false)
+const mostrarNotaVacaciones = ref(false)
+const mostrarNotaPrima = ref(false)
+const mostrarNotaVales = ref(false)
+
 // ✅ RECIBE LOS DATOS QUE VIENEN DEL CONTROLADOR
 const props = defineProps({
   prefil1: {
@@ -449,10 +454,83 @@ const guardar = async () => {
         <div class="bg-white rounded-xl shadow overflow-hidden">
           <div class="titulo-verde">PRESTACIONES</div>
           <table class="tabla">
-            <tr><td>Aguinaldo (días)</td><td><input v-model.number="diasAguinaldo" type="number" class="input-sm" /></td></tr>
-            <tr><td>Vacaciones (días)</td><td><input v-model.number="diasVacaciones" type="number" class="input-sm" /></td></tr>
-            <tr><td>Prima vacacional (%)</td><td><input v-model.number="primaVacacional" step="0.01" type="number" class="input-sm" /></td></tr>
-            <tr><td>Vales de despensa (%)</td><td><input v-model.number="valesDespensaPorcentaje" step="0.01" type="number" class="input-sm" /></td></tr>
+           <tr>
+  <td>Aguinaldo (días)</td>
+  <td>
+    <input
+      v-model.number="diasAguinaldo"
+      type="number"
+      class="input-sm"
+      @focus="mostrarNotaAguinaldo = true"
+      @blur="mostrarNotaAguinaldo = false"
+    />
+  </td>
+</tr>
+
+<tr v-if="mostrarNotaAguinaldo">
+  <td colspan="2" class="text-sm text-gray-600 md:col-span-2">
+   Los trabajadores tendran derecho a un aguinaldo anual que debera pagarse antes del dia 20 de diciembre, equivalente a 15 dias de salario por lo menos: Articulo 87 LFT.
+  </td>
+</tr>
+
+ <tr>
+  <td>Vacaviones (días)</td>
+  <td>
+    <input
+      v-model.number="diasVacaciones"
+      type="number"
+      class="input-sm"
+      @focus="mostrarNotaVacaciones = true"
+      @blur="mostrarNotaVacaciones = false"
+    />
+  </td>
+</tr>
+
+<tr v-if="mostrarNotaVacaciones">
+  <td colspan="2" class="text-sm text-gray-600 md:col-span-2">
+Las personas trabajadoras que tengan mas de un año de servicios disfrutaran de un periodo anual de vacaciones pagadas, que en ningun caso podran ser inferior a 12 dias 
+laborales, y aumentara de 2 dias laborales, hasta llegar a 20 por cada año subcecuente de servicios. Apartir del sexto año, el periodo de vacaciones aumentara en 2 dias por cada 5 años de servicios: Articulo 76 LFT.
+  </td>
+</tr>
+
+<tr>
+  <td>Prima vacacional</td>
+  <td>
+    <input
+      v-model.number="primaVacacional"
+      type="number"
+      class="input-sm"
+      @focus="mostrarNotaPrima = true"
+      @blur="mostrarNotaPrima = false"
+    />
+  </td>
+</tr>
+
+<tr v-if="mostrarNotaPrima">
+  <td colspan="2" class="text-sm text-gray-600 md:col-span-2">
+Los trabajadores tendran derecho a una prima no menor del 25% sobre los salarios que le correspondan durante el periodo de vacaiones: Articulo 80 LFT.
+  </td>
+</tr>
+
+<tr>
+  <td>Vales de despensa %</td>
+  <td>
+    <input
+      v-model.number="valesDespensaPorcentaje"
+      type="number"
+      class="input-sm"
+      @focus="mostrarNotaVales = true"
+      @blur="mostrarNotaVales = false"
+    />
+  </td>
+</tr>
+
+<tr v-if="mostrarNotaVales">
+  <td colspan="2" class="text-sm text-gray-600 md:col-span-2">
+El salario se integra con los pagos hechos en efectivo por couta diaria, gratificaciones, percepciones,
+primas, comisiones, prestaciones en especie y cualquier otra cantidad o prestacion que se entrega al trabajador por su trabajo: Articulo 84 LFT.
+  </td>
+</tr>
           </table>
         </div>
 

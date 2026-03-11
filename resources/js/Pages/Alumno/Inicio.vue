@@ -3,6 +3,10 @@ import { ref, computed } from 'vue'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, useForm, usePage, router } from '@inertiajs/vue3'
 
+const mostrarNotaSalario = ref(false)
+const mostrarNotaPeriodo = ref(false)
+const mostrarNotaPatronal = ref(false)
+
 /* PROPS */
 const { props } = usePage()
 const empresas = computed(() => props.empresas ?? [])
@@ -301,19 +305,42 @@ const eliminarEmpresa = (id) => {
             class="modal-input"
             v-model="empresaForm.regimen_fiscal" />
 
-          <select class="modal-input"
-            v-model="empresaForm.periodo_pago">
-            <option value="">Periodo de pago</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="10_dias">10 días</option>
-            <option value="mensual">Mensual</option>
-          </select>
+          <select
+  class="modal-input"
+  v-model="empresaForm.periodo_pago"
+  @focus="mostrarNotaPeriodo = true"
+  @blur="mostrarNotaPeriodo = false"
+>
+  <option value="">Periodo de pago</option>
+  <option value="diario">Diario</option>
+  <option value="semanal">Semanal</option>
+  <option value="quincenal">Quincenal</option>
+  <option value="10_dias">10 días</option>
+  <option value="mensual">Mensual</option>
+</select>
 
-          <input type="text" placeholder="Registro patronal"
+<p v-if="mostrarNotaPeriodo" class="text-sm text-gray-600 md:col-span-2">
+El salario puede fijarse por unidad de tiempo, por unidad de obra, por comision, a precio alzado o de cualquier otra manera: Articulo 83 LFT.
+</p>
+
+ <input type="date"
             class="modal-input"
             v-model="empresaForm.registro_patronal" />
+
+         <input
+  type="text"
+  placeholder="Registro patronal"
+  class="modal-input"
+  v-model="empresaForm.registro_patronal"
+  @focus="mostrarNotaPatronal = true"
+  @blur="mostrarNotaPatronal = false"
+/>
+<p v-if="mostrarNotaPatronal" class="text-sm text-gray-600 md:col-span-2">
+Los patrones estan obligados a registrarse e inscribir a sus trabajadores en el Instituto Mexicano del Seguro Social, comunicas
+sus altas y bajas, llevar registro de nominas y determina las coutas Obreros-Patronales a su cargo y enterarlas al Instituto: Articulo 15 LSS.
+</p>
+        
+  
 
         </div>
 
@@ -383,20 +410,36 @@ const eliminarEmpresa = (id) => {
             class="modal-input"
             v-model="empleadoForm.fecha_ingreso" />
 
-          <input type="number" step="0.01"
-            placeholder="Salario base (diario)"
-            class="modal-input"
-            v-model="empleadoForm.salario" />
+         <input
+  type="number"
+  step="0.01"
+  placeholder="Salario base (diario)"
+  class="modal-input"
+  v-model="empleadoForm.salario"
+  @focus="mostrarNotaSalario = true"
+  @blur="mostrarNotaSalario = false"
+/>
+<p v-if="mostrarNotaSalario" class="text-sm text-gray-600 md:col-span-2">
+El salario es la retribucion que debe pagar el patron al trabajador por su trabajo: Articulo 82 LFT.
+</p>
 
-          <select class="modal-input"
-            v-model="empleadoForm.periodo_salario">
-            <option value="">Periodo de salario</option>
-            <option value="diario">Diario</option>
-            <option value="semanal">Semanal</option>
-            <option value="10_dias">10 días</option>
-            <option value="quincenal">Quincenal</option>
-            <option value="mensual">Mensual</option>
-          </select>
+            <select
+  class="modal-input"
+  v-model="empleadoForm.periodo_salario"
+  @focus="mostrarNotaPeriodo = true"
+  @blur="mostrarNotaPeriodo = false"
+>
+  <option value="">Periodo de pago</option>
+  <option value="diario">Diario</option>
+  <option value="semanal">Semanal</option>
+  <option value="quincenal">Quincenal</option>
+  <option value="10_dias">10 días</option>
+  <option value="mensual">Mensual</option>
+</select>
+
+<p v-if="mostrarNotaPeriodo" class="text-sm text-gray-600 md:col-span-2">
+El salario puede fijarse por unidad de tiempo, por unidad de obra, por comision, a precio alzado o de cualquier otra manera: Articulo 83 LFT.
+</p>
 
           <select class="modal-input"
             v-model="empleadoForm.tipo_salario">
