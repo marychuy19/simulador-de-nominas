@@ -139,7 +139,7 @@ Route::middleware(['auth'])->group(function () {
                 return $q->select(
                     'id','empresa_id','nombre_completo',
                     'tipo_salario','periodo_salario',
-                    'fecha_ingreso','salario'
+                    'fecha_ingreso','salario', 'vales_despensa'
                 )->get();
             })->name('empleados.diario');
 
@@ -154,7 +154,7 @@ Route::middleware(['auth'])->group(function () {
                 return $q->select(
                     'id','empresa_id','nombre_completo',
                     'tipo_salario','periodo_salario',
-                    'fecha_ingreso','salario'
+                    'fecha_ingreso','salario', 'vales_despensa'
                 )->get();
             })->name('empleados.semanal');
 
@@ -169,7 +169,7 @@ Route::middleware(['auth'])->group(function () {
                 return $q->select(
                     'id','empresa_id','nombre_completo',
                     'tipo_salario','periodo_salario',
-                    'fecha_ingreso','salario'
+                    'fecha_ingreso','salario', 'vales_despensa'
                 )->get();
             })->name('empleados.10_dias');
 
@@ -184,7 +184,7 @@ Route::middleware(['auth'])->group(function () {
                 return $q->select(
                     'id','empresa_id','nombre_completo',
                     'tipo_salario','periodo_salario',
-                    'fecha_ingreso','salario'
+                    'fecha_ingreso','salario', 'vales_despensa'
                 )->get();
             })->name('empleados.quincenales');
 
@@ -199,7 +199,7 @@ Route::middleware(['auth'])->group(function () {
                 return $q->select(
                     'id','empresa_id','nombre_completo',
                     'tipo_salario','periodo_salario',
-                    'fecha_ingreso','salario'
+                    'fecha_ingreso','salario', 'vales_despensa'
                 )->get();
             })->name('empleados.mensuales');
         });

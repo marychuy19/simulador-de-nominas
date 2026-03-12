@@ -67,6 +67,7 @@ const empleadoForm = useForm({
   periodo_salario: '',
   tipo_salario: '',
   jornada: '',
+  vales_despensa: '',
 })
 
 const guardarEmpleado = () => {
@@ -323,11 +324,9 @@ const eliminarEmpresa = (id) => {
 El salario puede fijarse por unidad de tiempo, por unidad de obra, por comision, a precio alzado o de cualquier otra manera: Articulo 83 LFT.
 </p>
 
- <input type="date"
-            class="modal-input"
-            v-model="empresaForm.registro_patronal" />
 
-         <input
+
+      <input
   type="text"
   placeholder="Registro patronal"
   class="modal-input"
@@ -440,6 +439,10 @@ El salario es la retribucion que debe pagar el patron al trabajador por su traba
 <p v-if="mostrarNotaPeriodo" class="text-sm text-gray-600 md:col-span-2">
 El salario puede fijarse por unidad de tiempo, por unidad de obra, por comision, a precio alzado o de cualquier otra manera: Articulo 83 LFT.
 </p>
+
+<input type="number" step="0.01" placeholder="Vales de despensa"
+            class="modal-input"
+            v-model="empleadoForm.vales_despensa" />
 
           <select class="modal-input"
             v-model="empleadoForm.tipo_salario">

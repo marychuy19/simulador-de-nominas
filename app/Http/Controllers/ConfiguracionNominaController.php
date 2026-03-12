@@ -18,10 +18,9 @@ class ConfiguracionNominaController extends Controller
                 'salario_minimo' => 278.80,
                 'uma' => 117.31,
                 'limite_vales_despensa' => 0.40,
+                'limite_excento_vales' => 3439.46, // 40% del salario minimo mensual (278.80 por 30 dias) 
                 'subsidio_empleo' => 15.02,
                 'tope_subsidio' => 535.65,
-                'tope_subsidio_mensual' => 535.65,
-                'limite_ingreso_subsidio' => 11492.66,
             ]);
         }
 
@@ -55,10 +54,10 @@ class ConfiguracionNominaController extends Controller
             'salario_minimo' => 'required|numeric|min:0',
             'uma' => 'required|numeric|min:0',
             'limite_vales_despensa' => 'required|numeric|min:0',
+            'limite_excento_vales' => 'required|numeric|min:0',
             'subsidio_empleo' => 'required|numeric|min:0',
             'tope_subsidio' => 'required|numeric|min:0',
-            'tope_subsidio_mensual' => 'required|numeric|min:0',
-            'limite_ingreso_subsidio' => 'required|numeric|min:0',
+
         ]);
 
         $config->update($data);

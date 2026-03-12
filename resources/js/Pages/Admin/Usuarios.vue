@@ -134,8 +134,7 @@ const deleteUser = (user) => {
             </select>
 
             <button
-              class="col-span-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-xl transition shadow-sm"
-            >
+              class="col-span-full bg-blue-700 hover:bg-blue-900 text-white font-semibold py-2 rounded-xl transition shadow-sm">
               Crear usuario
             </button>
           </form>

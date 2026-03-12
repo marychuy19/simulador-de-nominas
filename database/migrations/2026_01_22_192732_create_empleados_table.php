@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->string('periodo_salario');
             $table->string('tipo_salario');
             $table->string('jornada');
+            $table->decimal('vales_despensa', 10, 2);
 
             $table->timestamps();
         });

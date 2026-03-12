@@ -33,6 +33,7 @@ const empleadoForm = useForm({
   periodo_salario: '',
   tipo_salario: '',
   jornada: '',
+  vales_despensa: '',
   empresa_id: ''
 })
 
@@ -231,12 +232,20 @@ const guardarEmpleado = () => {
         </p>
       </div>
 
+       <div>
+        <p class="text-gray-400 text-xs">Vales de despensa</p>
+        <p class="font-medium text-gray-800">
+          {{ empleado.vales_despensa }}
+        </p>
+      </div>
+
       <div>
         <p class="text-gray-400 text-xs">Periodo</p>
         <p class="font-medium text-gray-800">
           {{ empleado.periodo_salario }}
         </p>
       </div>
+
 
       <div>
         <p class="text-gray-400 text-xs">Tipo salario</p>
@@ -252,6 +261,7 @@ const guardarEmpleado = () => {
         </p>
       </div>
 
+
       <div class="col-span-2">
         <p class="text-gray-400 text-xs">Empresa</p>
         <p class="font-medium text-gray-800">
@@ -266,7 +276,7 @@ const guardarEmpleado = () => {
 
       <button
         @click="editarEmpleado(empleado)"
-        class="px-4 py-2 text-sm font-medium rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
+        class="px-4 py-2 text-sm font-medium rounded-xl bg-blue-700 text-white hover:bg-blue-900 transition shadow-sm"
       >
         Editar
       </button>
@@ -364,6 +374,15 @@ const guardarEmpleado = () => {
         placeholder="Salario base (diario)"
         class="modal-input"
       />
+
+       <input
+        v-model="empleadoForm.vales_despensa"
+        type="number"
+        step="0.01"
+        placeholder="Vales de despensa"
+        class="modal-input"
+      />
+
 
       <select
         v-model="empleadoForm.periodo_salario"

@@ -299,11 +299,31 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
       </header>
 
       <!-- MAIN -->
-      <main class="flex-1 p-6">
-        <slot />
-      </main>
-
+<main class="flex-1 p-6">
+  <Transition name="page" mode="out-in" appear>
+    <div :key="$page.component">
+      <slot />
+    </div>
+  </Transition>
+</main>
     </div>
 
   </div>
 </template>
+
+<style>
+.page-enter-active,
+.page-leave-active {
+  transition: all .6s cubic-bezier(.4,0,.2,1);
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(20px) scale(.98);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(.98);
+}
+</style>

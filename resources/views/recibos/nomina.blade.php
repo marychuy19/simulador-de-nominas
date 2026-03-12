@@ -115,7 +115,7 @@
 <!-- LÍQUIDO -->
 <table class="mt">
   <tr>
-    <th style="width:60%;">LÍQUIDO A PERCIBIR</th>
+    <th style="width:60%;">NETO A PERCIBIR</th>
     <th class="right" style="width:40%;">$ {{ number_format($liquido, 2) }}</th>
   </tr>
 </table>

@@ -22,6 +22,7 @@ class Empleado extends Model
         'periodo_salario',
         'tipo_salario',
         'jornada',
+        'vales_despensa',
     ];
 
     public function empresa()

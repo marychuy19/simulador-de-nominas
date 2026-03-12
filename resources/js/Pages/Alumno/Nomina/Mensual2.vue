@@ -7,7 +7,6 @@ import axios from 'axios'
 const mostrarNotaAguinaldo = ref(false)
 const mostrarNotaVacaciones = ref(false)
 const mostrarNotaPrima = ref(false)
-const mostrarNotaVales = ref(false)
 
 // ✅ RECIBE LOS DATOS QUE VIENEN DE DIARIA (desde el controlador)
 const props = defineProps({
@@ -27,7 +26,11 @@ const props = defineProps({
   cuotasImss: {
     type: Object,
     default: () => ({})
-  }
+  },
+   empleados: {
+    type: Object,
+    default: () => ({})
+  },
 })
 
 /* =============================
@@ -52,7 +55,7 @@ const salarioBase = ref(0)
 const diasTrabajados = ref(30)
 
 const totalPercepciones = computed(() =>
-  salarioBase.value * diasTrabajados.value
+  Number(salarioBase.value || 0) * Number(diasTrabajados.value || 0)
 )
 
 // ✅ banderita para evitar que el watch(empresa) te resetee cuando estamos precargando
@@ -179,18 +182,38 @@ const valesDiarios = computed(() =>
   Number(salarioDiario.value || 0) * Number(valesDespensaPorcentaje.value || 0)
 )
 
-const valesExentos = computed(() =>
-  Math.min(valesDiarios.value, limiteExentoVales.value)
-)
+const limiteExcentoVales = computed(() => Number(props.configNomina?.limite_excento_vales ?? 0))
 
-const valesGravados = computed(() =>
-  Math.max(valesDiarios.value - valesExentos.value, 0)
-)
 
+const limiteExcentoPermtido = computed(() => Number(props.configNomina?.limite_vales_despensa ?? 0))
+
+const valesDespensa = computed(() => {
+  const emp = empleados.value.find(e => String(e.id) === String(empleado.value))
+  return Number(emp?.vales_despensa ?? 0)
+})
+
+const valesGravados = computed(() => {
+  const vales = Number(valesDespensa.value || 0)
+  const limite = Number(limiteExcentoPermtido.value || 0)
+
+  return Math.max(vales - limite, 0)
+})
+
+const valesDiariosGravados = computed(() => {
+  const gravados = Number(valesGravados.value || 0)
+
+  if (gravados === 0) {
+    return 0
+  }
+
+  return gravados / 30
+})
 /* =============================
    SBC CON VALES
 ============================= */
-const sbcConVales = computed(() => sbcSinVales.value + valesGravados.value)
+const sbcConVales = computed(() => {
+  return Number(sbcSinVales.value || 0) + Number(valesDiariosGravados.value || 0)
+})
 
 /* =============================
    BASE MENSUAL PARA CUOTAS
@@ -336,10 +359,6 @@ const porcentajeCesantiaVejezTexto = computed(() =>
   `${(Number(props.cuotasImss?.cesantia_vejez ?? 0) * 100).toFixed(4)}%`
 )
 
-const porcentajeLimiteValesTexto = computed(() =>
-  `${(limiteValesUMA.value * 100).toFixed(2)}%`
-)
-
 /* =============================
    GUARDAR
 ============================= */
@@ -419,35 +438,22 @@ const guardar = async () => {
           </table>
         </div>
 
-        <!-- PERCEPCIONES -->
+      <!-- PERCEPCIONES -->
         <div class="border rounded-xl overflow-hidden">
           <div class="bg-green-300 font-bold text-center py-2">PERCEPCIONES</div>
 
-          <table class="w-full border text-sm">
+<table class="w-full border text-sm">
+              <tr><td class="td">SALARIO BASE</td><td class="td">$ {{ salarioBase }}</td></tr>
             <tr>
-  <td class="td">SALARIO BASE</td>
-  <td class="td">
-    <div class="flex items-center gap-2">
-      <span class="font-semibold">$</span>
-      <input
-        v-model.number="salarioBase"
-        type="number"
-        class="input-sm"
-      />
-    </div>
-  </td>
-</tr>
-
-<tr>
-  <td class="td">(x) DÍAS TRABAJADOS</td>
-  <td class="td">
-    <input
-      v-model.number="diasTrabajados"
-      type="number"
-      class="input-sm"
-    />
-  </td>
-</tr>
+              <td class="td">(x) DÍAS TRABAJADOS</td>
+              <td class="td">
+                <input
+                  v-model.number="diasTrabajados"
+                  type="number"
+                  class="input-sm"
+                />
+              </td>
+            </tr>
 
             <tr class="font-bold bg-gray-100">
               <td class="td">TOTAL DE PERCEPCIONES</td>
@@ -455,7 +461,6 @@ const guardar = async () => {
             </tr>
           </table>
         </div>
-
              <!-- PRESTACIONES -->
         <div class="bg-white rounded-xl shadow overflow-hidden">
           <div class="titulo-verde">PRESTACIONES</div>
@@ -517,26 +522,6 @@ laborales, y aumentara de 2 dias laborales, hasta llegar a 20 por cada año subc
 Los trabajadores tendran derecho a una prima no menor del 25% sobre los salarios que le correspondan durante el periodo de vacaiones: Articulo 80 LFT.
   </td>
 </tr>
-
-<tr>
-  <td>Vales de despensa %</td>
-  <td>
-    <input
-      v-model.number="valesDespensaPorcentaje"
-      type="number"
-      class="input-sm"
-      @focus="mostrarNotaVales = true"
-      @blur="mostrarNotaVales = false"
-    />
-  </td>
-</tr>
-
-<tr v-if="mostrarNotaVales">
-  <td colspan="2" class="text-sm text-gray-600 md:col-span-2">
-El salario se integra con los pagos hechos en efectivo por couta diaria, gratificaciones, percepciones,
-primas, comisiones, prestaciones en especie y cualquier otra cantidad o prestacion que se entrega al trabajador por su trabajo: Articulo 84 LFT.
-  </td>
-</tr>
           </table>
         </div>
 
@@ -560,34 +545,33 @@ primas, comisiones, prestaciones en especie y cualquier otra cantidad o prestaci
       </div>
 
       <!-- VALES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
+        <div class="bg-white rounded-xl shadow overflow-hidden">
           <div class="titulo-morado">VALES DE DESPENSA</div>
           <table class="tabla">
             <tr><td>UMA</td><td>$ {{ uma.toFixed(2) }}</td></tr>
-            <tr>
-              <td>Límite exento vales</td>
-              <td class="font-semibold text-gray-700">{{ porcentajeLimiteValesTexto }}</td>
+             <tr>
+              <td>  Excento mensual</td><td>$ {{ limiteExcentoVales }}</td>
             </tr>
             <tr>
-              <td>Exento permitido</td>
-              <td>$ {{ limiteExentoVales.toFixed(2) }}</td>
+              <td>Límite excento permitido 40%</td><td>$ {{limiteExcentoPermtido }}</td>
             </tr>
-            <tr><td>Vales diarios</td><td>$ {{ valesDiarios.toFixed(2) }}</td></tr>
             <tr>
-              <td>Excedente</td>
-              <td>$ {{ valesGravados.toFixed(2) }}</td>
+              <td>Vales de despensa</td>
+              <td>$ {{ valesDespensa}}</td>
             </tr>
-            <tr class="resaltado"><td>Vales gravados</td><td>$ {{ valesGravados.toFixed(2) }}</td></tr>
+            <tr><td>Vales gravados</td><td>$ {{  valesGravados.toFixed(2) }}</td></tr>
+          
+            <tr class="resaltado"><td>Vales diarios gravados</td><td>$ {{ valesDiariosGravados.toFixed(2)}}</td></tr>
           </table>
         </div>
 
       <!-- SBC CON VALES -->
-      <div class="bg-white rounded-xl shadow overflow-hidden">
-        <div class="titulo-rojo">SBC CON VALES</div>
-        <table class="tabla">
-          <tr class="resaltado"><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
-        </table>
-      </div>
+        <div class="bg-white rounded-xl shadow overflow-hidden">
+          <div class="titulo-rojo">SBC CON VALES</div>
+          <table class="tabla">
+            <tr class="resaltado"><td>SBC final</td><td>$ {{ sbcConVales.toFixed(2) }}</td></tr>
+          </table>
+        </div>
 
       <!-- EXCEDENTE PATRONAL -->
 <div class="bg-white rounded-xl shadow overflow-hidden">

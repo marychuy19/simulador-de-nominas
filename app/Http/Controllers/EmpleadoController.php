@@ -21,6 +21,7 @@ class EmpleadoController extends Controller
             'periodo_salario' => 'required|string|max:50',
             'tipo_salario'    => 'required|string|max:50',
             'jornada'         => 'required|string|max:50',
+            'vales_despensa'  => 'required|numeric|min:0',
         ]);
 
         // ✅ Validar ownership de la empresa
@@ -54,6 +55,7 @@ class EmpleadoController extends Controller
             'periodo_salario' => 'required|string|max:50',
             'tipo_salario'    => 'required|string|max:50',
             'jornada'         => 'required|string|max:50',
+            'vales_despensa'  => 'required|numeric|min:0',
         ]);
 
         $empleado->update($data);

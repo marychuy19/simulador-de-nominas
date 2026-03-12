@@ -13,6 +13,7 @@ const form = useForm({
     salario_minimo: props.config.salario_minimo ?? 0,
     uma: props.config.uma ?? 0,
     limite_vales_despensa: props.config.limite_vales_despensa ?? 0,
+    limite_excento_vales: props.config.limite_excento_vales ?? 0,
     subsidio_empleo: props.config.subsidio_empleo ?? 0,
     tope_subsidio: props.config.tope_subsidio ?? 0,
     tope_subsidio_mensual: props.config.tope_subsidio_mensual ?? 0,
@@ -42,92 +43,154 @@ function guardarCuotas() {
 <div class="max-w-7xl mx-auto px-6 space-y-8">
 
     <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
-        <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
-            <img :src="avatarFiscales" alt="fiscales" class="w-full h-full object-cover" />
+        <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
+            <img :src="avatarFiscales" alt="fiscales" class="w-full h-full object-contain rounded-xl" />
         </div>
 
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">
+            <h1 class="text-2xl font-semibold text-gray-800">
                 Actualizaciones de datos fiscales y cuotas IMSS
             </h1>
-            <p class="text-gray-600">
+            <p class="text-gray-600 mt-1">
                 Modifica los datos generales, subsidio al empleo y cuotas del IMSS.
             </p>
         </div>
     </div>
 
-    <div class="bg-white p-6 rounded shadow space-y-6">
-        <h2 class="font-bold text-lg text-blue-600 border-b pb-2">
-            Datos Generales
-        </h2>
+    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 space-y-6">
 
-        <div>
-            <label class="font-semibold">Salario Mínimo</label>
-            <input v-model="form.salario_minimo" type="number" step="0.01" class="w-full border p-2 rounded">
+    <h2 class="font-bold text-xl text-blue-600 border-b pb-3 flex items-center gap-2">
+        Datos Generales
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Salario Mínimo</label>
+            <input v-model="form.salario_minimo" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">UMA</label>
-            <input v-model="form.uma" type="number" step="0.01" class="w-full border p-2 rounded">
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">UMA</label>
+            <input v-model="form.uma" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Límite Exento de Vales de Despensa (%) (veces UMA)</label>
-            <input v-model="form.limite_vales_despensa" type="number" step="0.01" class="w-full border p-2 rounded">
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">
+                Límite Exento permitido para el IMSS (40%)
+            </label>
+            <input v-model="form.limite_vales_despensa" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Subsidio al Empleo (%)</label>
-            <input v-model="form.subsidio_empleo" type="number" step="0.01" class="w-full border p-2 rounded">
-        </div>
-        <div>
-            <label class="font-semibold">Límite de Ingreso para Aplicar Subsidio (mensual)</label>
-            <input v-model="form.limite_ingreso_subsidio" type="number" step="0.01" class="w-full border p-2 rounded">
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">
+                Límite Exento de Vales de Despensa para el ISR mensual
+            </label>
+            <input v-model="form.limite_excento_vales" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
         </div>
 
-        <button @click="guardarConfig"
-            class="rounded-xl bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700">
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Subsidio al Empleo (%)</label>
+            <input v-model="form.subsidio_empleo" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
+        </div>
+
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">
+                Límite de Ingreso para Aplicar Subsidio (mensual)
+            </label>
+            <input v-model="form.limite_ingreso_subsidio" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-blue-500 focus:border-blue-500
+                transition">
+        </div>
+
+    </div>
+
+    <div class="pt-4 border-t flex justify-end">
+        <button
+            @click="guardarConfig"
+            class="rounded-xl bg-blue-700 text-white px-6 py-2.5 font-semibold
+            hover:bg-blue-900 transition shadow-md hover:shadow-lg">
             Guardar Configuración
         </button>
     </div>
 
-    <div class="bg-white p-6 rounded shadow space-y-6">
-        <h2 class="font-bold text-lg text-emerald-600 border-b pb-2">
-            Cuotas IMSS
-        </h2>
+</div>
+    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 space-y-6">
 
-        <div>
-            <label class="font-semibold">Excedente Patronal (%)</label>
-            <input v-model="formCuotas.excedente_patronal" type="number" step="0.01" class="w-full border p-2 rounded">
+    <h2 class="font-bold text-xl text-emerald-600 border-b pb-3 flex items-center gap-2">
+    Cuotas IMSS
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Excedente Patronal (%)</label>
+            <input v-model="formCuotas.excedente_patronal" type="number" step="0.01"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Prestaciones en Dinero (%)</label>
-            <input v-model="formCuotas.prestaciones_dinero" type="text" class="w-full border p-2 rounded">
-
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Prestaciones en Dinero (%)</label>
+            <input v-model="formCuotas.prestaciones_dinero" type="text"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Prestaciones en Especie (%)</label>
-            <input v-model="formCuotas.prestaciones_especie" type="text" class="w-full border p-2 rounded">
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Prestaciones en Especie (%)</label>
+            <input v-model="formCuotas.prestaciones_especie" type="text"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Invalidez y Vida (%)</label>
-           <input v-model="formCuotas.invalidez_vida" type="text" class="w-full border p-2 rounded">
-
+        <div class="space-y-1">
+            <label class="font-semibold text-gray-700">Invalidez y Vida (%)</label>
+            <input v-model="formCuotas.invalidez_vida" type="text"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                transition">
         </div>
 
-        <div>
-            <label class="font-semibold">Cesantía y Vejez (%)</label>
-           <input v-model="formCuotas.cesantia_vejez" type="text" class="w-full border p-2 rounded">
+        <div class="space-y-1 md:col-span-2">
+            <label class="font-semibold text-gray-700">Cesantía y Vejez (%)</label>
+            <input v-model="formCuotas.cesantia_vejez" type="text"
+                class="w-full border border-gray-300 p-2.5 rounded-lg
+                focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500
+                transition">
         </div>
 
-        <button @click="guardarCuotas"
-            class="rounded-xl bg-emerald-600 text-white px-4 py-2 font-semibold hover:bg-emerald-700">
+    </div>
+
+    <div class="pt-4 border-t flex justify-end">
+        <button
+            @click="guardarCuotas"
+            class="rounded-xl bg-emerald-700 text-white px-6 py-2.5 font-semibold
+            hover:bg-emerald-900 transition shadow-md hover:shadow-lg">
             Guardar Cuotas IMSS
         </button>
     </div>
+
+</div>
 </div>
 </div>
 </AuthenticatedLayout>

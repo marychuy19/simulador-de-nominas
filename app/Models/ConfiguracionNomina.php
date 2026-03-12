@@ -12,9 +12,9 @@ class ConfiguracionNomina extends Model
         'salario_minimo',
         'uma',
         'limite_vales_despensa',
+        'limite_excento_vales',
         'subsidio_empleo',
         'tope_subsidio',
-        'tope_subsidio_mensual',
-        'limite_ingreso_subsidio',
+      
     ];
 }

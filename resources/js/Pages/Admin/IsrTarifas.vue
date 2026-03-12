@@ -60,19 +60,19 @@ function guardar() {
 
         <!-- HEADER -->
         <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
-          <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
+          <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
             <img
               :src="avatarISR"
               alt="ISR"
-              class="w-full h-full object-cover"
+              class="w-full h-full object-contain rounded-xl"
             />
           </div>
 
           <div>
-            <h1 class="text-2xl font-bold text-gray-800">
+            <h1 class="text-2xl font-semibold text-gray-800">
               Actualizaciones de las tarifas del ISR
             </h1>
-            <p class="text-gray-600">
+            <p class="text-gray-600 mt-1">
               Modifica las tablas de tarifa del ISR al año.         
              </p>
           </div>
@@ -88,7 +88,7 @@ function guardar() {
           </button>
 
           <button
-            class="rounded-xl bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700"
+            class="rounded-xl bg-blue-700 text-white px-4 py-2 font-semibold hover:bg-blue-900"
             :disabled="form.processing"
             @click="guardar"
           >
@@ -96,67 +96,111 @@ function guardar() {
           </button>
         </div>
       </div>
-<div class="overflow-auto bg-white rounded-xl shadow border max-w-6xl mx-auto p-4">
-        <table class="min-w-full text-sm">
-          <thead class="bg-slate-100">
-            <tr class="text-left">
-              <th class="p-3">Orden</th>
-              <th class="p-3">Límite inferior</th>
-              <th class="p-3">Límite superior</th>
-              <th class="p-3">Cuota fija</th>
-              <th class="p-3">% </th>
-              <th class="p-3">Activo</th>
-              <th class="p-3">Acciones</th>
-            </tr>
-          </thead>
+<div class="overflow-auto bg-white rounded-2xl shadow-lg border border-gray-200 max-w-6xl mx-auto p-6">
 
-          <tbody>
-            <tr v-for="(r, i) in form.rows" :key="i" class="border-t">
-              <td class="p-2 w-24">
-                <input v-model.number="r.orden" type="number" class="w-full border rounded p-2" />
-              </td>
+  <table class="min-w-full text-sm">
 
-              <td class="p-2">
-                <input v-model.number="r.limite_inferior" type="number" step="0.01" class="w-full border rounded p-2" />
-              </td>
+    <thead class="bg-slate-100 text-gray-700">
+      <tr class="text-left">
+        <th class="p-3 font-semibold">Orden</th>
+        <th class="p-3 font-semibold">Límite inferior</th>
+        <th class="p-3 font-semibold">Límite superior</th>
+        <th class="p-3 font-semibold">Cuota fija</th>
+        <th class="p-3 font-semibold">% </th>
+        <th class="p-3 font-semibold text-center">Activo</th>
+        <th class="p-3 font-semibold">Acciones</th>
+      </tr>
+    </thead>
 
-              <td class="p-2">
-                <input
-                  v-model.number="r.limite_superior"
-                  type="number"
-                  step="0.01"
-                  class="w-full border rounded p-2"
-                  placeholder="(vacío = en adelante)"
-                />
-              </td>
+    <tbody>
 
-              <td class="p-2">
-                <input v-model.number="r.cuota_fija" type="number" step="0.01" class="w-full border rounded p-2" />
-              </td>
+      <tr
+        v-for="(r, i) in form.rows"
+        :key="i"
+        class="border-t hover:bg-gray-50 transition"
+      >
 
-              <td class="p-2">
-                <input v-model.number="r.porcentaje" type="number" step="0.0001" class="w-full border rounded p-2" />
-              </td>
+        <td class="p-2 w-24">
+          <input
+            v-model.number="r.orden"
+            type="number"
+            class="w-full border border-gray-300 rounded-lg p-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+        </td>
 
-              <td class="p-2 text-center">
-                <input v-model="r.activo" type="checkbox" class="scale-110" />
-              </td>
+        <td class="p-2">
+          <input
+            v-model.number="r.limite_inferior"
+            type="number"
+            step="0.01"
+            class="w-full border border-gray-300 rounded-lg p-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+        </td>
 
-              <td class="p-2">
-                <button class="bg-red-600 text-white px-3 py-2 rounded" @click="removeRow(i)">
-                  Eliminar
-                </button>
-              </td>
-            </tr>
+        <td class="p-2">
+          <input
+            v-model.number="r.limite_superior"
+            type="number"
+            step="0.01"
+            class="w-full border border-gray-300 rounded-lg p-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            placeholder="(vacío = en adelante)"
+          />
+        </td>
 
-            <tr v-if="!form.rows.length">
-              <td class="p-4 text-center text-slate-500" colspan="7">
-                No hay filas. Agrega una.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+        <td class="p-2">
+          <input
+            v-model.number="r.cuota_fija"
+            type="number"
+            step="0.01"
+            class="w-full border border-gray-300 rounded-lg p-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+        </td>
+
+        <td class="p-2">
+          <input
+            v-model.number="r.porcentaje"
+            type="number"
+            step="0.0001"
+            class="w-full border border-gray-300 rounded-lg p-2.5
+            focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+          />
+        </td>
+
+        <td class="p-2 text-center">
+          <input
+            v-model="r.activo"
+            type="checkbox"
+            class="scale-110 accent-blue-600"
+          />
+        </td>
+
+        <td class="p-2">
+          <button
+            class="bg-red-500 text-white px-4 py-2 rounded-lg
+            hover:bg-red-600 transition shadow-sm hover:shadow-md"
+            @click="removeRow(i)"
+          >
+            Eliminar
+          </button>
+        </td>
+
+      </tr>
+
+      <tr v-if="!form.rows.length">
+        <td class="p-6 text-center text-gray-500" colspan="7">
+          No hay filas. Agrega una.
+        </td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
 
       <div v-if="form.errors.rows" class="bg-red-50 border border-red-200 text-red-700 p-3 rounded">
         {{ form.errors.rows }}

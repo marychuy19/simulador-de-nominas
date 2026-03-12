@@ -133,11 +133,11 @@ const borrar = (id) => {
 
             <div class="flex gap-2">
               <button @click="downloadAllPdf"
-                class="rounded-xl bg-blue-600 text-white px-4 py-2 font-semibold hover:bg-blue-700">
+                class="rounded-xl bg-blue-700 text-white px-4 py-2 font-semibold hover:bg-blue-900">
                 Descargar TODAS (PDF)
               </button>
               <button @click="downloadAllExcel"
-                class="rounded-xl bg-emerald-600 text-white px-4 py-2 font-semibold hover:bg-emerald-700">
+                class="rounded-xl bg-emerald-700 text-white px-4 py-2 font-semibold hover:bg-emerald-900">
                 Descargar TODAS (Excel)
               </button>
             </div>
@@ -186,11 +186,11 @@ const borrar = (id) => {
                   <td class="px-4 py-3">
                     <div class="flex justify-end gap-2">
                       <button @click="downloadPdf(c.id)"
-                        class="rounded-lg bg-blue-600 text-white px-3 py-1 font-semibold hover:bg-blue-700">
+                        class="rounded-lg bg-blue-700 text-white px-3 py-1 font-semibold hover:bg-blue-900">
                         PDF
                       </button>
                       <button @click="downloadExcel(c.id)"
-                        class="rounded-lg bg-emerald-600 text-white px-3 py-1 font-semibold hover:bg-emerald-700">
+                        class="rounded-lg bg-emerald-700 text-white px-3 py-1 font-semibold hover:bg-emerald-900">
                         Excel
                       </button>
                       <button @click="borrar(c.id)"
