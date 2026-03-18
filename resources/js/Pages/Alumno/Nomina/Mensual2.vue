@@ -485,7 +485,7 @@ const guardar = async () => {
 </tr>
 
  <tr>
-  <td>Vacaviones (días)</td>
+  <td>Vacaciones (días)</td>
   <td>
     <input
       v-model.number="diasVacaciones"

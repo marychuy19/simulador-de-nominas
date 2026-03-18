@@ -186,9 +186,14 @@ const valesDiarios = computed(() =>
 )
 
 const limiteExcentoVales = computed(() => Number(props.configNomina?.limite_excento_vales ?? 0))
-
+const limiteExcentoValesPeriodo = computed(() => {
+  return limiteExcentoVales.value / 3
+})
 
 const limiteExcentoPermtido = computed(() => Number(props.configNomina?.limite_vales_despensa ?? 0))
+const limiteExcentoPermitido10 = computed(() => {
+  return limiteExcentoPermtido.value / 3
+})
 
 const valesDespensa = computed(() => {
   const emp = empleados.value.find(e => String(e.id) === String(empleado.value))
@@ -197,7 +202,7 @@ const valesDespensa = computed(() => {
 
 const valesGravados = computed(() => {
   const vales = Number(valesDespensa.value || 0)
-  const limite = Number(limiteExcentoPermtido.value || 0)
+  const limite = Number(limiteExcentoPermitido10.value || 0)
 
   return Math.max(vales - limite, 0)
 })
@@ -209,7 +214,7 @@ const valesDiariosGravados = computed(() => {
     return 0
   }
 
-  return gravados / 30
+  return gravados / 10
 })
 /* =============================
    SBC CON VALES
@@ -555,10 +560,10 @@ Los trabajadores tendran derecho a una prima no menor del 25% sobre los salarios
           <table class="tabla">
             <tr><td>UMA</td><td>$ {{ uma.toFixed(2) }}</td></tr>
              <tr>
-              <td>  Excento mensual</td><td>$ {{ limiteExcentoVales }}</td>
+              <td>  Excento decenal</td><td>$ {{ limiteExcentoValesPeriodo.toFixed(2) }}</td>
             </tr>
             <tr>
-              <td>Límite excento permitido 40%</td><td>$ {{limiteExcentoPermtido }}</td>
+              <td>Límite excento permitido 40%</td><td>$ {{limiteExcentoPermitido10.toFixed(2) }}</td>
             </tr>
             <tr>
               <td>Vales de despensa</td>

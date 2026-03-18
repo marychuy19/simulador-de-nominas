@@ -21,6 +21,7 @@
       <th>Empresa</th>
       <th>Empleado</th>
       <th>Tipo</th>
+      <th class="right">Vales despensa</th>
       <th class="right">Total percepciones (ISR)</th>
       <th class="right">IMSS</th>
       <th class="right">ISR</th>
@@ -39,7 +40,9 @@
         $imss = (float) ($c->total_imss ?? 0);
         $isrRet = (float) ($isr?->isr_retener ?? 0);
 
-        $liq = $tp - $imss - $isrRet;
+        $vales = (float) ($e?->vales_despensa ?? 0);
+
+$liq = $tp - $imss - $isrRet + $vales;
       @endphp
       <tr>
         <td>{{ $c->id }}</td>
@@ -47,6 +50,7 @@
         <td>{{ $e?->nombre_completo ?? '—' }}</td>
         <td>{{ $e?->periodo_salario ?? '—' }}</td>
 
+        <td class="right">$ {{ number_format((float) ($e?->vales_despensa ?? 0), 2) }}</td>
         <td class="right">$ {{ number_format($tp, 2) }}</td>
         <td class="right">$ {{ number_format($imss, 2) }}</td>
         <td class="right">$ {{ number_format($isrRet, 2) }}</td>

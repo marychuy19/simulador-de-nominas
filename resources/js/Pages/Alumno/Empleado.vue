@@ -3,6 +3,8 @@ import { ref, computed } from 'vue'
 import { Head, useForm, router } from '@inertiajs/vue3'
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 
+const mostrarNotaVales = ref(false)
+
 /* IMÁGENES */
 const avatarEmpleado = new URL('../image/user.jpeg', import.meta.url).href
 const iconBuscar = new URL('../image/lupa.jpeg', import.meta.url).href
@@ -361,12 +363,14 @@ const guardarEmpleado = () => {
         <option value="honorarios">Honorarios</option>
       </select>
 
-      <input
-        v-model="empleadoForm.fecha_ingreso"
-        type="date"
-        class="modal-input"
-      />
-
+           <div class="modal-group">
+  <label class="modal-label">Fecha de ingreso</label>
+  <input 
+    type="date" 
+    class="modal-input"
+    v-model="empleadoForm.fecha_ingreso" 
+  />
+</div>
       <input
         v-model="empleadoForm.salario"
         type="number"
@@ -375,13 +379,18 @@ const guardarEmpleado = () => {
         class="modal-input"
       />
 
-       <input
-        v-model="empleadoForm.vales_despensa"
-        type="number"
-        step="0.01"
-        placeholder="Vales de despensa"
-        class="modal-input"
-      />
+      <input
+  type="number"
+  step="0.01"
+  placeholder="Vales de despensa"
+  class="modal-input"
+  v-model="empleadoForm.vales_despensa"
+  @focus="mostrarNotaVales = true"
+  @blur="mostrarNotaVales = false"
+/>
+<p v-if="mostrarNotaVales" class="text-m text-gray-600 md:col-span-2">
+El monto total de los vales es por el periodo.
+</p>
 
 
       <select

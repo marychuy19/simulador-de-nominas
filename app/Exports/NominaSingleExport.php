@@ -18,6 +18,7 @@ class NominaSingleExport implements FromArray, WithHeadings
             'Empleado',
             'Tipo',
             'Salario Diario',
+            'Vales Despensa',
             'Total Percepciones (ISR)',
             'IMSS Total',
             'ISR Retener',
@@ -39,7 +40,9 @@ class NominaSingleExport implements FromArray, WithHeadings
         $imss = (float) ($c->total_imss ?? 0);
         $isrRet = (float) ($isr?->isr_retener ?? 0);
 
-        $liq = $tp - $imss - $isrRet;
+        $vales = (float) ($e?->vales_despensa ?? 0);
+
+$liq = $tp - $imss - $isrRet + $vales;
 
         return [[
             $c->id,
@@ -47,6 +50,8 @@ class NominaSingleExport implements FromArray, WithHeadings
             $e?->nombre_completo,
             $e?->periodo_salario,
             $c->salario_diario,
+            $e?->vales_despensa,
+            $e?->puesto,
             $tp,
             $imss,
             $isrRet,

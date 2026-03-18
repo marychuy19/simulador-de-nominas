@@ -17,6 +17,7 @@ class NominasAllExport implements FromArray, WithHeadings
             'Empresa',
             'Empleado',
             'Tipo',
+            'Vales Despensa',
             'Total Percepciones (ISR)',
             'IMSS Total',
             'ISR Retener',
@@ -58,13 +59,17 @@ class NominasAllExport implements FromArray, WithHeadings
             $imss = (float) ($c->total_imss ?? 0);
             $isrRet = (float) ($isr?->isr_retener ?? 0);
 
-            $liq = $tp - $imss - $isrRet;
+            $vales = (float) ($e?->vales_despensa ?? 0);
+
+$liq = $tp - $imss - $isrRet + $vales;
 
             return [
                 $c->id,
                 $emp?->nombre_razon_social,
                 $e?->nombre_completo,
                 $e?->periodo_salario,
+                $e?->vales_despensa,
+                $e?->puesto,
                 $tp,
                 $imss,
                 $isrRet,

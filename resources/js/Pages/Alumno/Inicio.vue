@@ -6,6 +6,7 @@ import { Head, useForm, usePage, router } from '@inertiajs/vue3'
 const mostrarNotaSalario = ref(false)
 const mostrarNotaPeriodo = ref(false)
 const mostrarNotaPatronal = ref(false)
+const mostrarNotaVales = ref(false)
 
 /* PROPS */
 const { props } = usePage()
@@ -203,16 +204,8 @@ const eliminarEmpresa = (id) => {
                       <button
   @click.stop="eliminarEmpresa(empresa.id)"
   class="
-    w-full sm:w-auto
-    px-4 sm:px-6
-    py-2 sm:py-2.5
-    text-sm sm:text-base
-    rounded-full
-    bg-red-500 text-white font-semibold
-    hover:bg-red-600
-    transition duration-200
-    shadow-md hover:shadow-lg
-    active:scale-95
+    bg-red-500 text-white px-4 py-2 rounded-lg
+            hover:bg-red-600 transition shadow-sm hover:shadow-md
   "
 >
   Eliminar
@@ -405,9 +398,6 @@ sus altas y bajas, llevar registro de nominas y determina las coutas Obreros-Pat
             <option value="honorarios">Honorarios</option>
           </select>
 
-          <input type="date"
-            class="modal-input"
-            v-model="empleadoForm.fecha_ingreso" />
 
          <input
   type="number"
@@ -440,9 +430,18 @@ El salario es la retribucion que debe pagar el patron al trabajador por su traba
 El salario puede fijarse por unidad de tiempo, por unidad de obra, por comision, a precio alzado o de cualquier otra manera: Articulo 83 LFT.
 </p>
 
-<input type="number" step="0.01" placeholder="Vales de despensa"
-            class="modal-input"
-            v-model="empleadoForm.vales_despensa" />
+<input
+  type="number"
+  step="0.01"
+  placeholder="Vales de despensa"
+  class="modal-input"
+  v-model="empleadoForm.vales_despensa"
+  @focus="mostrarNotaVales = true"
+  @blur="mostrarNotaVales = false"
+/>
+<p v-if="mostrarNotaVales" class="text-m text-gray-600 md:col-span-2">
+El monto total de los vales es por el periodo.
+</p>
 
           <select class="modal-input"
             v-model="empleadoForm.tipo_salario">

@@ -29,7 +29,9 @@
   $isrRetener = (float) ($isr?->isr_retener ?? 0);
 
   // ✅ Líquido
-  $liquido = $totalPercepciones - $imss - $isrRetener;
+$vales = (float) ($emp?->vales_despensa ?? 0);
+
+$liquido = $totalPercepciones - $imss - $isrRetener + $vales;
 
       $path = base_path('resources/js/Pages/image/nomina.jpeg');
 
@@ -60,6 +62,7 @@
     <td>
       <div><span class="bold">Nombre:</span> {{ $emp?->nombre_completo ?? '—' }}</div>
       <div><span class="bold">Identificación:</span> {{ $emp?->identificacion ?? '—' }}</div>
+       <div><span class="bold">Puesto:</span> {{ $emp?->puesto ?? '—' }}</div>
       <div><span class="bold">Tipo contrato:</span> {{ $emp?->tipo_contrato ?? '—' }}</div>
       <div><span class="bold">Fecha ingreso:</span> {{ $emp?->fecha_ingreso ?? '—' }}</div>
       <div><span class="bold">Tipo nómina:</span> {{ $emp?->periodo_salario ?? '—' }}</div>
@@ -72,27 +75,18 @@
 <!-- DEVENGOS / PERCEPCIONES -->
 <table class="mt">
   <tr>
-    <th style="width:60%;">DEVENGOS / PERCEPCIONES</th>
+    <th style="width:60%;">PERCEPCIONES</th>
     <th style="width:40%;">TOTALES</th>
+    <tr>
+  <td>Vales de despensa</td>
+  <td class="right">$ {{ number_format((float) ($emp?->vales_despensa ?? 0), 2) }}</td>
+</tr>
   </tr>
-  <tr>
-    <td>Salario diario</td>
-    <td class="right">$ {{ number_format((float)($calculo->salario_diario ?? 0), 2) }}</td>
-  </tr>
-
+ 
   <!-- ✅ total percepciones desde ISR -->
   <tr>
-    <td class="bold">Total percepciones</td>
-    <td class="right bold">$ {{ number_format($totalPercepciones, 2) }}</td>
-  </tr>
-
-  <tr>
-    <td>Proporción aguinaldo</td>
-    <td class="right">$ {{ number_format((float)($calculo->proporcion_aguinaldo ?? 0), 2) }}</td>
-  </tr>
-  <tr>
-    <td>Proporción vacaciones</td>
-    <td class="right">$ {{ number_format((float)($calculo->proporcion_vacaciones ?? 0), 2) }}</td>
+    <td>Salario</td>
+    <td class="right">$ {{ number_format($totalPercepciones, 2) }}</td>
   </tr>
 </table>
 
@@ -115,7 +109,7 @@
 <!-- LÍQUIDO -->
 <table class="mt">
   <tr>
-    <th style="width:60%;">NETO A PERCIBIR</th>
+    <th style="width:60%;">NETO DEL RECIBO</th>
     <th class="right" style="width:40%;">$ {{ number_format($liquido, 2) }}</th>
   </tr>
 </table>

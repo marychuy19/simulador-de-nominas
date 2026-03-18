@@ -166,12 +166,15 @@ const totalPercepciones2 = computed(() =>
    VALES DE DESPENSA
 ============================= */
 const limiteExcentoVales = computed(() => Number(props.configNomina?.limite_excento_vales ?? 0))
+const limiteExcentoValesPeriodo = computed(() => {
+  return (limiteExcentoVales.value / 2) 
+})
 
 const valesGravados = computed(() => {
-  if (vales_despensa.value <= limiteExcentoVales.value) {
+  if (vales_despensa.value <= limiteExcentoValesPeriodo.value) {
     return 0
   }
-  return vales_despensa.value - limiteExcentoVales.value
+  return vales_despensa.value - limiteExcentoValesPeriodo.value
 })
 
 
@@ -385,7 +388,7 @@ const guardar = async () => {
     
               <tr><td class="td">Vales de despensa</td><td class="td">$ {{ vales_despensa }}</td></tr>
            
-      <tr><td class="td">Limite excento</td><td class="td">$ {{ limiteExcentoVales }}</td></tr>
+      <tr><td class="td">Limite excento</td><td class="td">$ {{ limiteExcentoValesPeriodo.toFixed(2) }}</td></tr>
       <tr><td class="td">Vales grabados</td><td class="td">$ {{ valesGravados.toFixed(2)}}</td></tr>
     </table>
   </div>
@@ -407,7 +410,7 @@ const guardar = async () => {
 
         <!-- RESULTADO FINAL -->
         <div class="bg-indigo-700 text-white text-center p-6 rounded-xl">
-          <p class="text-lg font-bold">ISR PERSIVIDO</p>
+          <p class="text-lg font-bold">ISR A RETENER</p>
           <p class="text-4xl font-bold mt-2">$ {{ isrRetener.toFixed(2) }}</p>
         </div>
 

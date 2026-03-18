@@ -403,7 +403,7 @@ const guardar = async () => {
 
         <!-- RESULTADO FINAL -->
         <div class="bg-indigo-700 text-white text-center p-6 rounded-xl">
-          <p class="text-lg font-bold">ISR PERSIVIDO</p>
+          <p class="text-lg font-bold">ISR A RETENER</p>
           <p class="text-4xl font-bold mt-2">$ {{ isrRetener.toFixed(2) }}</p>
         </div>
 
