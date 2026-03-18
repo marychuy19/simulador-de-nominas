@@ -37,6 +37,8 @@ const empleado = ref('')
 const tipoSalario = ref('')
 const tipoPago = ref('')
 const fechaIngreso = ref('')
+const fechaInicioPeriodo = ref('')
+const fechaFinPeriodo = ref('')
 
 /* =============================
    PERCEPCIONES
@@ -198,6 +200,20 @@ const isrRetener = computed(() => {
   return isrDeterminado.value
 })
 
+const validarPeriodo = () => {
+  if (!fechaInicioPeriodo.value || !fechaFinPeriodo.value) {
+    alert('Debes seleccionar el periodo de nómina')
+    return false
+  }
+
+  if (fechaFinPeriodo.value < fechaInicioPeriodo.value) {
+    alert('La fecha final no puede ser menor a la inicial')
+    return false
+  }
+
+  return true
+}
+
 /* =============================
    GUARDAR
 ============================= */
@@ -210,7 +226,9 @@ const guardar = async () => {
       total_percepciones: totalPercepciones.value,
       isr_determinado: isrDeterminado.value,
       subsidio_periodo: subsidioPeriodo.value,
-      isr_retener: isrRetener.value
+      isr_retener: isrRetener.value,
+      fecha_inicio_periodo: fechaInicioPeriodo.value,
+      fecha_termino_periodo: fechaFinPeriodo.value
     })
     
     router.visit('/alumno/nomina/mensual2', {
@@ -279,6 +297,27 @@ const guardar = async () => {
               <td class="td font-semibold">FECHA DE INGRESO</td>
               <td class="td"><input v-model="fechaIngreso" type="date" class="input w-full" readonly /></td>
             </tr>
+            <tr>
+  <td class="td font-semibold">PERIODO INICIO</td>
+  <td class="td">
+    <input 
+      v-model="fechaInicioPeriodo" 
+      type="date" 
+      class="input w-full" 
+    />
+  </td>
+</tr>
+
+<tr>
+  <td class="td font-semibold">PERIODO FIN</td>
+  <td class="td">
+    <input 
+      v-model="fechaFinPeriodo" 
+      type="date" 
+      class="input w-full" 
+    />
+  </td>
+</tr>
           </table>
         </div>
 

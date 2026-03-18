@@ -398,6 +398,9 @@ sus altas y bajas, llevar registro de nominas y determina las coutas Obreros-Pat
             <option value="honorarios">Honorarios</option>
           </select>
 
+          <input type="date"
+            class="modal-input"
+            v-model="empleadoForm.fecha_ingreso" />
 
          <input
   type="number"

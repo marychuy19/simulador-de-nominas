@@ -13,6 +13,8 @@ class Isr extends Model
         'salario_base',
         'dias_trabajados',
         'total_percepciones',
+        'fecha_inicio_periodo',
+        'fecha_termino_periodo',
         'isr_determinado',
         'subsidio_periodo',
         'isr_retener',

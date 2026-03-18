@@ -42,7 +42,6 @@ public function isrs()
 
 public function latestIsr()
 {
-    return $this->hasOne(Isr::class)->latestOfMany();
+    return $this->hasOne(Isr::class)->latestOfMany('fecha_inicio_periodo');
 }
-
 }

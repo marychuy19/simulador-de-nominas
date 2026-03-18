@@ -11,12 +11,12 @@ return new class extends Migration
         Schema::create('isr', function (Blueprint $table) {
             $table->id();
 
-            // 🔗 Relación con empleados
+            // Relación con empleados
             $table->foreignId('empleado_id')
                   ->constrained('empleados')
                   ->cascadeOnDelete();
 
-            // 📊 Datos de cálculo
+            // Datos de cálculo
             $table->decimal('salario_base', 10, 2);
             $table->integer('dias_trabajados');
 
@@ -24,6 +24,8 @@ return new class extends Migration
             $table->decimal('isr_determinado', 10, 2);
             $table->decimal('subsidio_periodo', 10, 2);
             $table->decimal('isr_retener', 10, 2);
+            $table->date('fecha_inicio_periodo');
+            $table->date('fecha_termino_periodo');
 
             $table->timestamps();
         });

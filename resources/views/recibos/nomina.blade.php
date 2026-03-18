@@ -65,6 +65,7 @@ $liquido = $totalPercepciones - $imss - $isrRetener + $vales;
        <div><span class="bold">Puesto:</span> {{ $emp?->puesto ?? '—' }}</div>
       <div><span class="bold">Tipo contrato:</span> {{ $emp?->tipo_contrato ?? '—' }}</div>
       <div><span class="bold">Fecha ingreso:</span> {{ $emp?->fecha_ingreso ?? '—' }}</div>
+  <div><span class="bold">Periodo:</span> {{ $isr?->fecha_inicio_periodo ?? '—' }} - {{ $isr?->fecha_termino_periodo ?? '—' }}</div>
       <div><span class="bold">Tipo nómina:</span> {{ $emp?->periodo_salario ?? '—' }}</div>
       <div><span class="bold">Tipo salario:</span> {{ $emp?->tipo_salario ?? '—' }}</div>
       <div><span class="bold">Jornada:</span> {{ $emp?->jornada ?? '—' }}</div>
