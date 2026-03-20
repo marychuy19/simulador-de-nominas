@@ -6,7 +6,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 const mostrarNotaVales = ref(false)
 
 /* IMÁGENES */
-const avatarEmpleado = new URL('../image/user.jpeg', import.meta.url).href
+const avatarEmpleado = new URL('../image/empleados1.jpeg', import.meta.url).href
 const iconBuscar = new URL('../image/lupa.jpeg', import.meta.url).href
 const iconEmples = new URL('../image/empleados.jpeg', import.meta.url).href
 

@@ -21,7 +21,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex">
+  <div class="min-h-screen bg-gray-100 flex overflow-x-hidden">
 
     <!-- SIDEBAR -->
   <aside
@@ -204,7 +204,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
     ></div>
 
     <!-- CONTENIDO -->
-   <div class="flex-1 flex flex-col lg:ml-64">
+   <div class="flex-1 flex flex-col lg:ml-64 min-w-0">
 
       <!-- TOPBAR -->
       <header class="bg-white shadow-sm h-16 flex items-center justify-between px-6">
@@ -300,7 +300,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
       </header>
 
       <!-- MAIN -->
-<main class="flex-1 p-6">
+<main class="flex-1 p-6 min-w-0">
   <Transition name="page" mode="out-in" appear>
     <div :key="$page.component">
       <slot />

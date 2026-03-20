@@ -83,9 +83,9 @@ const deleteUser = (user) => {
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
         <!-- HEADER -->
-        <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
-            <img :src="avatarEmpleado" class="w-full h-full object-cover"/>
+        <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
+          <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
+            <img :src="avatarEmpleado" class="w-full h-full object-contain rounded-xl"/>
           </div>
           <div>
             <h1 class="text-xl sm:text-2xl font-bold text-gray-800">
@@ -116,7 +116,7 @@ const deleteUser = (user) => {
               <option value="admin">Admin</option>
             </select>
 
-            <button class="col-span-full w-full bg-blue-700 text-white py-2 rounded-xl">
+            <button class="col-span-full w-full bg-blue-700 text-white py-2 rounded-xl hover:bg-blue-900">
               Crear usuario
             </button>
           </form>
@@ -251,14 +251,14 @@ const deleteUser = (user) => {
 }
 
 .btn-blue {
-  @apply w-full bg-blue-600 text-white py-2 rounded-xl;
+  @apply w-full text-white py-2 rounded-xl bg-blue-700 text-white hover:bg-blue-900 transition shadow-sm;
 }
 
 .btn-gray {
-  @apply w-full bg-gray-400 text-white py-2 rounded-xl;
+  @apply w-full text-white py-2 rounded-xl bg-gray-400 text-white hover:bg-gray-600 transition shadow-sm;
 }
 
 .btn-red {
-  @apply w-full bg-red-500 text-white py-2 rounded-xl;
+  @apply w-full text-white py-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition shadow-sm;
 }
 </style>

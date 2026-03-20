@@ -42,7 +42,7 @@ function guardarCuotas() {
 <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
 <div class="max-w-7xl mx-auto px-6 space-y-8">
 
-    <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+    <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
         <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
             <img :src="avatarFiscales" alt="fiscales" class="w-full h-full object-contain rounded-xl" />
         </div>
