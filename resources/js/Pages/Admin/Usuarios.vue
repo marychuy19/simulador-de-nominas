@@ -7,10 +7,8 @@ defineProps({
   users: Array
 })
 
-/* IMÁGENES */
 const avatarEmpleado = new URL('../image/user.jpeg', import.meta.url).href
 
-/* ================= FORM CREAR ================= */
 const form = useForm({
   name: '',
   email: '',
@@ -26,7 +24,6 @@ const submit = () => {
   })
 }
 
-/* ================= FORM EDITAR ================= */
 const editingUserId = ref(null)
 
 const editForm = useForm({
@@ -61,13 +58,11 @@ const updateUser = (user) => {
     preserveScroll: true,
     onSuccess: () => cancelEdit(),
     onError: () => {
-      // si hay error de validación, NO se sale del modo edición
       editingUserId.value = Number(user.id)
     }
   })
 }
 
-/* ================= ELIMINAR ================= */
 const deleteUser = (user) => {
   if (confirm(`¿Seguro que deseas eliminar a ${user.name}?`)) {
     editForm.delete(route('admin.usuarios.destroy', user.id), {
@@ -85,190 +80,158 @@ const deleteUser = (user) => {
 
   <AuthenticatedLayout>
     <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
-      <div class="max-w-7xl mx-auto px-6 space-y-8">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
         <!-- HEADER -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
+        <div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div class="w-14 h-14 rounded-xl overflow-hidden shadow">
-            <img
-              :src="avatarEmpleado"
-              alt="Usuarios"
-              class="w-full h-full object-cover"
-            />
+            <img :src="avatarEmpleado" class="w-full h-full object-cover"/>
           </div>
-
           <div>
-            <h1 class="text-2xl font-bold text-gray-800">
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800">
               Administración de usuarios
             </h1>
-            <p class="text-gray-600">
-              Crear, editar y eliminar usuarios del sistema
+            <p class="text-gray-600 text-sm sm:text-base">
+              Crear, editar y eliminar usuarios
             </p>
           </div>
         </div>
 
-        <!-- FORM CREAR -->
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">
-            Crear nuevo usuario
-          </h2>
+        <!-- FORM -->
+        <div class="bg-white rounded-2xl shadow-sm border p-4 sm:p-6">
+          <form @submit.prevent="submit"
+            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
 
-          <form
-            @submit.prevent="submit"
-            class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4"
-          >
-            <input v-model="form.name" placeholder="Nombre" class="input" />
-            <input v-model="form.email" type="email" placeholder="Correo" class="input" />
-            <input v-model="form.password" type="password" placeholder="Contraseña" class="input" />
-            <input v-model="form.password_confirmation" type="password" placeholder="Confirmar contraseña" class="input" />
+            <input v-model="form.name" placeholder="Nombre" class="input"/>
+            <input v-model="form.email" placeholder="Correo" class="input"/>
+            <input v-model="form.password" type="password" placeholder="Contraseña" class="input"/>
+            <input v-model="form.password_confirmation" type="password" placeholder="Confirmar" class="input"/>
 
             <select v-model="form.cuatrimestre" class="input">
-              <option v-for="n in 11" :key="n" :value="n">
-                Cuatrimestre {{ n }}
-              </option>
+              <option v-for="n in 11" :key="n" :value="n">Cuat {{ n }}</option>
             </select>
 
             <select v-model="form.role" class="input">
               <option value="alumno">Alumno</option>
-              <option value="admin">Administrador</option>
+              <option value="admin">Admin</option>
             </select>
 
-            <button
-              class="col-span-full bg-blue-700 hover:bg-blue-900 text-white font-semibold py-2 rounded-xl transition shadow-sm">
+            <button class="col-span-full w-full bg-blue-700 text-white py-2 rounded-xl">
               Crear usuario
             </button>
           </form>
         </div>
 
-        <!-- TABLA -->
-     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-x-auto">
+        <!-- 📱 MOBILE CARDS -->
+        <div class="md:hidden space-y-4">
+          <div v-for="user in users" :key="'m-'+user.id"
+            class="bg-white p-4 rounded-2xl shadow space-y-3">
 
+            <div>
+              <p class="text-xs text-gray-500">Nombre</p>
+              <input v-if="editingUserId===user.id" v-model="editForm.name" class="input-mobile"/>
+              <p v-else>{{ user.name }}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-500">Correo</p>
+              <input v-if="editingUserId===user.id" v-model="editForm.email" class="input-mobile"/>
+              <p v-else>{{ user.email }}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-500">Cuatrimestre</p>
+              <select v-if="editingUserId===user.id" v-model="editForm.cuatrimestre" class="input-mobile">
+                <option v-for="n in 11" :key="n" :value="n">{{ n }}</option>
+              </select>
+              <p v-else>{{ user.cuatrimestre }}</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-gray-500">Rol</p>
+              <select v-if="editingUserId===user.id" v-model="editForm.role" class="input-mobile">
+                <option value="alumno">Alumno</option>
+                <option value="admin">Admin</option>
+              </select>
+              <p v-else>{{ user.role }}</p>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <template v-if="editingUserId===user.id">
+                <button @click="updateUser(user)" class="btn-blue">Guardar</button>
+                <button @click="cancelEdit" class="btn-gray">Cancelar</button>
+              </template>
+
+              <template v-else>
+                <button @click="startEdit(user)" class="btn-blue">Editar</button>
+                <button @click="deleteUser(user)" class="btn-red">Eliminar</button>
+              </template>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 💻 TABLA DESKTOP -->
+        <div class="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
           <table class="w-full text-sm">
-            <thead class="bg-blue-600 text-white uppercase tracking-wide text-xs">
+            <thead class="bg-blue-600 text-white text-xs">
               <tr>
-                <th class="p-3 text-left">Nombre</th>
-                <th class="p-3 text-left">Correo</th>
-                <th class="p-3 text-left">Cuatrimestre</th>
-                <th class="p-3 text-left">Contraseña</th>
-                <th class="p-3 text-left">Rol</th>
-                <th class="p-3 text-left">Acciones</th>
+                <th class="p-3">Nombre</th>
+                <th class="p-3">Correo</th>
+                <th class="p-3">Cuatrimestre</th>
+                <th class="p-3">Contraseña</th>
+                <th class="p-3">Rol</th>
+                <th class="p-3">Acciones</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr
-  v-for="user in users"
-  :key="user.id"
-  class="border-b hover:bg-slate-50 transition"
->
-  <!-- NOMBRE -->
-  <td class="p-3">
-    <input
-      v-if="editingUserId === user.id"
-      v-model="editForm.name"
-      class="input"
-    />
-    <span v-else>
-      {{ user.name }}
-    </span>
-  </td>
+              <tr v-for="user in users" :key="user.id" class="border-b">
+                
+                <td class="p-3">
+                  <input v-if="editingUserId===user.id" v-model="editForm.name" class="input"/>
+                  <span v-else>{{ user.name }}</span>
+                </td>
 
-  <!-- EMAIL -->
-  <td class="p-3">
-    <input
-      v-if="editingUserId === user.id"
-      v-model="editForm.email"
-      class="input"
-    />
-    <span v-else>
-      {{ user.email }}
-    </span>
-  </td>
+                <td class="p-3">
+                  <input v-if="editingUserId===user.id" v-model="editForm.email" class="input"/>
+                  <span v-else>{{ user.email }}</span>
+                </td>
 
-  <!-- CUATRIMESTRE -->
-  <td class="p-3">
-    <select
-      v-if="editingUserId === user.id"
-      v-model="editForm.cuatrimestre"
-      class="input"
-    >
-      <option v-for="n in 11" :key="n" :value="n">
-        {{ n }}
-      </option>
-    </select>
-    <span v-else>
-      {{ user.cuatrimestre }}
-    </span>
-  </td>
+                <td class="p-3">
+                  <select v-if="editingUserId===user.id" v-model="editForm.cuatrimestre" class="input">
+                    <option v-for="n in 11" :key="n" :value="n">{{ n }}</option>
+                  </select>
+                  <span v-else>{{ user.cuatrimestre }}</span>
+                </td>
 
-  <!-- PASSWORD -->
-  <td class="p-3">
-    <input
-      v-if="editingUserId === user.id"
-      v-model="editForm.password"
-      type="password"
-      placeholder="Nueva contraseña"
-      class="input"
-    />
-    <span v-else class="text-gray-400">
-      ••••••••
-    </span>
-  </td>
+                <td class="p-3">
+                  <input v-if="editingUserId===user.id" v-model="editForm.password" class="input"/>
+                  <span v-else>••••••</span>
+                </td>
 
-  <!-- ROL -->
-  <td class="p-3">
-    <select
-      v-if="editingUserId === user.id"
-      v-model="editForm.role"
-      class="input"
-    >
-      <option value="alumno">Alumno</option>
-      <option value="admin">Administrador</option>
-    </select>
-    <span v-else class="capitalize">
-      {{ user.role }}
-    </span>
-  </td>
+                <td class="p-3">
+                  <select v-if="editingUserId===user.id" v-model="editForm.role" class="input">
+                    <option value="alumno">Alumno</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <span v-else>{{ user.role }}</span>
+                </td>
 
-  <!-- ACCIONES -->
-  <td class="p-3 flex gap-3">
-    <template v-if="editingUserId === user.id">
-      <button
-        type="button"
-        @click="updateUser(user)"
-        class="px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-      >
-        Guardar
-      </button>
+                <td class="p-3">
+                  <div class="flex gap-2">
+                    <template v-if="editingUserId===user.id">
+                      <button @click="updateUser(user)" class="btn-blue">Guardar</button>
+                      <button @click="cancelEdit" class="btn-gray">Cancelar</button>
+                    </template>
+                    <template v-else>
+                      <button @click="startEdit(user)" class="btn-blue">Editar</button>
+                      <button @click="deleteUser(user)" class="btn-red">Eliminar</button>
+                    </template>
+                  </div>
+                </td>
 
-      <button
-        type="button"
-        @click="cancelEdit"
-        class="px-3 py-1 rounded-lg bg-gray-400 text-white hover:bg-gray-500 transition"
-      >
-        Cancelar
-      </button>
-    </template>
-
-    <template v-else>
-      <button
-        type="button"
-        @click="startEdit(user)"
-        class="px-3 py-1 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-      >
-        Editar
-      </button>
-
-      <button
-        type="button"
-        @click="deleteUser(user)"
-        class="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
-      >
-        Eliminar
-      </button>
-    </template>
-  </td>
-</tr>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -280,8 +243,22 @@ const deleteUser = (user) => {
 
 <style scoped>
 .input {
-  @apply w-full bg-white border border-gray-300 rounded-xl px-3 py-2 
-  focus:ring-2 focus:ring-blue-400 focus:border-blue-400 
-  outline-none transition;
+  @apply w-full border rounded-xl px-3 py-2 text-sm;
+}
+
+.input-mobile {
+  @apply w-full border rounded-xl px-3 py-2 text-sm;
+}
+
+.btn-blue {
+  @apply w-full bg-blue-600 text-white py-2 rounded-xl;
+}
+
+.btn-gray {
+  @apply w-full bg-gray-400 text-white py-2 rounded-xl;
+}
+
+.btn-red {
+  @apply w-full bg-red-500 text-white py-2 rounded-xl;
 }
 </style>

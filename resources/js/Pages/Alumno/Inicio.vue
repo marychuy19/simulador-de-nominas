@@ -193,7 +193,7 @@ const eliminarEmpresa = (id) => {
                       </p>
                     </div>
 
-                    <div class="flex items-center gap-4">
+                   <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
                       <span
                         class="px-3 py-1 rounded-full bg-blue-100 text-blue-800
                                font-semibold text-sm"
@@ -201,11 +201,13 @@ const eliminarEmpresa = (id) => {
                         {{ empresa.empleados_count }} empleados
                       </span>
 
-                      <button
+       <button
   @click.stop="eliminarEmpresa(empresa.id)"
   class="
+    w-full sm:w-auto
+    text-center
     bg-red-500 text-white px-4 py-2 rounded-lg
-            hover:bg-red-600 transition shadow-sm hover:shadow-md
+    hover:bg-red-600 transition shadow-sm hover:shadow-md
   "
 >
   Eliminar
@@ -398,9 +400,14 @@ sus altas y bajas, llevar registro de nominas y determina las coutas Obreros-Pat
             <option value="honorarios">Honorarios</option>
           </select>
 
-          <input type="date"
-            class="modal-input"
-            v-model="empleadoForm.fecha_ingreso" />
+                   <div class="modal-group">
+  <label class="modal-label">Fecha de ingreso</label>
+  <input 
+    type="date" 
+    class="modal-input"
+    v-model="empleadoForm.fecha_ingreso" 
+  />
+</div>
 
          <input
   type="number"

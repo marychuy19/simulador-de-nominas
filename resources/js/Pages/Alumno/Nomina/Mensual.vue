@@ -227,7 +227,7 @@ const guardar = async () => {
       isr_determinado: isrDeterminado.value,
       subsidio_periodo: subsidioPeriodo.value,
       isr_retener: isrRetener.value,
-      fecha_inicio_periodo: fechaInicioPeriodo.value,
+     fecha_inicio_periodo: fechaInicioPeriodo.value,
       fecha_termino_periodo: fechaFinPeriodo.value
     })
     

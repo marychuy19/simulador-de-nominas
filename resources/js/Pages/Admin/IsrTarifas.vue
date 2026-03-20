@@ -57,7 +57,6 @@ function guardar() {
 <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
 <div class="max-w-7xl mx-auto px-6 space-y-8">
 
-
         <!-- HEADER -->
         <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
           <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
@@ -96,7 +95,67 @@ function guardar() {
           </button>
         </div>
       </div>
-<div class="overflow-auto bg-white rounded-2xl shadow-lg border border-gray-200 max-w-6xl mx-auto p-6">
+      <!-- MOBILE CARDS -->
+<div class="md:hidden space-y-4 px-4">
+
+  <div
+    v-for="(r, i) in form.rows"
+    :key="'mobile-' + i"
+    class="bg-white rounded-2xl shadow border p-4 space-y-3"
+  >
+
+    <!-- ORDEN -->
+    <div>
+      <label class="text-xs text-gray-500">Orden</label>
+      <input v-model.number="r.orden" type="number" class="input-mobile"/>
+    </div>
+
+    <!-- LIMITE INFERIOR -->
+    <div>
+      <label class="text-xs text-gray-500">Límite inferior</label>
+      <input v-model.number="r.limite_inferior" type="number" step="0.01" class="input-mobile"/>
+    </div>
+
+    <!-- LIMITE SUPERIOR -->
+    <div>
+      <label class="text-xs text-gray-500">Límite superior</label>
+      <input v-model.number="r.limite_superior" type="number" step="0.01" class="input-mobile"/>
+    </div>
+
+    <!-- CUOTA -->
+    <div>
+      <label class="text-xs text-gray-500">Cuota fija</label>
+      <input v-model.number="r.cuota_fija" type="number" step="0.01" class="input-mobile"/>
+    </div>
+
+    <!-- PORCENTAJE -->
+    <div>
+      <label class="text-xs text-gray-500">Porcentaje</label>
+      <input v-model.number="r.porcentaje" type="number" step="0.0001" class="input-mobile"/>
+    </div>
+
+    <!-- ACTIVO -->
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-gray-600">Activo</span>
+      <input v-model="r.activo" type="checkbox" class="scale-110 accent-blue-600"/>
+    </div>
+
+    <!-- BOTÓN -->
+    <button
+      class="w-full bg-red-500 text-white py-2 rounded-xl hover:bg-red-600 transition"
+      @click="removeRow(i)"
+    >
+      Eliminar
+    </button>
+
+  </div>
+
+  <div v-if="!form.rows.length" class="text-center text-gray-500 py-6">
+    No hay filas
+  </div>
+
+</div>
+<div class="hidden md:block overflow-x-auto bg-white rounded-2xl shadow-lg border border-gray-200 max-w-6xl mx-auto p-4 sm:p-6">
 
   <table class="min-w-full text-sm">
 
@@ -208,3 +267,9 @@ function guardar() {
     </div>
   </AuthenticatedLayout>
 </template>
+<style scoped>
+.input-mobile {
+  @apply w-full border border-gray-300 rounded-xl px-3 py-2
+  text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition;
+}
+</style>

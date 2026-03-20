@@ -14,6 +14,7 @@ const logoSrc = new URL('../Pages/image/logo.jpeg', import.meta.url).href
 const iconInicio = new URL('../Pages/image/inicio.jpeg', import.meta.url).href
 const iconUsuarios = new URL('../Pages/image/usuario.jpeg', import.meta.url).href
 const iconActualizacion = new URL('../Pages/image/actualizacion.jpeg', import.meta.url).href
+const iconActualizacion1 = new URL('../Pages/image/actualizacion1.jpeg', import.meta.url).href
 const iconEmpleado = new URL('../Pages/image/empleado.jpeg', import.meta.url).href
 const iconCalculo = new URL('../Pages/image/calculo.jpeg', import.meta.url).href
 const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
@@ -118,7 +119,7 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
             : 'text-white hover:bg-blue-500/70'
         ]"
       >
-        <img :src="iconActualizacion" class="w-5 h-5" />
+        <img :src="iconActualizacion1" class="w-5 h-5" />
         <span class="font-medium">Actualizaciones ISR</span>
       </div>
     </NavLink>
