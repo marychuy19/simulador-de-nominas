@@ -108,7 +108,7 @@ const deleteUser = (user) => {
             <input v-model="form.password_confirmation" type="password" placeholder="Confirmar" class="input"/>
 
             <select v-model="form.cuatrimestre" class="input">
-              <option v-for="n in 11" :key="n" :value="n">Cuat {{ n }}</option>
+              <option v-for="n in 11" :key="n" :value="n">Cuatrimestre {{ n }}</option>
             </select>
 
             <select v-model="form.role" class="input">
