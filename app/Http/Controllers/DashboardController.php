@@ -13,7 +13,7 @@ class DashboardController extends Controller
             ->where('user_id', auth()->id())
             ->withCount('empleados')
             ->with(['empleados' => function ($q) {
-                $q->orderBy('nombre_completo'); // o 'nombre' si así se llama tu columna
+                $q->orderBy('nombre_completo'); 
             }])
             ->orderBy('nombre_razon_social')
             ->get();

@@ -10,6 +10,10 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#16a34a">
+<link rel="apple-touch-icon" href="/icons/nomina-192.png">
+
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
