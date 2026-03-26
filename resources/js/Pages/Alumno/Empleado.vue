@@ -135,34 +135,31 @@ const guardarEmpleado = () => {
     </template>
 
     <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
-      <div class="max-w-6xl mx-auto px-6">
+      <div class="max-w-7xl mx-auto px-6 space-y-8">
 
-         <!-- BIENVENIDA -->
-       <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
+              <!-- HEADER -->
+<div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
 
+  <!-- ICONO -->
+  <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white flex items-center justify-center shadow shrink-0">
+    <img
+      :src="iconEmples"
+      alt="ISR"
+      class="w-full h-full object-contain rounded-xl"
+    />
+  </div>
 
-          <!-- LOGO -->
-          <div
-            class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow"
-          >
-            <img
-              :src="iconEmples"
-              alt="Logo"
-              class="w-full h-full object-contain rounded-xl"
-            />
-          </div>
+  <!-- TEXTO -->
+  <div class="text-center sm:text-left">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 leading-tight">
+      Empleados registrados
+    </h1>
+    <p class="text-gray-600 mt-1 text-sm sm:text-base">
+      Busca empleados por nombre o empresa, edita su informacion o eliminalos.
+    </p>
+  </div>
 
-          <div>
-            <h3 class="text-2xl font-semibold text-gray-800">
-              Empleados registrados
-            </h3>
-            <p class="text-gray-600 mt-1">
-              Busca empleados por nombre o empresa, edita su informacion o eliminalos.
-            </p>
-          </div>
-        </div>
-
-
+</div>
 
         <!-- BUSCADOR -->
         <div class="mb-6 relative">

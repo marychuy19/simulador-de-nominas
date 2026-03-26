@@ -42,20 +42,29 @@ function guardarCuotas() {
 <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
 <div class="max-w-7xl mx-auto px-6 space-y-8">
 
-    <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
-        <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
-            <img :src="avatarFiscales" alt="fiscales" class="w-full h-full object-contain rounded-xl" />
-        </div>
+          <!-- HEADER -->
+<div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
 
-        <div>
-            <h1 class="text-2xl font-semibold text-gray-800">
-                Actualizaciones de datos fiscales y cuotas IMSS
-            </h1>
-            <p class="text-gray-600 mt-1">
-                Modifica los datos generales, subsidio al empleo y cuotas del IMSS.
-            </p>
-        </div>
-    </div>
+  <!-- ICONO -->
+  <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white flex items-center justify-center shadow shrink-0">
+    <img
+      :src="avatarFiscales"
+      alt="ISR"
+      class="w-full h-full object-contain rounded-xl"
+    />
+  </div>
+
+  <!-- TEXTO -->
+  <div class="text-center sm:text-left">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 leading-tight">
+       Actualizaciones de datos fiscales y cuotas IMSS
+    </h1>
+    <p class="text-gray-600 mt-1 text-sm sm:text-base">
+      Modifica los datos generales, subsidio al empleo y cuotas del IMSS.
+    </p>
+  </div>
+
+</div>
 
     <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200 space-y-6">
 

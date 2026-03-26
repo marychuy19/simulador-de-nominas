@@ -57,43 +57,60 @@ function guardar() {
 <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
 <div class="max-w-7xl mx-auto px-6 space-y-8">
 
-        <!-- HEADER -->
-        <div class="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-4">
-          <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
-            <img
-              :src="avatarISR"
-              alt="ISR"
-              class="w-full h-full object-contain rounded-xl"
-            />
-          </div>
+       <!-- HEADER -->
+<div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
 
-          <div>
-            <h1 class="text-2xl font-semibold text-gray-800">
-              Actualizaciones de las tarifas del ISR
-            </h1>
-            <p class="text-gray-600 mt-1">
-              Modifica las tablas de tarifa del ISR al año.         
-             </p>
-          </div>
-        </div>
+  <!-- ICONO -->
+  <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white flex items-center justify-center shadow shrink-0">
+    <img
+      :src="avatarISR"
+      alt="ISR"
+      class="w-full h-full object-contain rounded-xl"
+    />
+  </div>
 
-        <div class="flex items-center gap-3 p-5 flex items-center gap-5">
-          <select class="rounded-xl border rounded px-5 py-2" :value="form.tipo" @change="cambiarTipo">
-            <option v-for="t in tipos" :key="t" :value="t">{{ t }}</option>
-          </select>
+  <!-- TEXTO -->
+  <div class="text-center sm:text-left">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 leading-tight">
+      Actualizaciones de las tarifas del ISR
+    </h1>
+    <p class="text-gray-600 mt-1 text-sm sm:text-base">
+      Modifica las tablas de tarifa del ISR al año.
+    </p>
+  </div>
 
-          <button class="rounded-xl bg-slate-900 text-white px-4 py-2 font-semibold hover:bg-slate-800" @click="addRow">
-            + Agregar fila
-          </button>
+</div>
 
-          <button
-            class="rounded-xl bg-blue-700 text-white px-4 py-2 font-semibold hover:bg-blue-900"
-            :disabled="form.processing"
-            @click="guardar"
-          >
-            Guardar tabla
-          </button>
-        </div>
+<!-- CONTROLES -->
+<div class="flex flex-col sm:flex-row flex-wrap items-center gap-3 sm:gap-4 p-4 sm:p-5">
+
+  <!-- SELECT -->
+  <select
+    class="w-full sm:w-auto rounded-xl border px-4 py-2 text-sm sm:text-base"
+    :value="form.tipo"
+    @change="cambiarTipo"
+  >
+    <option v-for="t in tipos" :key="t" :value="t">{{ t }}</option>
+  </select>
+
+  <!-- BOTON AGREGAR -->
+  <button
+    class="w-full sm:w-auto rounded-xl bg-slate-900 text-white px-4 py-2 text-sm sm:text-base font-semibold hover:bg-slate-800 transition"
+    @click="addRow"
+  >
+    + Agregar fila
+  </button>
+
+  <!-- BOTON GUARDAR -->
+  <button
+    class="w-full sm:w-auto rounded-xl bg-blue-700 text-white px-4 py-2 text-sm sm:text-base font-semibold hover:bg-blue-900 transition disabled:opacity-50"
+    :disabled="form.processing"
+    @click="guardar"
+  >
+    Guardar tabla
+  </button>
+
+</div>
       </div>
       <!-- MOBILE CARDS -->
 <div class="md:hidden space-y-4 px-4">

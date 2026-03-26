@@ -82,20 +82,29 @@ const deleteUser = (user) => {
     <div class="py-10 bg-gradient-to-br from-blue-100 via-blue-200 to-blue-100 min-h-screen">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-        <!-- HEADER -->
-        <div class="bg-white rounded-2xl shadow-lg p-8 flex items-center gap-6 mb-10">
-          <div class="w-16 h-16 rounded-xl bg-white flex items-center justify-center shadow">
-            <img :src="avatarEmpleado" class="w-full h-full object-contain rounded-xl"/>
-          </div>
-          <div>
-            <h1 class="text-xl sm:text-2xl font-bold text-gray-800">
-              Administración de usuarios
-            </h1>
-            <p class="text-gray-600 text-sm sm:text-base">
-              Crear, editar y eliminar usuarios
-            </p>
-          </div>
-        </div>
+              <!-- HEADER -->
+<div class="bg-white rounded-2xl shadow-lg p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+
+  <!-- ICONO -->
+  <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white flex items-center justify-center shadow shrink-0">
+    <img
+      :src="avatarEmpleado"
+      alt="ISR"
+      class="w-full h-full object-contain rounded-xl"
+    />
+  </div>
+
+  <!-- TEXTO -->
+  <div class="text-center sm:text-left">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800 leading-tight">
+      Administración de usuarios
+    </h1>
+    <p class="text-gray-600 mt-1 text-sm sm:text-base">
+       Crear, editar y eliminar usuarios
+    </p>
+  </div>
+
+</div>
 
         <!-- FORM -->
         <div class="bg-white rounded-2xl shadow-sm border p-4 sm:p-6">
