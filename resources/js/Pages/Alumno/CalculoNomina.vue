@@ -144,7 +144,7 @@ const imgLogo2 = new URL('../image/logo2.jpeg', import.meta.url).href
 
       <div>
         <h4 class="text-lg sm:text-xl font-bold text-blue-900 mb-2 sm:mb-3">
-          Periodo qo dias
+          Periodo 10 dias
         </h4>
 
         <p class="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6">
