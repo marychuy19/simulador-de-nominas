@@ -1,13 +1,14 @@
 {
 	frankenphp
 	order php_server before file_server
+	auto_https on
 	log {
 		output stderr
 		level INFO
 	}
 }
 
-simulador-de-nominas-production.up.railway.app {
+localhost:8080 {
 	root * /app/public
 	encode zstd br gzip
 
