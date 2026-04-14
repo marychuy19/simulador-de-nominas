@@ -1,11 +1,16 @@
 {
 	frankenphp
 	order php_server before file_server
+	log {
+		output stderr
+		level INFO
+	}
 }
 
 :80 {
 	root * /app/public
 	encode zstd br gzip
 
+	# Serve static files directly; pass everything else to PHP
 	php_server
 }

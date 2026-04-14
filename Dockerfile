@@ -52,10 +52,15 @@ RUN composer run-script post-autoload-dump --no-interaction || true
 # Copy Caddyfile
 COPY Caddyfile /etc/caddy/Caddyfile
 
+# Copy and configure the entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Set permissions for Laravel storage and bootstrap cache
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 EXPOSE 80 443
 
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+# Use the entrypoint to bootstrap Laravel then exec FrankenPHP in the foreground
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
