@@ -40,4 +40,4 @@ echo "==> view:cache done"
 
 # Hand off to FrankenPHP as PID 1
 echo "==> Handing off to FrankenPHP..."
-exec frankenphp run --config /etc/caddy/Caddyfile --adapter caddyfile
+exec /usr/local/bin/frankenphp run --config /etc/caddy/Caddyfile --adapter caddyfile
