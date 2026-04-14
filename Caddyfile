@@ -12,5 +12,9 @@
 	root * /app/public
 	encode zstd br gzip
 
+	handle /health {
+		respond "OK" 200
+	}
+
 	php_server
 }
