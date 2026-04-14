@@ -7,7 +7,7 @@
 	}
 }
 
-:80 {
+:8080 {
 	bind 0.0.0.0
 	root * /app/public
 	encode zstd br gzip
