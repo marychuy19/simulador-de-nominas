@@ -7,8 +7,7 @@
 	}
 }
 
-:8080 {
-	bind 0.0.0.0
+simulador-de-nominas-production.up.railway.app {
 	root * /app/public
 	encode zstd br gzip
 
