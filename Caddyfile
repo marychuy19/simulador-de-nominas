@@ -3,7 +3,7 @@
 	order php_server before file_server
 	log {
 		output stderr
-		level INFO
+		level DEBUG
 	}
 }
 
@@ -11,6 +11,9 @@
 	bind 0.0.0.0
 	root * /app/public
 	encode zstd br gzip
+
+	# Simple health-check endpoint that does not require PHP
+	respond /healthz 200
 
 	php_server
 }
