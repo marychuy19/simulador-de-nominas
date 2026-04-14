@@ -7,9 +7,11 @@
 	}
 }
 
-simulador-de-nominas-production.up.railway.app {
+:8080 {
 	root * /app/public
 	encode zstd br gzip
+
+	header X-Forwarded-Proto https
 
 	handle /health {
 		respond "OK" 200

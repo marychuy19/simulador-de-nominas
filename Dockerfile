@@ -60,7 +60,7 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
-EXPOSE 80 443
+EXPOSE 8080
 
 # Use the entrypoint to bootstrap Laravel then exec FrankenPHP in the foreground
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
