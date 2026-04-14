@@ -2,20 +2,20 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
 
 class TrustProxies extends Middleware
 {
     /**
-     * The trusted proxies for this application.
+     * Confiar en todos los proxies (Railway / reverse proxy).
      *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
-     * The headers that should be used to detect proxies.
+     * Headers confiables para detectar HTTPS real detrás del proxy.
      *
      * @var int
      */
