@@ -7,9 +7,14 @@
 	}
 }
 
-:80 {
+0.0.0.0:80 {
 	root * /app/public
 	encode zstd br gzip
+
+	# Health check endpoint — responds immediately without hitting PHP
+	handle /health {
+		respond "OK" 200
+	}
 
 	# Serve static files directly; pass everything else to PHP
 	php_server

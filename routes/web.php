@@ -17,6 +17,11 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\ConfiguracionNominaController;
 use App\Http\Controllers\IsrTarifaController;
 
+// Health check — no auth, no middleware, plain 200 for Railway probes
+Route::get('/health', function () {
+    return response('OK', 200);
+});
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin'       => Route::has('login'),
