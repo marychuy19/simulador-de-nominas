@@ -21,7 +21,12 @@ const iconRecibo = new URL('../Pages/image/recibo.jpeg', import.meta.url).href
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 flex overflow-x-hidden">
+  
+<Head>
+  <meta name="google" content="notranslate" />
+</Head>
+
+  <div class="min-h-screen bg-gray-100 flex overflow-x-hidden" translate="no">
 
     <!-- SIDEBAR -->
   <aside

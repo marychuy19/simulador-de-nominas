@@ -29,20 +29,17 @@ class NominaSingleExport implements FromArray, WithHeadings
 
     public function array(): array
     {
-        $c = CalculoNomina::with(['empleado.empresa','empleado.latestIsr'])->findOrFail($this->id);
+        $c = CalculoNomina::with(['empleado.empresa', 'empleado.latestIsr'])->findOrFail($this->id);
 
         $e = $c->empleado;
         $emp = $e?->empresa;
         $isr = $e?->latestIsr;
 
-        // ✅ BD desde ISR
         $tp = (float) ($isr?->total_percepciones ?? 0);
         $imss = (float) ($c->total_imss ?? 0);
         $isrRet = (float) ($isr?->isr_retener ?? 0);
-
         $vales = (float) ($e?->vales_despensa ?? 0);
-
-$liq = $tp - $imss - $isrRet + $vales;
+        $liq = $tp - $imss - $isrRet + $vales;
 
         return [[
             $c->id,
@@ -50,8 +47,7 @@ $liq = $tp - $imss - $isrRet + $vales;
             $e?->nombre_completo,
             $e?->periodo_salario,
             $c->salario_diario,
-            $e?->vales_despensa,
-            $e?->puesto,
+            $vales,
             $tp,
             $imss,
             $isrRet,
