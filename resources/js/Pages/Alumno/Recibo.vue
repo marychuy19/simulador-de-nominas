@@ -98,11 +98,11 @@ const borrar = (id) => {
           <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             <input v-model="search" @keyup.enter="submitFilters"
               class="rounded-xl border-slate-300 focus:border-slate-500 focus:ring-slate-500"
-              placeholder="Buscar empleado o empresa..." />
+              placeholder="Buscar empleado" />
 
             <input v-model="empresa" @keyup.enter="submitFilters"
               class="rounded-xl border-slate-300 focus:border-slate-500 focus:ring-slate-500"
-              placeholder="Filtrar por empresa..." />
+              placeholder="Buscar empresa" />
 
             <select v-model="tipo" @change="submitFilters"
               class="rounded-xl border-slate-300 focus:border-slate-500 focus:ring-slate-500">
