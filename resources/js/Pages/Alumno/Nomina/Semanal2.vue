@@ -661,7 +661,7 @@ Los trabajadores tendran derecho a una prima no menor del 25% sobre los salarios
         <button
           @click="guardar"
           class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl w-full">
-          Factura de nomina
+             Emitir nomina
         </button>
 
 

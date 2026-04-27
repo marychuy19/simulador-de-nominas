@@ -2,10 +2,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { useForm, Head } from '@inertiajs/vue3'
 import { ref } from 'vue'
+import { computed } from 'vue'
 
-defineProps({
-  users: Array
-})
+/* IMÁGENES */
+const iconBuscar = new URL('../image/lupa.jpeg', import.meta.url).href
 
 const avatarEmpleado = new URL('../image/user.jpeg', import.meta.url).href
 
@@ -23,6 +23,20 @@ const submit = () => {
     onSuccess: () => form.reset()
   })
 }
+
+const search = ref('')
+const props = defineProps({
+  users: Array
+})
+
+const filteredUsers = computed(() => {
+  if (!search.value) return props.users
+
+  return props.users.filter(user =>
+    user.name.toLowerCase().includes(search.value.toLowerCase()) ||
+    user.email.toLowerCase().includes(search.value.toLowerCase())
+  )
+})
 
 const editingUserId = ref(null)
 
@@ -73,6 +87,7 @@ const deleteUser = (user) => {
     })
   }
 }
+
 </script>
 
 <template>
@@ -131,9 +146,21 @@ const deleteUser = (user) => {
           </form>
         </div>
 
+      <!-- BUSCADOR -->
+        <div class="mb-6 relative">
+          <img :src="iconBuscar"
+               class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70" />
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Buscar usuario por nombre o correo"
+            class="w-full rounded-2xl border-gray-300 pl-12 pr-5 py-4 shadow-md"
+          />
+        </div>
+
         <!-- 📱 MOBILE CARDS -->
         <div class="md:hidden space-y-4">
-          <div v-for="user in users" :key="'m-'+user.id"
+          <div v-for="user in users" :key="'m-'+user.id">
             class="bg-white p-4 rounded-2xl shadow space-y-3">
 
             <div>
@@ -195,7 +222,7 @@ const deleteUser = (user) => {
             </thead>
 
             <tbody>
-              <tr v-for="user in users" :key="user.id" class="border-b">
+              <tr v-for="user in filteredUsers" :key="user.id" class="border-b">
                 
                 <td class="p-3">
                   <input v-if="editingUserId===user.id" v-model="editForm.name" class="input"/>

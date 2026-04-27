@@ -14,6 +14,8 @@ const mostrarNotaPeriodo = ref(false)
 const mostrarNotaPatronal = ref(false)
 const mostrarNotaVales = ref(false)
 
+const editingEmpresaId = ref(null)
+
 /* PROPS */
 const { props } = usePage()
 const empresas = computed(() => props.empresas ?? [])
@@ -47,19 +49,31 @@ const empresaForm = useForm({
 })
 
 const guardarEmpresa = () => {
-  empresaForm.post(route('alumno.empresas.store'), {
-    preserveScroll: true,
-    onSuccess: () => {
-      showEmpresaModal.value = false
-      empresaForm.reset()
+  if (editingEmpresaId.value) {
+    // ✏️ ACTUALIZAR
+    empresaForm.put(route('alumno.empresas.update', editingEmpresaId.value), {
+      preserveScroll: true,
+      onSuccess: () => {
+        showEmpresaModal.value = false
+        empresaForm.reset()
+        editingEmpresaId.value = null
 
-      router.visit(route('dashboard'), {
-        preserveScroll: true
-      })
-    }
-  })
+        router.visit(route('dashboard'), { preserveScroll: true })
+      }
+    })
+  } else {
+    // ➕ CREAR
+    empresaForm.post(route('alumno.empresas.store'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        showEmpresaModal.value = false
+        empresaForm.reset()
+
+        router.visit(route('dashboard'), { preserveScroll: true })
+      }
+    })
+  }
 }
-
 /* =========================
    FORM EMPLEADO
 ========================= */
@@ -89,6 +103,19 @@ const guardarEmpleado = () => {
       })
     }
   })
+}
+
+const editarEmpresa = (empresa) => {
+  editingEmpresaId.value = empresa.id
+
+  empresaForm.nombre_razon_social = empresa.nombre_razon_social ?? ''
+  empresaForm.rfc = empresa.rfc ?? ''
+  empresaForm.direccion_fiscal = empresa.direccion_fiscal ?? ''
+  empresaForm.regimen_fiscal = empresa.regimen_fiscal ?? ''
+  empresaForm.periodo_pago = empresa.periodo_pago ?? ''
+  empresaForm.registro_patronal = empresa.registro_patronal ?? ''
+
+  showEmpresaModal.value = true
 }
 
 const eliminarEmpresa = (id) => {
@@ -260,15 +287,15 @@ const eliminarEmpresa = (id) => {
           <span class="text-xs sm:text-sm text-gray-600">
             {{ empresa.empleados_count }} empleados
           </span>
+          <button
+  @click.stop="editarEmpresa(empresa)"
+  class="px-4 py-2 text-sm font-medium rounded-xl bg-blue-700 text-white hover:bg-blue-900 transition shadow-sm">
+  Editar
+</button>
 
           <button
             @click.stop="eliminarEmpresa(empresa.id)"
-            class="w-full sm:w-auto text-center
-                   bg-red-500 text-white
-                   px-4 py-2 rounded-lg
-                   hover:bg-red-600 transition shadow-sm hover:shadow-md
-                   text-sm"
-          >
+            class="px-4 py-2 text-sm font-medium rounded-xl bg-red-500 text-white hover:bg-red-600 transition shadow-sm">
             Eliminar
           </button>
 
@@ -321,9 +348,9 @@ const eliminarEmpresa = (id) => {
 
         <!-- HEADER -->
         <div class="bg-blue-600 text-white px-6 py-4">
-          <h3 class="text-lg font-semibold tracking-wide">
-            Registrar empresa
-          </h3>
+         <h3 class="text-lg font-semibold tracking-wide">
+  {{ editingEmpresaId ? 'Editar empresa' : 'Registrar empresa' }}
+</h3>
           <p class="text-xs opacity-80">
             Complete la información fiscal correspondiente
           </p>
@@ -343,10 +370,45 @@ const eliminarEmpresa = (id) => {
           <textarea placeholder="Dirección fiscal" rows="2"
             class="modal-input"
             v-model="empresaForm.direccion_fiscal"></textarea>
+            
 
-          <input type="text" placeholder="Régimen fiscal"
-            class="modal-input"
-            v-model="empresaForm.regimen_fiscal" />
+<select
+  class="modal-input"
+  v-model="empresaForm.regimen_fiscal"
+>
+  <option value="">Régimen fiscal</option>
+
+  <!-- PERSONAS MORALES -->
+  <optgroup label="Personas Morales">
+    <option value="601">601 General de Ley Personas Morales</option>
+    <option value="603">603 Personas Morales con Fines No Lucrativos</option>
+    <option value="620">620 Sociedades Cooperativas</option>
+    <option value="623">623 Opcional para Grupos de Sociedades</option>
+    <option value="624">624 Coordinados</option>
+  </optgroup>
+
+  <!-- PERSONAS FÍSICAS -->
+  <optgroup label="Personas Físicas">
+    <option value="605">605 Sueldos y Salarios</option>
+    <option value="606">606 Arrendamiento</option>
+    <option value="608">608 Demás ingresos</option>
+    <option value="612">612 Actividades Empresariales y Profesionales</option>
+    <option value="614">614 Ingresos por intereses</option>
+    <option value="615">615 Obtención de premios</option>
+    <option value="621">621 Incorporación Fiscal</option>
+    <option value="622">622 Actividades agrícolas, ganaderas, etc.</option>
+    <option value="626">626 Régimen Simplificado de Confianza</option>
+  </optgroup>
+
+  <!-- OTROS -->
+  <optgroup label="Otros">
+    <option value="607">607 Enajenación o adquisición de bienes</option>
+    <option value="610">610 Residentes en el extranjero</option>
+    <option value="611">611 Dividendos</option>
+    <option value="616">616 Sin obligaciones fiscales</option>
+    <option value="625">625 Plataformas tecnológicas</option>
+  </optgroup>
+</select>
 
           <select
   class="modal-input"
